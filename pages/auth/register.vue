@@ -1,22 +1,64 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue';
-const name = ref('')
-const password = ref('')
-const email = ref('')
-const password2 = ref('')
-const isError = ref(false)
-const errorMassage = ref('')
-const onRegistr = () =>{
-  if (!password.value.trim()||!email.value.trim()||!password2.value.trim()||!name.value.trim()){
-    errorMassage.value = 'Заполните все поля'
-    return isError.value = true
+import { useRouter } from 'nuxt/app';
+
+const router = useRouter();
+const name = ref('');
+const password = ref('');
+const email = ref('');
+const password2 = ref('');
+const isError = ref(false);
+const errorMessage = ref(''); // Исправлено с errorMassage на errorMessage
+
+const onRegistr = async () => {
+  // Проверка на пустые поля
+  if (!name.value.trim() || !email.value.trim() || !password.value.trim() || !password2.value.trim()) {
+    isError.value = true;
+    errorMessage.value = 'Пожалуйста, заполните все поля';
+    return;
   }
-  else if (password.value.trim() !== password2.value.trim()){
-    errorMassage.value = 'Пароли не совпадают'
-    return isError.value = true
+
+  // Проверка совпадения паролей
+  if (password.value !== password2.value) {
+    isError.value = true;
+    errorMessage.value = 'Пароли не совпадают';
+    return;
   }
-  isError.value = false
-}
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        password: password.value,
+      }),
+    });
+
+    // Проверяем успешность запроса
+    if (!response.ok) {
+      const errorData = await response.json(); // Пробуем получить детали ошибки от сервера
+      throw new Error(errorData.message || 'Ошибка регистрации: проверьте данные');
+    }
+
+    const data = await response.json();
+    console.log('Успешная регистрация:', data);
+
+    // Сбрасываем ошибки
+    isError.value = false;
+    errorMessage.value = '';
+
+    // Перенаправляем пользователя на страницу логина или другую
+    router.push('/auth/login'); // Перенаправление на страницу входа после регистрации
+  } catch (error) {
+    isError.value = true;
+    errorMessage.value = error.message || 'Произошла ошибка при регистрации';
+    console.error('Ошибка:', error);
+  }
+};
 </script>
 
 <template>
@@ -47,7 +89,7 @@ const onRegistr = () =>{
         <input v-model="password2" type="password" id="password2" placeholder="Повторите пароль...">
       </div>
       <span v-if="isError" class="error">
-          {{errorMassage}}
+          {{errorMessage}}
       </span>
       <button type="button" class="btn" @click="onRegistr">Зарегистрироваться</button>
       <NuxtLink style="text-align: center" to="/auth/login">Войти</NuxtLink>

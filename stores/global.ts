@@ -95,7 +95,7 @@ export const useGlobalStore = defineStore('global', {
     state: () => ({
         count: 0,
         items: [],
-        isAuthenticated: true,
+        isAuthenticated: false,
         currentUser: {id: '1', name: 'User', registerDate: '10.10.2015', totalBooks: '10', level: '1', role: 'User', reviews: [{
                 title: "Отличная книга!",
                 text: "Эта книга оставила глубокое впечатление. Очень интересный сюжет, отлично проработанные персонажи и неожиданные повороты событий. Однозначно рекомендую к прочтению! Эта книга оставила глубокое впечатление. Очень интересный сюжет, отлично проработанные персонажи и неожиданные повороты событий.",

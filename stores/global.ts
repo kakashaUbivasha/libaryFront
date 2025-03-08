@@ -95,6 +95,7 @@ export const useGlobalStore = defineStore('global', {
     state: () => ({
         count: 0,
         items: [],
+        token: null,
         isAuthenticated: false,
         currentUser: {id: '1', name: 'User', registerDate: '10.10.2015', totalBooks: '10', level: '1', role: 'User', reviews: [{
                 title: "Отличная книга!",
@@ -128,10 +129,18 @@ export const useGlobalStore = defineStore('global', {
                 }]},
     }),
     actions: {
-        logout() {
+        async logout() {
             this.isAuthenticated = false;
+            fetch('http://127.0.0.1:8000/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                },
+            })
+            this.token = null
+            localStorage.removeItem('token')
             navigateTo('/')
-            console.log('Пользователь вышел из системы')
         },
         async searchBooks(keyword: string) {
             try {
@@ -151,16 +160,38 @@ export const useGlobalStore = defineStore('global', {
             }
         },
         async getUser(id: string) {
-            try{
-                const response = users.filter((user: any) => user.id == id);
-                return response[0];
+            let token = localStorage.getItem('token')
+            if(token){
+                this.token = token
+                const response = await fetch('http://127.0.0.1:8000/api/user',
+                    {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                if(response.ok){
+                    this.currentUser = await response.json()
+                    this.isAuthenticated = true
+                }else{
+                    this.token = null
+                    localStorage.removeItem('token')
+                    this.isAuthenticated = false
+                    navigateTo('/login')
+                }
             }
-            catch(error) {
-                console.log(error)
-                return error;
+        },
+        async login(email :string, password :string) {
+            const response = await fetch('http://127.0.0.1:8000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            if (data.token) {
+                this.token = data.token;
+                localStorage.setItem('token', data.token);
+                this.currentUser = data.user;
+                this.isAuthenticated = true;
+                navigateTo('/dashboard');
             }
-
-
-        }
+        },
     },
 });

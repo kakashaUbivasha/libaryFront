@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'nuxt/app'; // Для перенаправления после успешного логина
+import {useGlobalStore} from "~/stores/global";
 
 const password = ref('');
 const email = ref('');
@@ -8,44 +9,19 @@ const isError = ref(false);
 const errorMessage = ref(''); // Для более конкретного сообщения об ошибке
 
 const router = useRouter(); // Инициализация роутера Nuxt
-
+const globalStore = useGlobalStore()
 const onLogin = async () => {
-  // Проверка на пустые поля
   if (!password.value.trim() || !email.value.trim()) {
     isError.value = true;
     errorMessage.value = 'Пожалуйста, заполните все поля';
     return;
   }
-
   try {
-    // Выполняем POST-запрос на сервер
-    const response = await fetch('http://127.0.0.1:8000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-    });
-
-    // Проверяем, успешен ли запрос
-    if (!response.ok) {
-      throw new Error('Ошибка входа: неверная почта или пароль');
-    }
-
-    const data = await response.json(); // Получаем ответ от сервера
-    console.log('Успешный вход:', data); // Для отладки
-
-    // Сбрасываем ошибку, если она была
+    await globalStore.login(email.value, password.value);
     isError.value = false;
     errorMessage.value = '';
-
-    // Перенаправляем пользователя, например, на главную страницу
-    router.push('/'); // Можно изменить путь, куда перенаправлять
+    router.push('/');
   } catch (error) {
-    // Обрабатываем ошибку
     isError.value = true;
     errorMessage.value = error.message || 'Произошла ошибка при входе';
     console.error('Ошибка:', error);

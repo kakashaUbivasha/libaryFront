@@ -10,7 +10,8 @@ const store = useGlobalStore()
 const currentGuest = ref(null);
 const error = ref(null);
 const isLoading = ref(true)
-const isCurrentUser = computed(() => id === store.currentUser.id)
+console.log('lolo',id == store.currentUser.id)
+const isCurrentUser = computed(() => id == store.currentUser.id)
 const containerRef = ref(null)
 const containerRef1 = ref(null)
 const swiper = useSwiper(containerRef, {
@@ -90,7 +91,7 @@ const guestExists = computed(() => isCurrentUser.value || !!currentGuest.value);
           :array="store.currentUser.reviews"
           :level="store.currentUser.level"
           :total-books="store.currentUser.totalBooks "
-          :register-date="store.currentUser.registerDate"
+          :register-date="store.currentUser.created_at"
           :is-current-user="true"
           />
         </div>

@@ -134,7 +134,8 @@ export const useGlobalStore = defineStore('global', {
                     }
                 });
                 const userData = await response.json();
-                this.currentUser = userData;
+                console.log('user',userData.data)
+                this.currentUser = userData.data;
             }catch (error){
                 this.logout();
                 throw error;

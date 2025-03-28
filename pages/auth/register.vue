@@ -11,14 +11,11 @@ const isError = ref(false);
 const errorMessage = ref(''); // Исправлено с errorMassage на errorMessage
 
 const onRegistr = async () => {
-  // Проверка на пустые поля
   if (!name.value.trim() || !email.value.trim() || !password.value.trim() || !password2.value.trim()) {
     isError.value = true;
     errorMessage.value = 'Пожалуйста, заполните все поля';
     return;
   }
-
-  // Проверка совпадения паролей
   if (password.value !== password2.value) {
     isError.value = true;
     errorMessage.value = 'Пароли не совпадают';
@@ -38,21 +35,15 @@ const onRegistr = async () => {
       }),
     });
 
-    // Проверяем успешность запроса
     if (!response.ok) {
-      const errorData = await response.json(); // Пробуем получить детали ошибки от сервера
+      const errorData = await response.json();
       throw new Error(errorData.message || 'Ошибка регистрации: проверьте данные');
     }
-
     const data = await response.json();
     console.log('Успешная регистрация:', data);
-
-    // Сбрасываем ошибки
     isError.value = false;
     errorMessage.value = '';
-
-    // Перенаправляем пользователя на страницу логина или другую
-    router.push('/auth/login'); // Перенаправление на страницу входа после регистрации
+    router.push('/auth/login');
   } catch (error) {
     isError.value = true;
     errorMessage.value = error.message || 'Произошла ошибка при регистрации';

@@ -39,7 +39,7 @@
         </div>
         <button @click="onSearch">🔍</button>
       </div>
-      <NuxtLink to="/reservations" v-if="store.currentUser.role==='Admin'">Бронирования</NuxtLink>
+      <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'">Бронирования</NuxtLink>
       <NuxtLink to="/my-reservations" v-else>Мои бронирования</NuxtLink>
       <NuxtLink to="/random/book">Случайная книга</NuxtLink>
     </nav>
@@ -56,8 +56,8 @@
       </template>
       <template v-else>
         <div class="">
-          <button class="auth-buttons" @click="login"><NuxtLink to="/auth/login">Войти</NuxtLink></button>
-          <button class="auth-buttons" @click="register"><NuxtLink to="/auth/register">Зарегистрироваться</NuxtLink></button>
+          <button class="auth-buttons" @click=""><NuxtLink to="/auth/login">Войти</NuxtLink></button>
+          <button class="auth-buttons" @click=""><NuxtLink to="/auth/register">Зарегистрироваться</NuxtLink></button>
         </div>
       </template>
     </div>
@@ -66,13 +66,12 @@
 
 <script>
 import { ref } from "vue";
-
+import {useGlobalStore} from "~/stores/global";
 export default {
   name: "Header",
   setup() {
     const store = useGlobalStore();
     const searchQuery = ref("");
-    const { isAuthenticated } = toRefs(store);// Переключите на true, чтобы проверить авторизацию
     const isDropdownOpen = ref(false);
     let isSearched = ref(false);
     const isNpl = ref(false)
@@ -85,23 +84,16 @@ export default {
         navigateTo(`search/${searchQuery.value}`)
       }
     };
-
+    const isAuthenticated = computed(()=>{
+      return store.isAuthenticated
+    })
+    console.log("Header: Initial isAuthenticated:", isAuthenticated.value);
+    watch(isAuthenticated, (newVal) => {
+      console.log("Header: isAuthenticated changed to:", newVal);
+    });
+    console.log(isAuthenticated.value)
     const toggleDropdown = () => {
       isDropdownOpen.value = !isDropdownOpen.value;
-    };
-
-    const login = () => {
-      console.log("Переход на страницу входа");
-    };
-
-    const register = () => {
-      console.log("Переход на страницу регистрации");
-    };
-
-    const logout = () => {
-      store.isAuthenticated = false;
-      navigateTo("/");
-      console.log("Пользователь вышел из системы");
     };
     return {
       searchQuery,
@@ -109,9 +101,6 @@ export default {
       isDropdownOpen,
       onSearch,
       toggleDropdown,
-      login,
-      register,
-      logout,
       isSearched,
       closeInput,
       store,

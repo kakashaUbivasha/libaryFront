@@ -109,7 +109,14 @@ export const useGlobalStore = defineStore('global', {
         },
         async searchBooks(keyword: string) {
             try {
-                const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(keyword)}&maxResults=40`)
+                const response = await fetch(`http://127.0.0.1:8000/api/book/search`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            accept: 'application/json'
+                        },
+                        body: JSON.stringify({ keyword })
+                    })
                 const data = await response.json();
                 console.log(`items:`,data)
                 this.items = data.items?.map((item: any) => ({

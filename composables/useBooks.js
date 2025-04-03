@@ -4,7 +4,7 @@ export const useBooks = () => {
     const fetchRandomBooks = async () => {
         try {
             // Используйте свой API-ключ Google Books (получить его в Google Cloud Console)
-            const keywords = ['minima', 'quo', 'voluptatum', 'est', 'consequator'];
+            const keywords = ['minima', 'quo', 'voluptatum', 'est'];
             const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
             // Делаем запрос к Google Books API
             const response = await fetch(`http://127.0.0.1:8000/api/books?genre=${randomKeyword}`);

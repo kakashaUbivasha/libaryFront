@@ -109,23 +109,10 @@ export const useGlobalStore = defineStore('global', {
         },
         async searchBooks(keyword: string) {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/book/search`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            accept: 'application/json'
-                        },
-                        body: JSON.stringify({ keyword })
-                    })
+                const response = await fetch(`http://127.0.0.1:8000/api/book/search?query=${encodeURIComponent(keyword)}`)
                 const data = await response.json();
-                console.log(`items:`,data)
-                this.items = data.items?.map((item: any) => ({
-                    id: item.id,
-                    title: item.volumeInfo.title,
-                    author: item.volumeInfo.authors?.join(", ") || 'Автор неизвестен',
-                    imageLink: item.volumeInfo.imageLinks?.thumbnail||""
-
-                }))||[];
+                console.log(`search:`,data.data)
+                return data.data;
             }
             catch(error) {
                 console.log(error);
@@ -146,6 +133,17 @@ export const useGlobalStore = defineStore('global', {
             }catch (error){
                 this.logout();
                 throw error;
+            }
+        },
+        async guestProfile(id){
+            try{
+                console.log('user')
+                const response = await fetch(`http://127.0.0.1:8000/api/guest/${id}`)
+                const user = await response.json()
+                console.log('user', user)
+                return user.data
+            }catch (error){
+                console.error(error)
             }
         },
         async login(email :string, password :string) {

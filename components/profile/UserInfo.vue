@@ -58,7 +58,8 @@ const getBackgroundStyle = () => {
   </div>
   <div class="my-20">
     <h2 class="text-center text-2xl mb-10">Рецензии пользователя</h2>
-    <reviews :array="array" />
+    <reviews v-if="array" :array="array" />
+    <h2 class="text-center text-xl mb-10">У пользователя нет рецензий(</h2>
   </div>
 </template>
 

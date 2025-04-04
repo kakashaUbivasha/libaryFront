@@ -10,8 +10,8 @@ const store = useGlobalStore()
 const currentGuest = ref(null);
 const error = ref(null);
 const isLoading = ref(true)
-console.log('lolo',id == store.currentUser.id)
-const isCurrentUser = computed(() => id == store.currentUser.id)
+const isCurrentUser = computed(() => id == store.currentUser?.id)
+const guestExists = computed(() => isCurrentUser.value || !!currentGuest.value)
 const containerRef = ref(null)
 const containerRef1 = ref(null)
 const swiper = useSwiper(containerRef, {
@@ -38,7 +38,7 @@ const loadGuestData = async () => {
   if (!isCurrentUser.value) {
     isLoading.value = true;
     try {
-      currentGuest.value = await store.getUser(id)
+      currentGuest.value = await store.guestProfile(id)
       console.log(currentGuest.value)
     } catch (err) {
       error.value = 'Не удалось загрузить данные пользователя.';
@@ -70,7 +70,6 @@ const getBackgroundStyle = () =>{
 onMounted(() => {
   loadGuestData()
 })
-const guestExists = computed(() => isCurrentUser.value || !!currentGuest.value);
 </script>
 
 <template>
@@ -90,7 +89,7 @@ const guestExists = computed(() => isCurrentUser.value || !!currentGuest.value);
           :name="store.currentUser.name"
           :array="store.currentUser.reviews"
           :level="store.currentUser.level"
-          :total-books="store.currentUser.totalBooks "
+          :total-books="store.currentUser.passed_books_count "
           :register-date="store.currentUser.created_at"
           :is-current-user="true"
           />
@@ -100,29 +99,10 @@ const guestExists = computed(() => isCurrentUser.value || !!currentGuest.value);
               :name="currentGuest.name"
               :array="currentGuest.reviews"
               :level="currentGuest.level"
-              :total-books="currentGuest.totalBooks "
-              :register-date="currentGuest.registerDate"
+              :total-books="currentGuest.passed_books_count "
+              :register-date="currentGuest.created_at"
               :is-current-user="false"
           />
-<!--          <div class="flex flex-col items-center justify-center p-10 rounded-3xl bg-user-main" :style="getBackgroundStyle()" >-->
-<!--            <div class="bg-user px-20 py-10">-->
-<!--              <div class="text-center flex flex-col justify-center items-center">-->
-<!--                <img src="~public/img/img1.jpg" alt="" class="mb-5" />-->
-<!--                <p class="text-xl font-bold">{{ currentGuest.name }}</p>-->
-<!--                <span>Уровень: {{currentGuest.level}}</span>-->
-<!--              </div>-->
-<!--              <div class="text-center">-->
-<!--                <p>Количество прочитанных книг: {{ currentGuest.totalBooks }}</p>-->
-<!--                <p>С нами с: {{ currentGuest.registerDate }}</p>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="my-20">-->
-<!--            <h2 class="text-center text-2xl mb-10">Рецензии пользователя</h2>-->
-<!--            <reviews-->
-<!--            :array="currentGuest.reviews"-->
-<!--            />-->
-<!--          </div>-->
         </div>
       </div>
       <div v-else>

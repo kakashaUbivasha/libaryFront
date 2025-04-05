@@ -107,17 +107,6 @@ export const useGlobalStore = defineStore('global', {
                 localStorage.removeItem('token');
             }
         },
-        async searchBooks(keyword: string) {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/book/search?query=${encodeURIComponent(keyword)}`)
-                const data = await response.json();
-                console.log(`search:`,data.data)
-                return data.data;
-            }
-            catch(error) {
-                console.log(error);
-            }
-        },
         async getUser() {
             if (!this.token) return;
             try {

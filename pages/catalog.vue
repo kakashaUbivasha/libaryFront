@@ -1,15 +1,36 @@
 <template>
   <div class="catalog">
     <!-- Селектор категорий -->
-    <div class="category-selector">
-      <label for="category">Выберите категорию:</label>
-      <select id="category" v-model="selectedCategory" @change="fetchBooksByCategory">
-        <option value="fiction">Фантастика</option>
-        <option value="non-fiction">Нон-фикшн</option>
-        <option value="mystery">Детективы</option>
-        <option value="history">История</option>
-        <!-- Добавьте другие категории по необходимости -->
-      </select>
+    <div class="category-selector-wrapper">
+      <div class="category-selector">
+        <div class="select-container">
+          <select
+              id="category"
+              v-model="selectedCategory"
+              class="styled-select"
+              :disabled="loading"
+          >
+            <option value="" selected>Все категории</option>
+            <option
+                v-for="genre in store.genres"
+                :key="genre.id"
+                :value="genre.name"
+            >
+              {{ genre.name }}
+            </option>
+          </select>
+
+          <div class="select-arrow">
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div v-if="loading" class="loading-overlay">
+            Загрузка категорий...
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Селектор языка -->
@@ -25,7 +46,7 @@
 
     <!-- Список книг -->
     <div class="books">
-      <div class="book-card" v-for="book in books" :key="book.id">
+      <div class="book-card" v-for="book in store.books" :key="book.id">
         <books-item
             :title="book.title"
             :author="book.author"
@@ -44,35 +65,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
-const selectedCategory = ref('fiction'); // Категория по умолчанию
+import {useBookStore} from "~/stores/book";
+const store = useBookStore()
+const selectedCategory = ref(''); // Категория по умолчанию
 const selectedLanguage = ref('ru'); // Язык по умолчанию (русский)
 const books = ref<any[]>([]);
-const startIndex = ref(0); // Индекс для пагинации
+const startIndex = ref(40); // Индекс для пагинации
 const loading = ref(false);
-
-// Функция для получения книг по выбранной категории, языку и пагинации
 const fetchBooksByCategory = async () => {
   loading.value = true;
-  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${selectedCategory.value}&langRestrict=${selectedLanguage.value}&startIndex=${startIndex.value}&maxResults=40`);
-  const data = await response.json();
-  books.value = data.items.map((item: any) => ({
-    id: item.id,
-    title: item.volumeInfo.title,
-    author: item.volumeInfo.authors?.join(', ') || 'Неизвестен',
-    description: item.volumeInfo.description || 'Нет описания',
-    imageLink: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/150'
-  }));
+  store.get_books(startIndex.value, selectedCategory.value)
+  store.get_categories()
   loading.value = false;
 };
-
-// Загружаем книги при загрузке страницы
 fetchBooksByCategory();
-
-// Функция для загрузки следующих книг
+watch(selectedCategory, (newVal)=>{
+  store.get_books(startIndex.value, selectedCategory.value)
+})
 const loadMore = () => {
-  startIndex.value += 40; // Увеличиваем индекс на 40 для загрузки следующей порции книг
-  fetchBooksByCategory();
+  startIndex.value += 40;
+  store.get_books(startIndex.value)
 };
 </script>
 
@@ -116,5 +128,76 @@ const loadMore = () => {
 
 .pagination button:disabled {
   background-color: #ccc;
+}
+.category-selector-wrapper {
+  margin: 1.5rem 0;
+}
+
+.category-selector {
+  max-width: 300px;
+  position: relative;
+}
+
+.select-container {
+  position: relative;
+}
+
+.styled-select {
+  appearance: none;
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  border: 2px solid #6A5ACD;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.styled-select:focus {
+  outline: none;
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.2);
+}
+
+.styled-select:hover {
+  border-color: #4F46E5;
+}
+
+.select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6A5ACD;
+}
+
+/* Стили для опций */
+.styled-select option {
+  padding: 8px;
+  background: white;
+  color: #333;
+}
+
+.styled-select option:disabled {
+  color: #999;
+  font-style: italic;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .category-selector {
+    max-width: 100%;
+  }
+
+  .styled-select {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
 }
 </style>

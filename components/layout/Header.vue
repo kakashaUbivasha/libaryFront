@@ -81,7 +81,10 @@ export default {
     const onSearch = () => {
       isSearched.value = true
       if (searchQuery.value.trim()) {
-        navigateTo(`search/${searchQuery.value}`)
+        isSearched.value = false;
+        // Используем абсолютный путь, чтобы избежать дублирования 'search'
+        navigateTo(`/search/${encodeURIComponent(searchQuery.value.trim())}`)
+        searchQuery.value = "" // Очищаем поле поиска после навигации
       }
     };
     const isAuthenticated = computed(()=>{

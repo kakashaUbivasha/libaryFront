@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import {useBookStore} from "~/stores/book";
 import { useRoute } from 'vue-router';
 import {fetchBookById} from "~/composables/useBook";
 const book = ref(null);
@@ -37,34 +38,35 @@ const reviews = [
 ];
 const route = useRoute(); // Получаем объект маршрута
 const id = ref(route.params.id); // Извлекаем ID из параметров маршрута
-const loadBook = async () => {
-  book.value = await fetchBookById(id.value)
-  console.log(book.value)
-  console.log(book.value.title)
-};
+const store = useBookStore()
+// const loadBook = async () => {
+//   book.value = await fetchBookById(id.value)
+//   console.log(book.value)
+//   console.log(book.value.title)
+// };
 onMounted(() => {
-  loadBook();
+  store.getBook(id.value)
+  store.getComments(id.value)
   console.log('ID из маршрута:', id.value); // Проверяем, что ID правильно извлечён
 });
 </script>
 
 <template>
   <h1
-  v-if="!book"
+  v-if="!store.book"
   >Загрузка...</h1>
   <div v-else class="">
     <books-page-item
-        :title="book.title"
-        :authors="book.authors"
-        :categories="book.categories"
-        :pages="book.printedPageCount"
-        :language="book.language"
-        :description="book.description"
-        :published-date="book.publishedDate"
-        :image-src="book.imageLinks.thumbnail"
-        :publisher="book.publisher"
-        :reviews="reviews"
-
+        :title="store.book.title"
+        :authors="store.book.author"
+        :genre="store.book.genre"
+        :isbn="store.book.isbn"
+        :language="store.book.language"
+        :description="store.book.description"
+        :published-date="store.book.publication_date"
+        :publisher="store.book.publisher"
+        :reviews="store.comments"
+        :count="store.book.count"
     />
   </div>
 

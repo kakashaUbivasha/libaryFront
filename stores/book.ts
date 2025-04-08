@@ -5,7 +5,9 @@ export const useBookStore = defineStore('books', {
     state: ()=>({
         books: [],
         genres: [],
-        searched_books: []
+        searched_books: [],
+        book: {},
+        comments: []
     }),
     actions: {
         async get_books(startIndex :number, genre :string){
@@ -38,5 +40,25 @@ export const useBookStore = defineStore('books', {
                 console.log(error);
             }
         },
+        async getBook(id: number){
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/books/${id}`)
+                const data = await response.json()
+                this.book = data.data
+                console.log(`book`, this.book)
+            }catch (error){
+                console.log(error)
+            }
+        },
+        async getComments(id: number){
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/books/${id}/comments`)
+                const data = await response.json()
+                this.comments = data.data
+                console.log('comments', this.comments)
+            }catch (e){
+                console.error(e)
+            }
+        }
     }
 })

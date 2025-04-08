@@ -84,7 +84,7 @@ watch(selectedCategory, (newVal)=>{
 })
 const loadMore = () => {
   startIndex.value += 40;
-  store.get_books(startIndex.value)
+  store.get_books(startIndex.value, selectedCategory.value)
 };
 </script>
 

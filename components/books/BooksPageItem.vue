@@ -1,7 +1,10 @@
 <script setup>
 import {useGlobalStore} from "~/stores/global";
+import {useReservationStore} from "~/stores/reservation";
+
 const store = useGlobalStore()
-const props = defineProps({
+const reservation = useReservationStore()
+defineProps({
   title: String,
   imageSrc: String,
   publishedDate: String,
@@ -81,7 +84,7 @@ const deleteReview = async (reviewId) => {
     <div class="book-main">
       <div class="book-cover">
         <img
-            :src="imageSrc || '/images/book-placeholder.jpg'"
+            :src="imageSrc || '/img/img1.jpg'"
             :alt="title"
             class="cover-image"
             @error="$event.target.src = '/images/book-placeholder.jpg'"
@@ -153,7 +156,7 @@ const deleteReview = async (reviewId) => {
 
     <!-- Кнопка бронирования -->
     <div class="book-actions">
-      <button class="reserve-btn" :disabled="count === 0">
+      <button class="reserve-btn" :disabled="count === 0" @click="reservation.reservBook(id)">
         {{ count > 0 ? 'Забронировать книгу' : 'Нет в наличии' }}
       </button>
     </div>

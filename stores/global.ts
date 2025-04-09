@@ -100,12 +100,24 @@ export const useGlobalStore = defineStore('global', {
         isInitialized: false
     }),
     actions: {
-        logout() {
-            this.token = null;
-            this.currentUser = null;
-            if (process.client) {
-                localStorage.removeItem('token');
+        async logout() {
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/logout`,{
+                    headers:{
+                        Authorization: `Bearer ${this.token}`,
+                        accept: 'application/json'
+                    }
+                })
+                console.log(response)
+                this.token = null;
+                this.currentUser = null;
+                if (process.client) {
+                    localStorage.removeItem('token');
+                }
+            }catch (e){
+                console.log(e)
             }
+
         },
         async getUser() {
             if (!this.token) return;

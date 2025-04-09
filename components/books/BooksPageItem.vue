@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import {useGlobalStore} from "~/stores/global";
+const store = useGlobalStore()
+const props = defineProps({
   title: String,
   imageSrc: String,
   publishedDate: String,
@@ -15,7 +17,9 @@ defineProps({
   id: [String, Number],
   count: Number       // Добавлено новое поле
 })
-
+const newReview = ref('')
+const editingReviewId = ref(null)
+const editedReview = ref('')
 const deleteTag = (desc) => {
   return desc?.replace(/<\/?[^>]+(>|$)/g, "") || 'Нет описания'
 }
@@ -25,8 +29,6 @@ const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(dateString).toLocaleDateString('ru-RU', options)
 }
-
-// Преобразуем строку категорий/авторов в массив
 const parseStringToList = (str) => {
   if (!str) return []
   // Предполагаем, что значения разделены запятыми
@@ -35,6 +37,41 @@ const parseStringToList = (str) => {
 const formatReviewDate = (dateString) => {
   if (!dateString) return ''
   return new Date(dateString).toLocaleDateString('ru-RU')
+}
+
+const startEditing = (review) => {
+  editingReviewId.value = review.id
+  editedReview.value = review.content
+}
+
+const cancelEditing = () => {
+  editingReviewId.value = null
+  editedReview.value = ''
+}
+
+const updateReview = async (reviewId) => {
+  if (!editedReview.value.trim()) return
+
+  try {
+    await $api.put(`/reviews/${reviewId}`, {
+      content: editedReview.value
+    })
+    editingReviewId.value = null
+    // Обновить список рецензий
+  } catch (error) {
+    console.error('Ошибка при обновлении рецензии:', error)
+  }
+}
+
+const deleteReview = async (reviewId) => {
+  if (!confirm('Вы уверены, что хотите удалить эту рецензию?')) return
+
+  try {
+    await $api.delete(`/reviews/${reviewId}`)
+    // Обновить список рецензий
+  } catch (error) {
+    console.error('Ошибка при удалении рецензии:', error)
+  }
 }
 </script>
 
@@ -121,28 +158,68 @@ const formatReviewDate = (dateString) => {
       </button>
     </div>
 
+
+    <div class="add-review">
+      <h3 class="section-title">Оставить рецензию</h3>
+      <textarea
+          v-model="newReview"
+          placeholder="Напишите ваше мнение о книге..."
+          class="review-textarea"
+      ></textarea>
+      <button @click="submitReview" class="submit-review-btn">
+        Отправить
+      </button>
+    </div>
+
     <!-- Рецензии -->
     <div class="book-reviews" v-if="reviews?.length">
-      <h3 class="section-title">Комментарии ({{ reviews.length }})</h3>
+      <h3 class="section-title">Рецензии ({{ reviews.length }})</h3>
       <div class="reviews-grid">
         <div class="review-card" v-for="review in reviews" :key="review.id">
-          <div class="review-header">
-            <h4 class="review-title">{{ review.book_title || title }}</h4>
-            <div class="review-rating">
-              <span class="likes" title="Лайки">👍 {{ review.likes || 0 }}</span>
-              <span class="dislikes" title="Дизлайки">👎 {{ review.dislikes || 0 }}</span>
+          <div v-if="editingReviewId !== review.id">
+            <div class="review-header">
+              <h4 class="review-title">{{ review.book_title || title }}</h4>
+              <div class="review-rating">
+                <span class="likes">👍 {{ review.likes || 0 }}</span>
+                <span class="dislikes">👎 {{ review.dislikes || 0 }}</span>
+              </div>
+            </div>
+
+            <p class="review-content">{{ review.content }}</p>
+
+            <div class="review-footer">
+              <div class="review-author">
+                <NuxtLink :to="`/user/${review.user_id}`" class="user-link">
+                  {{ review.user_name || 'Аноним' }}
+                </NuxtLink>
+                <span class="review-date">{{ formatReviewDate(review.created_at) }}</span>
+              </div>
+
+              <div class="review-actions" v-if="store.currentUser.id === review.user_id">
+                <button @click="startEditing(review)" class="action-btn edit-btn">
+                  Редактировать
+                </button>
+                <button @click="deleteReview(review.id)" class="action-btn delete-btn">
+                  Удалить
+                </button>
+              </div>
             </div>
           </div>
 
-          <p class="review-content">{{ review.content }}</p>
-
-          <div class="review-footer">
-            <span class="review-author">
-              <NuxtLink :to="`/user/${review.user_id}`" class="user-link">
-                {{ review.user_name || 'Аноним' }}
-              </NuxtLink>
-            </span>
-            <span class="review-date">{{ formatReviewDate(review.created_at) }}</span>
+          <!-- Форма редактирования -->
+          <div v-else class="edit-review-form">
+            <textarea
+                v-model="editedReview"
+                class="review-textarea"
+            ></textarea>
+            <div class="edit-actions">
+              <button @click="updateReview(review.id)" class="action-btn save-btn">
+                Сохранить
+              </button>
+              <button @click="cancelEditing" class="action-btn cancel-btn">
+                Отмена
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -352,6 +429,115 @@ const formatReviewDate = (dateString) => {
 
   .review-rating {
     margin-top: 0.3rem;
+  }
+}
+.add-review {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f5f5ff;
+  border-radius: 8px;
+}
+
+.review-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 1rem;
+}
+
+.submit-review-btn {
+  background-color: #6A5ACD;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-review-btn:hover {
+  background-color: #5a4acd;
+}
+
+/* Стили для действий с рецензией */
+.review-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.edit-btn {
+  background-color: #e0e0ff;
+  color: #6A5ACD;
+}
+
+.delete-btn {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.save-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.action-btn:hover {
+  opacity: 0.8;
+}
+
+/* Форма редактирования */
+.edit-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 1rem;
+}
+
+.review-author {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+@media (max-width: 768px) {
+  .review-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .review-actions {
+    align-self: flex-end;
   }
 }
 </style>

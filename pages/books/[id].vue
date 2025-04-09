@@ -67,6 +67,7 @@ onMounted(() => {
         :publisher="store.book.publisher"
         :reviews="store.comments"
         :count="store.book.count"
+ й
     />
   </div>
 

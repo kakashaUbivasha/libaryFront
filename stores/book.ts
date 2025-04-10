@@ -50,6 +50,16 @@ export const useBookStore = defineStore('books', {
                 console.log(error)
             }
         },
+        async getRandomBooks(){
+          try {
+              const response = await fetch(`http://127.0.0.1:8000/api/books/random`)
+              const data = await response.json()
+              this.book = data.data
+              console.log(`book`, this.book)
+          }  catch (e){
+              console.error(e)
+          }
+        },
         async getComments(id: number){
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/books/${id}/comments`)

@@ -24,7 +24,6 @@ export const useReservationStore = defineStore('reservation', {
                     const errorData = await response.json();
                     throw new Error(errorData.message || 'Ошибка при бронировании');
                 }
-
                 await navigateTo('/my-reservations');
             }catch (e){
                 console.log(`aldkjadkljadhjklakhjldshjkadshjksdahjkasdbhjK`,e)

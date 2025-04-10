@@ -68,7 +68,6 @@ onMounted(() => {
         :reviews="store.comments"
         :count="store.book.count"
         :id="store.book.id"
- й
     />
   </div>
 

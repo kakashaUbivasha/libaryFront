@@ -27,10 +27,9 @@ const formatDate = (dateString) => {
       <div class="book-cover">
         <img
             v-if="imageSrc"
-            :src="imageSrc"
+            :src="imageSrc || `/img/img1.jpg`"
             loading="lazy"
             class="cover-image"
-            onerror="this.src='https://via.placeholder.com/200x300.png/d3d3d3?text=No+Cover'"
         />
         <div v-else class="cover-placeholder">
           <span>No Cover</span>

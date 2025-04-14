@@ -2,7 +2,7 @@
   <div class="main">
     <h1 class="text-4xl text-center mb-10 font-bold">Мои бронирования</h1>
     <custom-table
-        :rows="items"
+        :rows="store.reservations"
         :headers="headers"
         @delete-book="deleteBooks"
         :is-user="true"
@@ -15,12 +15,14 @@ definePageMeta({
   middleware: 'auth',
 });
 import {onMounted, ref} from 'vue'
+import {useReservationStore} from "~/stores/reservation";
 import CustomTable from "~/components/all/CustomTable.vue";
 let items = ref([])
+const store = useReservationStore();
 const headers = [
-  { key: 'name', label: 'Name' },
-  { key: 'age', label: 'Age' },
-  { key: 'country', label: 'Country' },
+  { key: 'book_title', label: 'Название книги' },
+  { key: 'reservation_time', label: 'Дата бронирования' },
+  { key: 'status', label: 'Статус' }
 ];
 const apiEmitation = () =>{
   setTimeout(()=>{
@@ -33,11 +35,11 @@ let rows = ref([
   { name: 'Tom', age: 35, country: 'UK', id: '3' },
 ]);
 const deleteBooks = (item: any) => {
-  rows.value = rows.value.filter((booking) => booking.id !== item);
-  apiEmitation()
+return 1
+
 };
 onMounted(()=>{
-  apiEmitation()
+  store.getReservBook()
 })
 </script>
 

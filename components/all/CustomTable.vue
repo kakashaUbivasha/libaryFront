@@ -1,10 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-// Эмиссия события для удаления строки
-const emit = defineEmits(['deleteBook']);
+const emit = defineEmits(['deleteBook', 'issueBook']);
 
-// Получаем заголовки и данные из родителя
 const props = defineProps({
   headers: {
     type: Array,
@@ -14,42 +12,41 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  isUser: true
+  isUser: {
+    type: Boolean,
+    default: true
+  }
 });
 
 // Пагинация
-const currentPage = ref(1); // Текущая страница
-const rowsPerPage = 50; // Максимальное количество строк на странице
+const currentPage = ref(1);
+const rowsPerPage = 50;
 
-// Всего страниц
 const totalPages = computed(() => Math.ceil(props.rows.length / rowsPerPage));
 
-// Текущие строки для отображения
 const paginatedRows = computed(() => {
   const startIndex = (currentPage.value - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
   return props.rows.slice(startIndex, endIndex);
 });
 
-// Удаление строки
-const deleteRow = (index) => {
-  emit('deleteBook', index);
+const deleteRow = (id) => {
+  emit('deleteBook', id);
 };
 
-// Вычисляемый массив для заголовков таблицы (включая статичные)
-const tableHeaders = computed(() => ['№', ...props.headers.map(header => header.label), '']);
-
-// Получение данных строки по ключу
-const getCellData = (row, headerKey) => row[headerKey] || '-';
-
-// Переключение страниц
-const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
+const issueBook = (id) => {
+  emit('issueBook', id);
 };
+
+// Форматирование даты
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleString();
+};
+
+// Заголовки таблицы
+const tableHeaders = computed(() => ['№', ...props.headers.map(header => header.label), 'Действия']);
 </script>
-
 
 <template>
   <div v-if="rows.length" class="overflow-x-auto">
@@ -77,39 +74,43 @@ const goToPage = (page) => {
           {{ (currentPage - 1) * rowsPerPage + rowIndex + 1 }}
         </td>
 
-        <!-- Динамические колонки -->
-        <td
-            v-for="header in props.headers"
-            :key="header.key"
-            class="border border-gray-300 p-3 text-gray-600 text-sm"
-        >
-          {{ getCellData(row, header.key) }}
+        <!-- Название книги -->
+        <td class="border border-gray-300 p-3 text-gray-600 text-sm">
+          {{ row.book_title }}
         </td>
 
-        <!-- Кнопка удаления -->
-        <td v-if="isUser" class="border border-gray-300 p-3 text-center">
+        <!-- Дата бронирования -->
+        <td class="border border-gray-300 p-3 text-gray-600 text-sm">
+          {{ formatDate(row.reservation_time) }}
+        </td>
+
+        <!-- Статус -->
+        <td class="border border-gray-300 p-3 text-gray-600 text-sm">
+          {{ row.status === 'active' ? 'Активна' : 'Неактивна' }}
+        </td>
+
+        <!-- Пользователь (только для админа) -->
+        <td v-if="!isUser" class="border border-gray-300 p-3 text-gray-600 text-sm">
+          {{ row.user.name }} (ID: {{ row.user.id }})
+        </td>
+
+        <!-- Кнопки действий -->
+        <td class="border border-gray-300 p-3 text-center">
           <button
-              @click="deleteRow(row.id)"
+              @click="deleteRow(row.id || rowIndex)"
               class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
           >
             Отменить бронь
           </button>
-        </td>
-        <td v-else class="border border-gray-300 p-3 text-center">
+
           <button
-              @click="deleteRow(row.id)"
-              class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition mr-5"
-          >
-            Отменить бронь
-          </button>
-          <button
-              @click="deleteRow(row.id)"
-              class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-green-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+              v-if="!isUser"
+              @click="issueBook(row.id || rowIndex)"
+              class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-1 transition ml-2"
           >
             Выдать книгу
           </button>
         </td>
-
       </tr>
       </tbody>
     </table>
@@ -117,26 +118,24 @@ const goToPage = (page) => {
     <!-- Пагинация -->
     <div class="mt-4 flex justify-center items-center space-x-2">
       <button
-          @click="goToPage(currentPage - 1)"
+          @click="currentPage--"
           :disabled="currentPage === 1"
           class="bg-gray-300 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
       >
-        Previous
+        Назад
       </button>
-      <span class="text-gray-600 text-sm font-medium">Page {{ currentPage }} of {{ totalPages }}</span>
+      <span class="text-gray-600 text-sm font-medium">Страница {{ currentPage }} из {{ totalPages }}</span>
       <button
-          @click="goToPage(currentPage + 1)"
+          @click="currentPage++"
           :disabled="currentPage === totalPages"
           class="bg-gray-300 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
       >
-        Next
+        Вперед
       </button>
     </div>
   </div>
-  <div v-else>
-    <div class="loader-container">
-      <div class="spinner"></div>
-    </div>
+  <div v-else class="text-center py-8 text-gray-500">
+    Нет зарезервированных книг
   </div>
 </template>
 

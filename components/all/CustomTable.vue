@@ -76,7 +76,10 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
 
         <!-- Название книги -->
         <td class="border border-gray-300 p-3 text-gray-600 text-sm">
-          {{ row.book_title }}
+          <NuxtLink :to="`/books/${row.book_id}`">
+            {{ row.book_title }}
+          </NuxtLink>
+
         </td>
 
         <!-- Дата бронирования -->
@@ -97,7 +100,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
         <!-- Кнопки действий -->
         <td class="border border-gray-300 p-3 text-center">
           <button
-              @click="deleteRow(row.id || rowIndex)"
+              @click="deleteRow(row.book_id || rowIndex)"
               class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
           >
             Отменить бронь

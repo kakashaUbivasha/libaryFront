@@ -4,7 +4,7 @@
     <custom-table
         :rows="store.reservations"
         :headers="headers"
-        @delete-book="deleteBooks"
+        @delete-book="(bookId) => deleteBooks(bookId)"
         :is-user="true"
     />
   </div>
@@ -34,8 +34,10 @@ let rows = ref([
   { name: 'Anna', age: 25, country: 'Canada', id: '2' },
   { name: 'Tom', age: 35, country: 'UK', id: '3' },
 ]);
-const deleteBooks = (item: any) => {
-return 1
+const deleteBooks = (bookId: number) => {
+ store.canceledReservBook(bookId)
+ store.getReservBook()
+ return 1
 
 };
 onMounted(()=>{

@@ -41,13 +41,38 @@ export const useReservationStore = defineStore('reservation', {
                 })
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Ошибка при бронировании');
+                    throw new Error(errorData.message || 'Ошибка при получении забронированных книг');
                 }
                 const data = await response.json()
                 this.reservations = data.data
 
             }catch (e){
                 console.log(e)
+            }
+        },
+        async canceledReservBook(book_id: number)
+        {
+            const store = useGlobalStore()
+            console.log(`book_id`, book_id)
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/reservation`, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${store.token}`,
+                        accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ book_id })
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при получении забронированных книг');
+                }
+                const data = await response.json()
+                console.log(data)
+                return `Бронь отменена`
+            }catch (e){
+                console.error(e)
             }
         }
     },

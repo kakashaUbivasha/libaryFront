@@ -50,6 +50,7 @@
           <img src="/img/products-2.jpg" alt="Profile" />
           <ul v-if="isDropdownOpen" class="dropdown">
             <li><NuxtLink :to="`user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
+            <li><NuxtLink :to="`history`">История бронирований</NuxtLink></li>
             <li class="text-red-500"><button @click="store.logout()">Выйти</button></li>
           </ul>
         </div>
@@ -82,9 +83,8 @@ export default {
       isSearched.value = true
       if (searchQuery.value.trim()) {
         isSearched.value = false;
-        // Используем абсолютный путь, чтобы избежать дублирования 'search'
         navigateTo(`/search/${encodeURIComponent(searchQuery.value.trim())}`)
-        searchQuery.value = "" // Очищаем поле поиска после навигации
+        searchQuery.value = ""
       }
     };
     const isAuthenticated = computed(()=>{

@@ -97,7 +97,8 @@ export const useGlobalStore = defineStore('global', {
         items: [],
         token: null,
         currentUser: null,
-        isInitialized: false
+        isInitialized: false,
+        topUsers: []
     }),
     actions: {
         async logout() {
@@ -178,6 +179,18 @@ export const useGlobalStore = defineStore('global', {
                 this.isInitialized = true
             }
         },
+        async getTopUsers(){
+            try{
+                const response = await fetch('http://127.0.0.1:8000/api/top-users',{
+                    headers:{Authorization: `Bearer ${this.token}`}
+                })
+                const data = await response.json()
+                console.log(`top-users`, data)
+                this.topUsers = data.data
+            }catch (e){
+                console.log(e)
+            }
+        }
     },
     getters: {
         isAuthenticated: (state :any) => !!state.currentUser

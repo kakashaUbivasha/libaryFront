@@ -2,7 +2,9 @@
 import { ref, onMounted, nextTick } from "vue";
 import NewBooks from "~/components/books/NewBooks.vue";
 import EducationBooks from "~/components/books/EducationBooks.vue";
+import {useGlobalStore} from "~/stores/global";
 import Quote from "~/components/quotes/Quote.vue";
+const store = useGlobalStore()
 const statistics = ref([
   { imageSrc: 'https://openlibrary.org/static/images/categories/recipes.svg', title: 'Рецепты', text: '1500 книг' },
   { imageSrc: 'https://openlibrary.org/static/images/categories/romance.svg', title: 'Романтика', text: '3100 книг' },
@@ -52,6 +54,9 @@ onMounted(() => {
     delay: `${Math.random() * 5}s`,
     size: `${20 + Math.random() * 40}px`
   }))
+})
+onMounted(()=>{
+  store.getTopUsers()
 })
 </script>
 
@@ -145,16 +150,32 @@ onMounted(() => {
       <h1 class="text-4xl font-bold">Случайные книги</h1>
     </nuxt-link>
     <books />
-    <div class="">
-      <h2 class="text-center mt-20 text-3xl font-bold">Самые активные пользователи</h2>
-      <ul class="flex flex-col justify-center items-center mt-10">
-        <li>vfbr</li>
-        <li>ghghgh</li>
-        <li>ghghghgh</li>
-        <li>ghghghgh</li>
-        <li>ghghghzd</li>
-        <li>hhjgjg bnf</li>
-      </ul>
+    <div class="top-users-container">
+      <h2 class="section-title">Топовые пользователи</h2>
+
+      <div class="users-grid">
+        <div
+            v-for="user in store.topUsers"
+            :key="user.id"
+            class="user-card"
+        >
+          <NuxtLink
+              :to="`/user/${user.id}`"
+              class="user-link"
+          >
+            <div class="user-avatar bg-blue-500">
+              {{ user.name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="user-info">
+              <h3 class="user-name">{{ user.name }}</h3>
+              <div class="user-stats">
+                <span class="stat-item">{{ user.reviews.length }} отзывов</span>
+                <span class="stat-item">{{ user.passed_books_count }} книг</span>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -412,6 +433,105 @@ h1 {
     }
   }
 }
+.top-users-container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
 
+.section-title {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.users-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .users-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .users-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .users-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.user-card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.user-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.user-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  text-decoration: none;
+}
+
+.user-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.user-name:hover {
+  color: #3b82f6;
+}
+
+.user-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.stat-item {
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
 </style>
 

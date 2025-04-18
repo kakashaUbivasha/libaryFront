@@ -49,7 +49,7 @@
         <div class="profile-menu" @click="toggleDropdown">
           <img src="/img/products-2.jpg" alt="Profile" />
           <ul v-if="isDropdownOpen" class="dropdown">
-            <li><NuxtLink :to="`user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
+            <li><NuxtLink :to="`/user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
             <li><NuxtLink :to="`history`">История бронирований</NuxtLink></li>
             <li class="text-red-500"><button @click="store.logout()">Выйти</button></li>
           </ul>

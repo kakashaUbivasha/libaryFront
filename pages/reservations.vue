@@ -20,7 +20,7 @@ const apiEmitation = () =>{
 }
 const store = useReservationStore();
 onMounted(()=>{
-  store.getReservBook()
+  store.getAllReservations()
 })
 const rows = ref([
   { name: 'John', age: 30, country: 'USA', id: '1' },
@@ -40,7 +40,7 @@ onMounted(()=>{
   <div class="main">
     <h1 class="text-4xl font-bold text-center mb-20">Забронированные книги</h1>
     <custom-table
-        :rows="store.reservations"
+        :rows="store.all_reservations"
         :headers="headers"
         @delete-book="deleteBooks"
         :is-user="false"

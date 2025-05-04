@@ -95,7 +95,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
 
         <!-- Пользователь (только для админа) -->
         <td v-if="store.currentUser?.role==='Admin'" class="border border-gray-300 p-3 text-gray-600 text-sm">
-          {{ row.user.name }} (ID: {{ row.user.id }})
+          {{ row.user.name }}
         </td>
 
         <!-- Кнопки действий -->

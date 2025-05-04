@@ -5,6 +5,7 @@ import {useGlobalStore} from "./global";
 export const useReservationStore = defineStore('reservation', {
     state: ()=>({
         reservations: [],
+        all_reservations: [],
         history: []
     }),
     actions: {
@@ -49,6 +50,27 @@ export const useReservationStore = defineStore('reservation', {
 
             }catch (e){
                 console.log(e)
+            }
+        },
+        async getAllReservations()
+        {
+            const store = useGlobalStore()
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservations`, {
+                    headers: {
+                        Authorization: `Bearer ${store.token}`,
+                        accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при получении забронированных книг');
+                }
+                const data = await response.json()
+                this.all_reservations = data.data
+            }catch (e){
+                console.log(error)
             }
         },
         async canceledReservBook(book_id: number)

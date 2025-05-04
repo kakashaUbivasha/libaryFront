@@ -1,24 +1,27 @@
 <script setup lang="ts">
 
 import CustomTable from "~/components/all/CustomTable.vue";
+import {useReservationStore} from "~/stores/reservation";
 import {onMounted, ref} from "vue";
 definePageMeta({
   middleware: 'admin',
 });
 let items = ref([])
 const headers = [
-  { key: 'name', label: 'Имя пользователя' },
-  { key: 'book', label: 'Name' },
-  { key: 'reservation', label: 'Age' },
-  { key: 'issue', label: 'Country' },
-  { key: 'lease', label: 'Country' },
-  { key: 'overdue', label: 'Country' },
+  { key: 'book_title', label: 'Название книги' },
+  { key: 'reservation_time', label: 'Дата бронирования' },
+  { key: 'status', label: 'Статус' },
+  {key: 'user', label: 'Пользователь'},
 ];
 const apiEmitation = () =>{
   setTimeout(()=>{
     items.value = rows.value
   },3000)
 }
+const store = useReservationStore();
+onMounted(()=>{
+  store.getReservBook()
+})
 const rows = ref([
   { name: 'John', age: 30, country: 'USA', id: '1' },
   { name: 'Anna', age: 25, country: 'Canada', id: '2' },
@@ -37,7 +40,7 @@ onMounted(()=>{
   <div class="main">
     <h1 class="text-4xl font-bold text-center mb-20">Забронированные книги</h1>
     <custom-table
-        :rows="items"
+        :rows="store.reservations"
         :headers="headers"
         @delete-book="deleteBooks"
         :is-user="false"

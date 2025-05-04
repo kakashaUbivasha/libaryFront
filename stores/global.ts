@@ -123,8 +123,10 @@ export const useGlobalStore = defineStore('global', {
         async getUser() {
             if (!this.token) return;
             const cookie = useCookie('auth_token')
+            const user_role = useCookie('user_role')
             cookie.value = this.token
             cookie.maxAge = 60 * 60 * 24 * 7
+            user_role.maxAge = 60 * 60 * 24 * 7
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/user', {
                     headers: {
@@ -135,6 +137,7 @@ export const useGlobalStore = defineStore('global', {
                 const userData = await response.json();
                 console.log('user',userData.data)
                 this.currentUser = userData.data;
+                user_role.value = userData.data.role
                 return userData.data
             }catch (error){
                 this.logout();

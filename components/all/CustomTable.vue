@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import {useGlobalStore} from "~/stores/global";
 
 const emit = defineEmits(['deleteBook', 'issueBook']);
 
@@ -12,12 +13,12 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  isUser: {
+    isUser: {
     type: Boolean,
     default: true
   }
 });
-
+const store = useGlobalStore();
 // Пагинация
 const currentPage = ref(1);
 const rowsPerPage = 50;
@@ -93,7 +94,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
         </td>
 
         <!-- Пользователь (только для админа) -->
-        <td v-if="!isUser" class="border border-gray-300 p-3 text-gray-600 text-sm">
+        <td v-if="store.currentUser?.role==='Admin'" class="border border-gray-300 p-3 text-gray-600 text-sm">
           {{ row.user.name }} (ID: {{ row.user.id }})
         </td>
 
@@ -107,7 +108,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
           </button>
 
           <button
-              v-if="!isUser"
+              v-if="store.currentUser?.role==='Admin'"
               @click="issueBook(row.id || rowIndex)"
               class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-1 transition ml-2"
           >

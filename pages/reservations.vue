@@ -27,10 +27,22 @@ const rows = ref([
   { name: 'Anna', age: 25, country: 'Canada', id: '2' },
   { name: 'Tom', age: 35, country: 'UK', id: '3' },
 ]);
-const deleteBooks = (item: any) => {
-  rows.value = rows.value.filter((booking) => booking.id !== item);
-  apiEmitation()
+const deleteBook = async(id: number) => {
+    try{
+      await store.canceledReservBook(id)
+      store.getReservBook()
+    }catch (e){
+      console.log(e)
+    }
 };
+const issueBook = async(id: number, user_id: number)=>{
+  try{
+    await store.issueBook(id, user_id)
+    store.getReservBook()
+  }catch (e){
+    console.log(e)
+  }
+}
 onMounted(()=>{
   apiEmitation()
 })
@@ -42,7 +54,8 @@ onMounted(()=>{
     <custom-table
         :rows="store.all_reservations"
         :headers="headers"
-        @delete-book="deleteBooks"
+        @delete-book="deleteBook"
+        @issue-book="issueBook"
         :is-user="false"
     />
   </div>

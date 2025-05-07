@@ -29,8 +29,6 @@ onMounted(() => {
       :count="store.book.count"
       :id="store.book.id"
   />
-
-  <h1>rand book</h1>
 </template>
 
 <style scoped>

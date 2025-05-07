@@ -20,6 +20,7 @@ defineProps({
   id: [String, Number],
   count: Number       // Добавлено новое поле
 })
+const emit = defineEmits(['submitReview']);
 const newReview = ref('')
 const editingReviewId = ref(null)
 const editedReview = ref('')
@@ -75,6 +76,10 @@ const deleteReview = async (reviewId) => {
   } catch (error) {
     console.error('Ошибка при удалении рецензии:', error)
   }
+}
+
+const submitReview = (content, book_id) =>{
+  emit('submitReview', content, book_id)
 }
 </script>
 
@@ -169,7 +174,7 @@ const deleteReview = async (reviewId) => {
           placeholder="Напишите ваше мнение о книге..."
           class="review-textarea"
       ></textarea>
-      <button @click="submitReview" class="submit-review-btn">
+      <button @click="submitReview(newReview,id)" class="submit-review-btn">
         Отправить
       </button>
     </div>

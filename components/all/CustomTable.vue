@@ -35,8 +35,8 @@ const deleteRow = (id) => {
   emit('deleteBook', id);
 };
 
-const issueBook = (id) => {
-  emit('issueBook', id);
+const issueBook = (id, user_id) => {
+  emit('issueBook', id, user_id);
 };
 
 // Форматирование даты
@@ -90,7 +90,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
 
         <!-- Статус -->
         <td class="border border-gray-300 p-3 text-gray-600 text-sm">
-          {{ row.status === 'active' ? 'Активна' : 'Неактивна' }}
+          {{ row.status === 'active' ? 'Активна' : row.status === 'passed' ? 'Выдана' : row.status === 'expired'?'Просрочена':'Бронь отменена' }}
         </td>
 
         <!-- Пользователь (только для админа) -->
@@ -99,21 +99,47 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
         </td>
 
         <!-- Кнопки действий -->
-        <td class="border border-gray-300 p-3 text-center">
-          <button
-              @click="deleteRow(row.book_id || rowIndex)"
-              class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+        <td class="border border-gray-300 p-3 text-center space-y-1">
+          <!-- Статус: отменена -->
+          <span
+              v-if="row.status === 'canceled'"
+              class="text-sm text-red-600 font-semibold"
           >
-            Отменить бронь
-          </button>
+    Бронь отменена
+  </span>
 
-          <button
-              v-if="store.currentUser?.role==='Admin'"
-              @click="issueBook(row.id || rowIndex)"
-              class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-1 transition ml-2"
+          <!-- Статус: просрочена -->
+          <span
+              v-else-if="row.status === 'expired'"
+              class="text-sm text-yellow-600 font-semibold"
           >
-            Выдать книгу
-          </button>
+    Возврат просрочен
+  </span>
+
+          <!-- Статус: выдана -->
+          <span
+              v-else-if="row.status === 'passed'"
+              class="text-sm text-green-400 font-semibold"
+          >
+    Книга выдана, возврат: {{row.reserved_until}}
+  </span>
+
+          <!-- Статус: активная -->
+          <div v-else-if="row.status === 'active'" class="flex justify-center flex-wrap gap-2">
+            <button
+                @click="deleteRow(row.book_id || rowIndex)"
+                class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+            >
+              Отменить бронь
+            </button>
+            <button
+                v-if="store.currentUser?.role === 'Admin'"
+                @click="issueBook(row.book_id, row.user.id)"
+                class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-1 transition"
+            >
+              Выдать книгу
+            </button>
+          </div>
         </td>
       </tr>
       </tbody>

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import {useBookStore} from "~/stores/book";
 import { useRoute } from 'vue-router';
 import {fetchBookById} from "~/composables/useBook";
+import {useCommentsStore} from "~/stores/comments";
 const book = ref(null);
 const reviews = [
   {
@@ -38,7 +39,8 @@ const reviews = [
 ];
 const route = useRoute(); // Получаем объект маршрута
 const id = ref(route.params.id); // Извлекаем ID из параметров маршрута
-const store = useBookStore()
+const store = useBookStore();
+const commentStore = useCommentsStore();
 // const loadBook = async () => {
 //   book.value = await fetchBookById(id.value)
 //   console.log(book.value)
@@ -49,6 +51,16 @@ onMounted(() => {
   store.getComments(id.value)
   console.log('ID из маршрута:', id.value); // Проверяем, что ID правильно извлечён
 });
+const submitReview = async(content: string, book_id: number)=>{
+  try{
+    await commentStore.postComments(content, book_id)
+    store.getComments(id.value)
+  }catch (e)
+  {
+    console.error(e)
+  }
+
+}
 </script>
 
 <template>
@@ -68,6 +80,7 @@ onMounted(() => {
         :reviews="store.comments"
         :count="store.book.count"
         :id="store.book.id"
+        @submit-review="submitReview"
     />
   </div>
 

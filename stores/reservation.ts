@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import {useGlobalStore} from "./global";
+import {ca} from "cronstrue/dist/i18n/locales/ca";
+import {b} from "unplugin-vue-router/types-DBiN4-4c";
 
 
 export const useReservationStore = defineStore('reservation', {
@@ -11,7 +13,12 @@ export const useReservationStore = defineStore('reservation', {
     actions: {
         async reservBook(book_id :string | number){
             const store = useGlobalStore()
-            console.log('lalallalalalalla', typeof book_id, store.token)
+            if(!store.token)
+            {
+                navigateTo('/auth/login')
+                return
+            }
+
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/reservation`, {
                     method: 'POST',
@@ -78,7 +85,7 @@ export const useReservationStore = defineStore('reservation', {
             const store = useGlobalStore()
             console.log(`book_id`, book_id)
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/reservation`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/reservation/canceled`, {
                     method: 'PUT',
                     headers: {
                         Authorization: `Bearer ${store.token}`,
@@ -115,6 +122,30 @@ export const useReservationStore = defineStore('reservation', {
                 const data = await response.json()
                 this.history = data.data
             }catch (e){
+                console.error(e)
+            }
+        },
+        async issueBook(book_id: number, user_id: number)
+        {
+            const store = useGlobalStore()
+            console.log('айди книги', book_id, user_id)
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservation/issuance`, {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${store.token}`,
+                        accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ book_id, user_id })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при отмены бронирования');
+                }
+                const data = await response.json()
+                console.log('Отмена бронирования',data)
+            }catch(e){
                 console.error(e)
             }
         }

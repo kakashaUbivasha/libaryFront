@@ -41,7 +41,9 @@
       </div>
       <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'">Бронирования</NuxtLink>
       <NuxtLink to="/my-reservations" v-else>Мои бронирования</NuxtLink>
+      <NuxtLink to="/recomendation">ИИ Рекомендации</NuxtLink>
       <NuxtLink to="/random/book">Случайная книга</NuxtLink>
+      <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'">Импортировать книги</NuxtLink>
     </nav>
 
     <div class="auth-section">

@@ -47,7 +47,7 @@ const getBackgroundStyle = () => {
       <div class="text-center flex flex-col justify-center items-center">
         <img src="/img/img1.jpg" alt="User avatar" class="mb-5" /> <!-- Обновил путь и добавил alt -->
         <p class="text-xl font-bold">{{ name }}</p>
-        <span>Уровень: {{ level }}</span>
+        <span>Уровень: 1</span>
       </div>
       <div class="text-center">
         <p>Количество прочитанных книг: {{ totalBooks }}</p>

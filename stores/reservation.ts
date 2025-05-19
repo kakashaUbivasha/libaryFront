@@ -80,7 +80,7 @@ export const useReservationStore = defineStore('reservation', {
                 console.log(error)
             }
         },
-        async canceledReservBook(book_id: number)
+        async canceledReservBook(book_id: number, user_id: number)
         {
             const store = useGlobalStore()
             console.log(`book_id`, book_id)
@@ -92,7 +92,7 @@ export const useReservationStore = defineStore('reservation', {
                         accept: 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ book_id })
+                    body: JSON.stringify({ book_id, user_id })
                 })
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -128,7 +128,6 @@ export const useReservationStore = defineStore('reservation', {
         async issueBook(book_id: number, user_id: number)
         {
             const store = useGlobalStore()
-            console.log('айди книги', book_id, user_id)
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/admin/reservation/issuance`, {
                     method: 'PATCH',
@@ -146,6 +145,30 @@ export const useReservationStore = defineStore('reservation', {
                 const data = await response.json()
                 console.log('Отмена бронирования',data)
             }catch(e){
+                console.error(e)
+            }
+        },
+        async returnedBook(book_id: number, user_id: number)
+        {
+            const store = useGlobalStore();
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservation/returned`, {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${store.token}`,
+                        accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ book_id, user_id })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при отмены бронирования');
+                }
+                const data = await response.json()
+                console.log('Отмена бронирования',data)
+            }catch (e)
+            {
                 console.error(e)
             }
         }

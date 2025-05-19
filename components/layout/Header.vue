@@ -42,7 +42,7 @@
       <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'">Бронирования</NuxtLink>
       <NuxtLink to="/my-reservations" v-else>Мои бронирования</NuxtLink>
       <NuxtLink to="/recomendation">ИИ Рекомендации</NuxtLink>
-      <NuxtLink to="/random/book">Случайная книга</NuxtLink>
+      <a href="#" @click.prevent="goToRandom">Случайная книга</a>
       <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'">Импортировать книги</NuxtLink>
     </nav>
 
@@ -78,6 +78,7 @@ export default {
     const isDropdownOpen = ref(false);
     let isSearched = ref(false);
     const isNpl = ref(false)
+    const router = useRouter()
     const closeInput = () =>{
       isSearched.value = false;
     }
@@ -89,6 +90,9 @@ export default {
         searchQuery.value = ""
       }
     };
+    function goToRandom() {
+      router.push({ path: '/random/book', force: true })
+    }
     const isAuthenticated = computed(()=>{
       return store.isAuthenticated
     })
@@ -109,7 +113,8 @@ export default {
       isSearched,
       closeInput,
       store,
-      isNpl
+      isNpl,
+      goToRandom
     };
   },
 };

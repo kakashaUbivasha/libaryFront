@@ -22,27 +22,27 @@
       </div>
     </div>
 
-<!--    <div v-else-if="books.length === 0" class="text-center text-gray-400">-->
-<!--      Пока что ничего не найдено-->
-<!--    </div>-->
+    <div v-if="books.length === 0" class="text-center text-gray-400">
+      Пока что ничего не найдено
+    </div>
 
-<!--    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">-->
-<!--      <div-->
-<!--          v-for="book in books"-->
-<!--          :key="book.id"-->
-<!--          class="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden"-->
-<!--      >-->
-<!--        <img-->
-<!--            :src="book.imageLink"-->
-<!--            alt="Обложка книги"-->
-<!--            class="w-full h-60 object-cover"-->
-<!--        />-->
-<!--        <div class="p-4">-->
-<!--          <h2 class="text-lg font-bold">{{ book.title }}</h2>-->
-<!--          <p class="text-gray-600">{{ book.author }}</p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div
+          v-for="book in books"
+          :key="book.id"
+          class="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden"
+      >
+        <img
+            :src="book.imageLink"
+            alt="Обложка книги"
+            class="w-full h-60 object-cover"
+        />
+        <div class="p-4">
+          <h2 class="text-lg font-bold">{{ book.title }}</h2>
+          <p class="text-gray-600">{{ book.author }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

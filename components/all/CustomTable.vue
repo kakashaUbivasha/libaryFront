@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import {useGlobalStore} from "~/stores/global";
 
-const emit = defineEmits(['deleteBook', 'issueBook']);
+const emit = defineEmits(['deleteBook', 'issueBook', 'returnBook']);
 
 const props = defineProps({
   headers: {
@@ -31,14 +31,16 @@ const paginatedRows = computed(() => {
   return props.rows.slice(startIndex, endIndex);
 });
 
-const deleteRow = (id) => {
-  emit('deleteBook', id);
+const deleteRow = (id, user_id) => {
+  emit('deleteBook', id, user_id);
 };
 
 const issueBook = (id, user_id) => {
   emit('issueBook', id, user_id);
 };
-
+const returnBook = (id, user_id) => {
+  emit('returnBook', id, user_id)
+}
 // Форматирование даты
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -109,25 +111,44 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
   </span>
 
           <!-- Статус: просрочена -->
-          <span
-              v-else-if="row.status === 'expired'"
-              class="text-sm text-yellow-600 font-semibold"
-          >
+          <div v-else-if="row.status === 'expired'" class="flex flex-col justify-center items-center">
+            <span
+                class="text-sm text-yellow-600 font-semibold"
+            >
     Возврат просрочен
   </span>
-
+            <button
+                class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+                @click="returnBook(row.book_id, row.user.id)"
+            >
+              Подтвердить возврат
+            </button>
+          </div>
           <!-- Статус: выдана -->
-          <span
-              v-else-if="row.status === 'passed'"
-              class="text-sm text-green-400 font-semibold"
-          >
+          <div v-else-if="row.status === 'passed'" class="flex flex-col justify-center items-center">
+            <span
+                class="text-sm text-green-400 font-semibold">
     Книга выдана, возврат: {{row.reserved_until}}
   </span>
+            <button
+                class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+                @click="returnBook(row.book_id, row.user.id)"
+            >
+              Подтвердить возврат
+            </button>
+          </div>
+          <div v-else-if="row.status === 'returned'" class="flex flex-col justify-center items-center">
+            <span
+                class="text-sm text-yellow-600 font-semibold"
+            >
+              Книга возвращена
+            </span>
+          </div>
 
           <!-- Статус: активная -->
           <div v-else-if="row.status === 'active'" class="flex justify-center flex-wrap gap-2">
             <button
-                @click="deleteRow(row.book_id || rowIndex)"
+                @click="deleteRow(row.book_id, row.user.id)"
                 class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
             >
               Отменить бронь

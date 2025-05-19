@@ -27,9 +27,9 @@ const rows = ref([
   { name: 'Anna', age: 25, country: 'Canada', id: '2' },
   { name: 'Tom', age: 35, country: 'UK', id: '3' },
 ]);
-const deleteBook = async(id: number) => {
+const deleteBook = async(id: number, user_id: number) => {
     try{
-      await store.canceledReservBook(id)
+      await store.canceledReservBook(id, user_id)
       store.getReservBook()
     }catch (e){
       console.log(e)
@@ -38,6 +38,14 @@ const deleteBook = async(id: number) => {
 const issueBook = async(id: number, user_id: number)=>{
   try{
     await store.issueBook(id, user_id)
+    store.getReservBook()
+  }catch (e){
+    console.log(e)
+  }
+}
+const returnedBook = async(id: number, user_id: number)=>{
+  try{
+    await store.returnedBook(id, user_id)
     store.getReservBook()
   }catch (e){
     console.log(e)
@@ -56,6 +64,7 @@ onMounted(()=>{
         :headers="headers"
         @delete-book="deleteBook"
         @issue-book="issueBook"
+        @return-book="returnedBook"
         :is-user="false"
     />
   </div>

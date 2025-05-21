@@ -30,7 +30,7 @@ onMounted(() => {
         <books-item
             :title="book.title"
             :author="book.author"
-            :image-src="book.coverUrl"
+            :image-src="book.image"
             :id ="book.id"
         />
       </div>

@@ -21,9 +21,11 @@ const rowsPerPage = 10;
 const statusFilter = ref('all');
 const statusOptions = [
   { value: 'all', label: 'Все статусы' },
-  { value: 'active', label: 'Активные' },
-  { value: 'canceled', label: 'Отмененные' },
-  { value: 'completed', label: 'Завершенные' }
+  { value: 'active', label: 'Забронировано' },
+  { value: 'canceled', label: 'Отменено' },
+  { value: 'passed', label: 'Выдано' },
+  { value: 'returned', label: 'Возвращено' },
+  { value: 'expired', label: 'Просрочено' }
 ];
 
 // Форматирование даты
@@ -72,9 +74,11 @@ const goToPage = (page) => {
 // Получение класса для статуса
 const getStatusClass = (status) => {
   switch (status) {
-    case 'active': return 'bg-green-100 text-green-800';
+    case 'active': return 'bg-blue-100 text-blue-800';
     case 'canceled': return 'bg-red-100 text-red-800';
-    case 'completed': return 'bg-blue-100 text-blue-800';
+    case 'passed': return 'bg-purple-100 text-purple-800';
+    case 'returned': return 'bg-green-100 text-green-800';
+    case 'expired': return 'bg-amber-100 text-amber-800';
     default: return 'bg-gray-100 text-gray-800';
   }
 };
@@ -82,9 +86,11 @@ const getStatusClass = (status) => {
 // Текст статуса
 const getStatusText = (status) => {
   switch (status) {
-    case 'active': return 'Активна';
-    case 'canceled': return 'Отменена';
-    case 'completed': return 'Завершена';
+    case 'active': return 'Забронировано';
+    case 'canceled': return 'Отменено';
+    case 'passed': return 'Выдано';
+    case 'returned': return 'Возвращено';
+    case 'expired': return 'Просрочено';
     default: return status;
   }
 };
@@ -125,7 +131,7 @@ const getStatusText = (status) => {
             Книга
           </th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            ID книги
+            Срок сдачи
           </th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Дата бронирования
@@ -150,7 +156,7 @@ const getStatusText = (status) => {
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ reservation.book_id }}
+            {{ reservation.reserved_until }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             {{ formatDate(reservation.reservation_time) }}

@@ -42,7 +42,7 @@
       <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'">Бронирования</NuxtLink>
       <NuxtLink to="/my-reservations" v-else>Мои бронирования</NuxtLink>
       <NuxtLink to="/recomendation">ИИ Рекомендации</NuxtLink>
-      <a href="#" @click.prevent="goToRandom">Случайная книга</a>
+      <a href="/random/book">Случайная книга</a>
       <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'">Импортировать книги</NuxtLink>
     </nav>
 

@@ -15,7 +15,7 @@
           <books-item
               :title="book.title"
               :author="book.author"
-              :image-src="book.imageLink"
+              :image-src="book.image"
               :id ="book.id"
           />
         </div>

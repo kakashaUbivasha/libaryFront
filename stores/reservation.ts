@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia';
 import {useGlobalStore} from "./global";
-import {ca} from "cronstrue/dist/i18n/locales/ca";
-import {b} from "unplugin-vue-router/types-DBiN4-4c";
 
 
 export const useReservationStore = defineStore('reservation', {
     state: ()=>({
         reservations: [],
         all_reservations: [],
-        history: []
+        history: [],
+        error_message: ''
     }),
     actions: {
         async reservBook(book_id :string | number){
@@ -31,11 +30,13 @@ export const useReservationStore = defineStore('reservation', {
                 })
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Ошибка при бронировании');
+                    this.error_message =  errorData.message || 'Ошибка при бронировании'
+                    return
                 }
                 await navigateTo('/my-reservations');
             }catch (e){
-                console.log(`aldkjadkljadhjklakhjldshjkadshjksdahjkasdbhjK`,e)
+                this.error_message = e
+                console.log(this.error_message)
             }
         },
         async getReservBook(){

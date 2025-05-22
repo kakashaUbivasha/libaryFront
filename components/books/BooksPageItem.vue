@@ -1,6 +1,7 @@
 <script setup>
 import {useGlobalStore} from "~/stores/global";
 import {useReservationStore} from "~/stores/reservation";
+import BookWarningModal from "~/components/modal/BookWarningModal.vue";
 
 const store = useGlobalStore()
 const reservation = useReservationStore()
@@ -9,8 +10,8 @@ defineProps({
   imageSrc: String,
   publishedDate: String,
   description: String,
-  categories: String,  // Изменилось с Array на String
-  authors: String,    // Изменилось с Array на String
+  categories: String,
+  authors: String,
   pages: [String, Number],
   language: String,
   reviews: Array,
@@ -165,7 +166,11 @@ const submitReview = (content, book_id) =>{
         {{ count > 0 ? 'Забронировать книгу' : 'Нет в наличии' }}
       </button>
     </div>
-
+    <BookWarningModal
+    :is-open="!!reservation.error_message.length"
+    :on-close="() => reservation.error_message = ''"
+    :error-text="reservation.error_message"
+    />
 
     <div class="add-review">
       <h3 class="section-title">Оставить рецензию</h3>

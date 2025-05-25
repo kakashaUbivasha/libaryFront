@@ -53,6 +53,7 @@
           <ul v-if="isDropdownOpen" class="dropdown">
             <li><NuxtLink :to="`/user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
             <li><NuxtLink :to="`/history`">История бронирований</NuxtLink></li>
+            <li><NuxtLink :to="`/favorites`">Избранные книги</NuxtLink></li>
             <li class="text-red-500"><button @click="store.logout()">Выйти</button></li>
           </ul>
         </div>

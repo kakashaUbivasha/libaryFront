@@ -3,6 +3,7 @@ import { useGlobalStore } from "~/stores/global";
 import { useReservationStore } from "~/stores/reservation";
 import { useFavoriteStore } from "~/stores/favorite"; // Предполагается, что у вас есть хранилище для избранного
 import BookWarningModal from "~/components/modal/BookWarningModal.vue";
+import {onMounted} from "vue";
 
 const store = useGlobalStore();
 const reservation = useReservationStore();

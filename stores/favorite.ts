@@ -21,6 +21,7 @@ export const useFavoriteStore = defineStore('favorite', {
                 }
                 const data = await response.json()
                 this.books = data.data
+                console.log('fav books',this.books.length)
             }catch (e){
                 console.error(e)
             }
@@ -31,7 +32,8 @@ export const useFavoriteStore = defineStore('favorite', {
                 const response = await fetch(`http://127.0.0.1:8000/api/favorite`,{
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ book_id })
                 })
@@ -48,6 +50,7 @@ export const useFavoriteStore = defineStore('favorite', {
         {
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/favorite/${book_id}`,{
+                    method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -57,6 +60,24 @@ export const useFavoriteStore = defineStore('favorite', {
                     throw new Error(errorData.message || 'Ошибка при получении забронированных книг');
                 }
                 return
+            }catch (e) {
+                console.error(e)
+            }
+        },
+        async isFavorite(book_id: number)
+        {
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/favorite/${book_id}`,{
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при получении забронированных книг');
+                }
+                const data = await response.json()
+                return data.data.is_favorite
             }catch (e) {
                 console.error(e)
             }

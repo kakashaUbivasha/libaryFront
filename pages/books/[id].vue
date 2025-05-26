@@ -8,11 +8,21 @@ const book = ref(null);
 const route = useRoute(); // Получаем объект маршрута
 const id = ref(route.params.id); // Извлекаем ID из параметров маршрута
 const store = useBookStore();
+const favoriteStore = useFavoriteStore();
 const commentStore = useCommentsStore();
+const isFavorite = ref(false)
+const favorited = async(id: number) => {
+  try{
+    isFavorite.value = await favoriteStore.isFavorite(id)
+    console.log(`favorite`, isFavorite.value)
+  }catch (e) {
+    isFavorite.value = false
+  }
+}
 onMounted(() => {
   store.getBook(id.value)
   store.getComments(id.value)
-  console.log('ID из маршрута:', id.value); // Проверяем, что ID правильно извлечён
+  favorited(id.value)
 });
 const submitReview = async(content: string, book_id: number)=>{
   try{
@@ -43,6 +53,7 @@ const submitReview = async(content: string, book_id: number)=>{
         :reviews="store.comments"
         :count="store.book.count"
         :id="store.book.id"
+        :is-favorite="isFavorite"
         @submit-review="submitReview"
     />
   </div>

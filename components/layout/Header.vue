@@ -1,398 +1,189 @@
 <template>
-  <header class="header">
-    <div class="logo">
-      <NuxtLink to="/">LibraryApp</NuxtLink>
+  <header class="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200 relative z-10">
+    <!-- Бургер или логотип -->
+    <div class="flex items-center">
+      <!-- Бургер на мобиле -->
+      <button
+          @click="mobileMenuOpen = !mobileMenuOpen"
+          class="md:hidden focus:outline-none mr-2"
+          aria-label="Открыть меню"
+      >
+        <svg v-if="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+      <!-- Логотип на десктопе -->
+      <NuxtLink to="/" class="hidden md:block text-2xl font-bold text-indigo-600 select-none">LibraryApp</NuxtLink>
     </div>
 
-    <nav class="nav-menu">
-      <NuxtLink to="/catalog">Каталог</NuxtLink>
-      <NuxtLink to="/about">О нас</NuxtLink>
-      <div class="search-bar">
-        <div v-if="isSearched" class="search-overlay" key="search">
-          <div class="backdrop" @click="closeInput"></div>
-          <div class="input__block">
-            <button @click="closeInput" class="close-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 30 30">
-                <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
-              </svg>
-            </button>
-            <input v-model="searchQuery" type="text" placeholder="Поиск книг..." />
-            <div class="info-block">
-              <label class="switch">
-                <input v-model="isNpl" type="checkbox">
-                <span class="slider round"></span>
-              </label>
-              <span class="info-icon">
-    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0,0,256,256">
-      <g fill="#7b68ee" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-        <g transform="scale(5.12,5.12)">
-          <path d="M25,2c-12.6907,0 -23,10.3093 -23,23c0,12.69071 10.3093,23 23,23c12.69071,0 23,-10.30929 23,-23c0,-12.6907 -10.30929,-23 -23,-23zM25,4c11.60982,0 21,9.39018 21,21c0,11.60982 -9.39018,21 -21,21c-11.60982,0 -21,-9.39018 -21,-21c0,-11.60982 9.39018,-21 21,-21zM25,11c-1.65685,0 -3,1.34315 -3,3c0,1.65685 1.34315,3 3,3c1.65685,0 3,-1.34315 3,-3c0,-1.65685 -1.34315,-3 -3,-3zM21,21v2h1h1v13h-1h-1v2h1h1h4h1h1v-2h-1h-1v-15h-1h-4z"></path>
-        </g>
-      </g>
-    </svg>
-    <span class="hover-text">Включает продвинутый поиск. При таком поиске вы можете написать описание книги а наша система при помощи ии сама подберёт вам книги</span>
-  </span>
-            </div>
-
-            <button @click="onSearch" class="search-btn">🔍</button>
-          </div>
-        </div>
-        <button @click="onSearch">🔍</button>
+    <!-- Навигация (десктоп) -->
+    <nav class="hidden md:flex flex-1 justify-center items-center space-x-6">
+      <NuxtLink to="/catalog" class="text-indigo-600 hover:text-indigo-700">Каталог</NuxtLink>
+      <NuxtLink to="/about" class="text-indigo-600 hover:text-indigo-700">О нас</NuxtLink>
+      <div class="relative">
+        <button @click="isSearched = true" class="px-2 py-1 rounded hover:bg-indigo-100">🔍</button>
       </div>
-      <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'">Бронирования</NuxtLink>
-      <NuxtLink to="/my-reservations" v-else>Мои бронирования</NuxtLink>
-      <NuxtLink to="/recomendation">ИИ Рекомендации</NuxtLink>
-      <a href="/random/book">Случайная книга</a>
-      <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'">Импортировать книги</NuxtLink>
+      <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'" class="text-indigo-600 hover:text-indigo-700">Бронирования</NuxtLink>
+      <NuxtLink to="/my-reservations" v-else class="text-indigo-600 hover:text-indigo-700">Мои бронирования</NuxtLink>
+      <NuxtLink to="/recomendation" class="text-indigo-600 hover:text-indigo-700">ИИ Рекомендации</NuxtLink>
+      <a href="/random/book" @click.prevent="goToRandom" class="text-indigo-600 hover:text-indigo-700">Случайная книга</a>
+      <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'" class="text-indigo-600 hover:text-indigo-700">Импортировать книги</NuxtLink>
     </nav>
 
-    <div class="auth-section">
+    <!-- Мобильное меню -->
+    <transition name="fade">
+      <nav
+          v-if="mobileMenuOpen"
+          class="fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-center justify-center space-y-6 z-50 md:hidden"
+      >
+        <NuxtLink @click="closeMobile" to="/catalog" class="text-lg text-white">Каталог</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/about" class="text-lg text-white">О нас</NuxtLink>
+        <button @click="showSearchMobile" class="text-lg text-white">🔍 Поиск</button>
+        <NuxtLink @click="closeMobile" to="/reservations" v-if="store.currentUser?.role==='Admin'" class="text-lg text-white">Бронирования</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="text-lg text-white">Мои бронирования</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/recomendation" class="text-lg text-white">ИИ Рекомендации</NuxtLink>
+        <a @click.prevent="goToRandomMobile" href="/random/book" class="text-lg text-white">Случайная книга</a>
+        <NuxtLink @click="closeMobile" to="/import-files" v-if="store.currentUser?.role==='Admin'" class="text-lg text-white">Импортировать книги</NuxtLink>
+        <button @click="closeMobile" class="absolute top-4 right-4 text-white text-3xl">&times;</button>
+      </nav>
+    </transition>
+
+    <!-- Поиск (оверлей, универсальный) -->
+    <transition name="fade">
+      <div v-if="isSearched" class="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-4 mt-12 rounded-lg shadow-lg w-full max-w-md relative">
+          <button @click="closeInput" class="absolute top-2 right-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+          <div class="flex flex-col space-y-3 w-full max-w-xs">
+            <!-- Поле поиска с кнопками -->
+            <div class="relative flex items-center">
+              <input
+                  v-model="searchQuery"
+                  type="text"
+                  placeholder="Поиск книг..."
+                  class="flex-1 p-2 pr-16 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
+                  @keyup.enter="onSearch"
+              />
+              <!-- Кнопка очистки -->
+              <button
+                  v-if="searchQuery"
+                  @click="searchQuery = ''"
+                  class="absolute right-10 p-1 text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+              <!-- Кнопка поиска -->
+              <button
+                  @click="onSearch"
+                  class="absolute right-2 p-1 text-indigo-600 hover:text-indigo-800 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Нижний блок с настройками -->
+            <div class="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2">
+              <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Переключатель AI поиска -->
+                <label class="inline-flex items-center cursor-pointer">
+                  <input v-model="isNpl" type="checkbox" class="sr-only peer">
+                  <div class="relative w-8 h-4 sm:w-10 sm:h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] sm:after:top-[2px] sm:after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 sm:after:h-4 sm:after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <span class="ml-1 sm:ml-2 text-xs sm:text-sm font-medium text-gray-700">AI Поиск</span>
+                </label>
+
+                <!-- Иконка с подсказкой -->
+                <div class="relative group">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute z-10 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-48 sm:w-64 bg-gray-800 text-white text-xs sm:text-sm rounded-lg py-1 px-2 sm:py-2 sm:px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-lg whitespace-normal">
+                    Включает продвинутый поиск. Вы можете написать описание книги, и система подберёт книги с помощью ИИ.
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-0 border-t-4 border-gray-800 border-solid"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <!-- Профиль/авторизация (справа) -->
+    <div class="flex items-center space-x-2">
       <template v-if="isAuthenticated">
-        <div class="profile-menu" @click="toggleDropdown">
-          <img src="/img/products-2.jpg" alt="Profile" />
-          <ul v-if="isDropdownOpen" class="dropdown">
-            <li><NuxtLink :to="`/user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
-            <li><NuxtLink :to="`/history`">История бронирований</NuxtLink></li>
-            <li><NuxtLink :to="`/favorites`">Избранные книги</NuxtLink></li>
-            <li class="text-red-500"><button @click="store.logout()">Выйти</button></li>
+        <div class="relative">
+          <div @click="toggleDropdown" class="cursor-pointer">
+            <img src="/img/products-2.jpg" alt="Profile" class="w-10 h-10 rounded-full" />
+          </div>
+          <ul v-if="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink :to="`/user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
+            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/history">История бронирований</NuxtLink></li>
+            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/favorites">Избранные книги</NuxtLink></li>
+            <li class="px-4 py-2 text-red-500 hover:bg-gray-100"><button @click="store.logout()">Выйти</button></li>
           </ul>
         </div>
       </template>
       <template v-else>
-        <div class="">
-          <button class="auth-buttons" @click=""><NuxtLink to="/auth/login">Войти</NuxtLink></button>
-          <button class="auth-buttons" @click=""><NuxtLink to="/auth/register">Зарегистрироваться</NuxtLink></button>
-        </div>
+        <NuxtLink to="/auth/login" class="px-3 py-1 bg-indigo-600 text-white rounded-md">Войти</NuxtLink>
+        <NuxtLink to="/auth/register" class="px-3 py-1 bg-indigo-600 text-white rounded-md">Зарегистрироваться</NuxtLink>
       </template>
     </div>
   </header>
 </template>
 
-<script>
-import { ref } from "vue";
-import {useGlobalStore} from "~/stores/global";
-export default {
-  name: "Header",
-  setup() {
-    const store = useGlobalStore();
-    const searchQuery = ref("");
-    const isDropdownOpen = ref(false);
-    let isSearched = ref(false);
-    const isNpl = ref(false)
-    const router = useRouter()
-    const closeInput = () =>{
-      isSearched.value = false;
-    }
-    const onSearch = () => {
-      isSearched.value = true
-      if (searchQuery.value.trim()) {
-        isSearched.value = false;
-        navigateTo(`/search/${encodeURIComponent(searchQuery.value.trim())}`)
-        searchQuery.value = ""
-      }
-    };
-    function goToRandom() {
-      router.push({ path: '/random/book', force: true })
-    }
-    const isAuthenticated = computed(()=>{
-      return store.isAuthenticated
-    })
-    console.log("Header: Initial isAuthenticated:", isAuthenticated.value);
-    watch(isAuthenticated, (newVal) => {
-      console.log("Header: isAuthenticated changed to:", newVal);
-    });
-    console.log(isAuthenticated.value)
-    const toggleDropdown = () => {
-      isDropdownOpen.value = !isDropdownOpen.value;
-    };
-    return {
-      searchQuery,
-      isAuthenticated,
-      isDropdownOpen,
-      onSearch,
-      toggleDropdown,
-      isSearched,
-      closeInput,
-      store,
-      isNpl,
-      goToRandom
-    };
-  },
+<script setup>
+import { ref, computed } from "vue";
+import { useGlobalStore } from "~/stores/global";
+import { navigateTo, useRouter } from "#app";
+
+const store = useGlobalStore();
+const searchQuery = ref("");
+const isDropdownOpen = ref(false);
+const isSearched = ref(false);
+const isNpl = ref(false);
+const mobileMenuOpen = ref(false);
+const router = useRouter();
+
+const isAuthenticated = computed(() => store.isAuthenticated);
+
+const closeInput = () => {
+  isSearched.value = false;
+};
+const closeMobile = () => {
+  mobileMenuOpen.value = false;
+};
+const onSearch = () => {
+  if (searchQuery.value.trim()) {
+    isSearched.value = false;
+    navigateTo(`/search/${encodeURIComponent(searchQuery.value.trim())}`);
+    searchQuery.value = "";
+    mobileMenuOpen.value = false;
+  } else {
+    isSearched.value = true;
+  }
+};
+const showSearchMobile = () => {
+  closeMobile();
+  isSearched.value = true;
+};
+function goToRandom() {
+  router.push({ path: '/random/book', force: true });
+}
+function goToRandomMobile() {
+  closeMobile();
+  goToRandom();
+}
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
 };
 </script>
-
-<style scoped>
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #F0F4F8;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 50px;
-  z-index: 3;
-  margin-top: 10px;
-}
-
-.logo a {
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #4A68AD ;
-}
-.nav-menu{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-}
-.nav-menu a {
-  margin: 0 15px;
-  text-decoration: none;
-  color: #4A68AD ;
-}
-
-.nav-menu a:hover {
-  color: #5A78BD ;
-}
-.search-bar{
-  display: flex;
-  gap: 10px;
-  position: relative;
-  .input__block{
-    display: flex;
-    gap: 10px;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-    margin-top: 100px;
-    input {
-      padding: 5px 10px;
-      font-size: 16px;
-    }
-  }
-}
-.search-bar button {
-  margin-left: 5px;
-  background-color: #6A5ACD      ;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 10px;
-  width: 40px;
-  height: 40px;
-}
-
-.search-bar button:hover {
-  background-color: #7B68EE      ;
-}
-.search-bar button:active {
-  background-color: #5D4AD0  ;
-}
-.auth-section {
-  display: flex;
-  align-items: center;
-}
-
-.auth-buttons {
-  margin-left: 10px;
-  padding: 5px 10px;
-  background-color: #6A5ACD;
-  color: white !important;
-  border: none;
-  cursor: pointer;
-}
-
-.auth-buttons:hover {
-  background-color: #7B68EE;
-}
-
-.profile-menu {
-  position: relative;
-}
-
-.profile-menu img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.profile-menu .dropdown {
-  position: absolute;
-  top: 50px;
-  right: -15px;
-  background-color: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 10px 0;
-}
-
-.profile-menu .dropdown li {
-  padding: 10px 20px;
-  color: $link;
-}
-
-.profile-menu .dropdown li:hover {
-  background-color: #eaeaea;
-}
-.search-input-enter-active, .search-input-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.search-input-enter, .search-input-leave-to {
-  opacity: 0;
-  transform: translateX(-100%); /* Блок скрыт за пределами экрана */
-}
-
-.search-input-enter-to, .search-input-leave {
-  opacity: 1;
-  transform: translateX(0); /* Блок становится видимым */
-}
-.search-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  z-index: 1000;
-}
-
-.backdrop {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-}
-
-.close-btn, .search-btn {
-  padding: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.close-btn:hover, .search-btn:hover {
-  opacity: 0.7;
-}
-
-input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-width: 300px;
-}
-
-.info-block{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #7B68EE;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #7B68EE;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-.info-icon {
-  position: relative;
-  cursor: help;
-}
-.hover-text {
-  position: absolute;
-  bottom: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s, visibility 0.2s;
-}
-
-.info-icon:hover .hover-text {
-  opacity: 1;
-  visibility: visible;
-}
-/* Добавляем небольшой треугольник сверху текста */
-.hover-text::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 0 5px 5px 5px;
-  border-style: solid;
-  border-color: transparent transparent #333 transparent;
-}
-</style>

@@ -4,6 +4,7 @@ import NewBooks from "~/components/books/NewBooks.vue";
 import EducationBooks from "~/components/books/EducationBooks.vue";
 import {useGlobalStore} from "~/stores/global";
 import Quote from "~/components/quotes/Quote.vue";
+
 const store = useGlobalStore()
 const statistics = ref([
   { imageSrc: 'https://openlibrary.org/static/images/categories/recipes.svg', title: 'Рецепты', text: '1500 книг' },
@@ -16,17 +17,7 @@ const statistics = ref([
   { imageSrc: 'https://openlibrary.org/static/images/categories/classics.svg', title: 'Классика', text: '3900 книг' },
   { imageSrc: 'https://openlibrary.org/static/images/categories/science_fiction.svg', title: 'Научная фантастика', text: '4100 книг' },
 ])
-const containerRef = ref(null)
-const swiper = useSwiper(containerRef, {
 
-  loop: true,
-  autoplay: {
-    delay: 3000,
-  },
-  spaceBetween: 20,
-  slidesPerView: 5,
-  direction: 'horizontal',
-})
 const showContent = ref(false);
 const listItems = ref([
   "Искать книги по автору, жанру или популярности.",
@@ -35,16 +26,6 @@ const listItems = ref([
   "Получать персональные рекомендации благодаря AI."
 ]);
 
-const itemClass = (index) =>
-    index % 2 === 0 ? "from-left" : "from-right";
-
-onMounted(() => {
-  nextTick(() => {
-    setTimeout(() => {
-      showContent.value = true;
-    }, 300); // Показать текст через 300 мс
-  });
-});
 const fallingElements = ref([])
 
 onMounted(() => {
@@ -54,124 +35,141 @@ onMounted(() => {
     delay: `${Math.random() * 5}s`,
     size: `${20 + Math.random() * 40}px`
   }))
-})
-onMounted(()=>{
+
+  nextTick(() => {
+    setTimeout(() => {
+      showContent.value = true;
+    }, 300);
+  });
+
   store.getTopUsers()
 })
 </script>
 
 <template>
-  <div class="">
-    <div class="background">
-      <div class="hero-overlay">
-        <h1 class="hero-title">Добро пожаловать в Библиотеку</h1>
-        <h1 class="hero-title">"Эпоха Знаний"</h1>
-        <p class="hero-slogan">Место, где живут истории и рождаются идеи</p>
+  <div>
+    <!-- Hero Section -->
+    <div class="relative h-[80vh] w-full bg-image-my bg-cover bg-center bg-no-repeat -mt-[170px] rounded-b-2xl">
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/30 text-white text-center p-5 rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.7)] animate-fadeIn">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-2">Добро пожаловать в Библиотеку</h1>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">"Эпоха Знаний"</h1>
+        <p class="text-xl sm:text-2xl animate-fadeIn delay-500">Место, где живут истории и рождаются идеи</p>
       </div>
     </div>
 
-    <section class="about main">
-      <div class="falling-elements">
+    <!-- About Section -->
+    <section class="relative py-12 sm:py-16 text-center overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none -z-10">
         <div
             v-for="element in fallingElements"
             :key="element.id"
-            class="falling-element"
+            class="absolute top-5 opacity-0 animate-fall"
             :style="{
-        left: element.left,
-        animationDelay: element.delay,
-        fontSize: element.size
-      }"
+              left: element.left,
+              animationDelay: element.delay,
+              fontSize: element.size
+            }"
         >
           📖
         </div>
       </div>
-      <div class="about-text">
-        <transition name="fade-bounce">
-          <div class="about-header" v-if="showContent">
-            <h2>О нашей библиотеке</h2>
-            <p>
+
+      <div class="bg-gray-50 max-w-4xl mx-auto p-6 sm:p-8 rounded-lg shadow-md">
+        <transition
+            enter-active-class="animate-fadeBounce"
+            appear
+        >
+          <div v-if="showContent" class="mb-8">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">О нашей библиотеке</h2>
+            <p class="text-lg sm:text-xl">
               Добро пожаловать на платформу "Эпоха Знаний" — ваш личный проводник в мире книг.
               Здесь вы можете:
             </p>
           </div>
         </transition>
-<!--        <transition-->
-<!--            v-for="(item, index) in listItems"-->
-<!--            :key="item"-->
-<!--            name="list-item"-->
-<!--            appear-->
-<!--        >-->
-<!--          <p class="list" :class="index % 2 === 0 ? 'from-left' : 'from-right'" v-if="showContent">-->
-<!--            {{ item }}-->
-<!--          </p>-->
-<!--        </transition>-->
-        <div v-for="(item,index) in listItems" class="">
-          <div :data-aos="index%2==0?'fade-right':'fade-left'" class="">
-            <p class="list">{{item}}</p>
-          </div>
+
+        <div v-for="(item, index) in listItems" :key="item" :data-aos="index%2==0?'fade-right':'fade-left'">
+          <p class="text-xl sm:text-2xl max-w-3xl mx-auto my-8 sm:my-10 py-8 border border-gray-200 shadow-sm">
+            {{ item }}
+          </p>
         </div>
       </div>
     </section>
-    <section class="statistic">
-      <div class="statistic-header">
-        <h2>Сейчас в библиотеке:</h2>
-        <span>7231 книги</span> <!--В будущем брать количество с бэка, при бранировании книги количество уменьшается-->
+
+    <!-- Statistics Section -->
+    <section class="mb-10 sm:mb-16 px-4">
+      <div class="mb-8 sm:mb-12 flex flex-col items-center gap-5">
+        <h2 class="text-2xl sm:text-3xl font-bold">Сейчас в библиотеке:</h2>
+        <span class="text-xl sm:text-2xl italic">7231 книги</span>
       </div>
+
       <ClientOnly>
-        <swiper-container ref="containerRef" :init="false">
-          <swiper-slide
-              v-for="(slide, idx) in statistics"
-              :key="idx"
-              style="background-color: #F0F4F8;"
-          >
-                    <div class="statistic-item">
-                      <img :src="slide.imageSrc" alt="">
-                      <h3>{{slide.title}}</h3>
-                      <span>{{slide.text}}</span>
-                    </div>
+        <swiper-container
+            init="false"
+            loop="true"
+            autoplay-delay="3000"
+            space-between="20"
+            slides-per-view="2"
+            breakpoints='{
+            "640": {"slidesPerView": 3},
+            "768": {"slidesPerView": 4},
+            "1024": {"slidesPerView": 5}
+          }'
+        >
+          <swiper-slide v-for="(slide, idx) in statistics" :key="idx" class="bg-gray-50">
+            <div class="flex flex-col items-center justify-between gap-3 p-4">
+              <img :src="slide.imageSrc" alt="" class="w-12 h-12">
+              <h3 class="font-medium text-lg">{{ slide.title }}</h3>
+              <span class="italic">{{ slide.text }}</span>
+            </div>
           </swiper-slide>
         </swiper-container>
       </ClientOnly>
     </section>
-    <nuxt-link
-    to="/"
-    >
-      <h1 class="text-4xl font-bold">Новинки</h1>
-    </nuxt-link>
 
-    <new-books/>
-    <quotes />
-    <nuxt-link to="/">
-      <h1 class="text-4xl fonr-bold">Образовательные книги</h1>
-    </nuxt-link>
-    <education-books/>
-    <quotes />
-    <nuxt-link to="/">
-      <h1 class="text-4xl font-bold">Случайные книги</h1>
-    </nuxt-link>
-    <books />
-    <div class="top-users-container">
-      <h2 class="section-title">Топовые пользователи</h2>
+    <!-- Sections with Books -->
+    <div class="container mx-auto px-4 sm:px-6">
+      <NuxtLink to="/" class="block mb-6">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center">Новинки</h1>
+      </NuxtLink>
+      <NewBooks />
 
-      <div class="users-grid">
+      <Quote />
+
+      <NuxtLink to="/" class="block my-6 sm:my-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center">Образовательные книги</h1>
+      </NuxtLink>
+      <EducationBooks />
+
+      <Quote />
+
+      <NuxtLink to="/" class="block my-6 sm:my-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center">Случайные книги</h1>
+      </NuxtLink>
+      <Books />
+    </div>
+
+    <!-- Top Users Section -->
+    <div class="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Топовые пользователи</h2>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <div
             v-for="user in store.topUsers"
             :key="user.id"
-            class="user-card"
+            class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
         >
           <NuxtLink
               :to="`/user/${user.id}`"
-              class="user-link"
+              class="flex flex-col items-center p-4"
           >
-            <div class="user-avatar bg-blue-500">
+            <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center text-lg font-bold mb-3">
               {{ user.name.charAt(0).toUpperCase() }}
             </div>
-            <div class="user-info">
-              <h3 class="user-name">{{ user.name }}</h3>
-              <div class="user-stats">
-                <span class="stat-item">{{ user.reviews.length }} отзывов</span>
-                <span class="stat-item">{{ user.passed_books_count }} книг</span>
-              </div>
+            <div class="text-center">
+              <h3 class="font-medium text-gray-900 hover:text-blue-500 transition-colors">
+                {{ user.name }}
+              </h3>
             </div>
           </NuxtLink>
         </div>
@@ -180,91 +178,10 @@ onMounted(()=>{
   </div>
 </template>
 
-<style scoped>
-/* Стиль для заголовка */
-h1 {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.background {
-  background-image: url("../public/img/libary.jpg");
-  height: 80vh;
-  width: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  z-index: -1;
-  margin-top: -170px;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  position: relative;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-  background: rgba(0, 0, 0, 0.3);
-  animation: fadeIn 2s ease;
-  padding: 20px;
-  border-radius: 20px;
-}
-
-.hero-title {
-  font-size: 48px;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-}
-
-.hero-slogan {
-  font-size: 24px;
-  margin-top: 10px;
-  animation: fadeIn 2.5s ease;
-  color: white;
-  text-align: center;
-}
-
-.about {
-  padding: 50px 20px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.about-header {
-  margin-bottom: 30px;
-}
-
-.about-header h2 {
-  font-size: 36px;
-  margin-bottom: 20px;
-}
-
-.about-header p {
-  font-size: 18px;
-}
-
-.about-list {
-  padding: 0;
-  display: grid;
-  gap: 10px;
-}
-
-.about-list li {
-  font-size: 16px;
-  padding: 10px;
-  background: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
-
-.fade-bounce-enter-active {
-  animation: fadeBounce 1s ease-out;
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeBounce {
@@ -281,116 +198,6 @@ h1 {
   }
 }
 
-.list-enter-active {
-  animation: slideIn 0.8s ease-in-out;
-}
-
-.list-enter-from-left {
-  transform: translateX(-100%);
-}
-
-.list-enter-from-right {
-  transform: translateX(100%);
-}
-
-.list-enter-to {
-  transform: translateX(0);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-.list{
-  font-size: 24px;
-  max-width: 800px;
-  margin: 40px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #eaeaea;
-  padding: 40px 0;
-}
-@keyframes bounceEnterLeft {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  70% {
-    transform: translateX(10%);
-    opacity: 0.7;
-  }
-  85% {
-    transform: translateX(-5%);
-    opacity: 0.9;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes bounceEnterRight {
-  0% {
-    transform: translateX(100%) scale(0.7);
-    opacity: 0;
-  }
-  70% {
-    transform: translateX(-10%) scale(1.05);
-    opacity: 0.7;
-  }
-  85% {
-    transform: translateX(5%) scale(0.95);
-    opacity: 0.9;
-  }
-  100% {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-}
-
-.list-item-enter-active {
-  animation:
-      bounceEnterLeft 1.5s forwards;
-}
-
-.list-item-enter-active.from-right {
-  animation-name: bounceEnterRight;
-}
-.about-text{
-  background: #F0F4F8;
-  width: 900px;
-  margin: 0 auto;
-}
-.falling-elements {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.falling-element {
-  position: absolute;
-  top: 20px;
-  opacity: 0;
-  animation: fall linear infinite;
-  animation-duration: 10s;
-}
-
 @keyframes fall {
   0% {
     transform: translateY(-50px) rotate(0deg);
@@ -400,138 +207,19 @@ h1 {
     transform: translateY(80vh) rotate(360deg);
   }
 }
-.statistic{
-  margin-bottom: 40px;
-  .statistic-header{
-    margin-bottom: 40px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    h2{
-      font-size: 30px;
-      font-weight: 700;
-    }
-    span{
-    font-size: 22px;
-      font-style: italic;
-    }
-  }
-  .statistic-item{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    img{
-      width: 50px;
-      height: 50px;
-    }
-    span{
-      font-style: italic;
-    }
-  }
-}
-.top-users-container {
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+
+.animate-fadeIn {
+  animation: fadeIn 2s ease;
 }
 
-.section-title {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 1rem;
+.animate-fadeBounce {
+  animation: fadeBounce 1s ease-out;
 }
 
-.users-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.animate-fall {
+  animation: fall 10s linear infinite;
 }
-
-@media (min-width: 640px) {
-  .users-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 768px) {
-  .users-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .users-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
-
-.user-card {
-  background-color: #ffffff;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
-}
-
-.user-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.user-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  text-decoration: none;
-}
-
-.user-avatar {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 9999px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-}
-
-.user-name {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
-  transition: color 0.2s ease;
-}
-
-.user-name:hover {
-  color: #3b82f6;
-}
-
-.user-stats {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-.stat-item {
-  background-color: #f3f4f6;
-  padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
+.bg-image-my{
+  background-image: url("../public/img/libary.jpg");
 }
 </style>
-

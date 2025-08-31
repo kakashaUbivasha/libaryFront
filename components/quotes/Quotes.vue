@@ -124,6 +124,7 @@ onMounted(()=>{
     font-family: 'Roboto', sans-serif;
   }
 
+
   :deep(quote) {
     width: 100%;
     max-width: 300px;

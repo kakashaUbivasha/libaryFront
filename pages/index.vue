@@ -31,9 +31,8 @@ const fallingElements = ref([])
 onMounted(() => {
   fallingElements.value = Array.from({ length: 10 }, (_, index) => ({
     id: index,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 5}s`,
-    size: `${20 + Math.random() * 40}px`
+    left: `${5 + Math.random() * 90}%`,
+    delay: `${Math.random() * 5}s`
   }))
 
   nextTick(() => {
@@ -49,25 +48,24 @@ onMounted(() => {
 <template>
   <div>
     <!-- Hero Section -->
-    <div class="relative h-[80vh] w-full bg-image-my bg-cover bg-center bg-no-repeat -mt-[170px] rounded-b-2xl">
+    <div class="relative w-full min-h-screen sm:min-h-[80vh] bg-image-my bg-cover bg-center bg-no-repeat mt-0 sm:-mt-[170px] rounded-b-2xl">
       <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/30 text-white text-center p-5 rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.7)] animate-fadeIn">
-        <h1 class="text-4xl sm:text-5xl font-bold mb-2">Добро пожаловать в Библиотеку</h1>
-        <h1 class="text-4xl sm:text-5xl font-bold mb-4">"Эпоха Знаний"</h1>
-        <p class="text-xl sm:text-2xl animate-fadeIn delay-500">Место, где живут истории и рождаются идеи</p>
+        <h1 class="text-2xl sm:text-4xl md:text-5xl font-bold mb-2">Добро пожаловать в Библиотеку</h1>
+        <h1 class="text-2xl sm:text-4xl md:text-5xl font-bold mb-4">"Эпоха Знаний"</h1>
+        <p class="text-lg sm:text-xl md:text-2xl animate-fadeIn delay-500">Место, где живут истории и рождаются идеи</p>
       </div>
     </div>
 
     <!-- About Section -->
-    <section class="relative py-12 sm:py-16 text-center overflow-hidden">
+    <section class="relative py-12 sm:py-16 text-center">
       <div class="absolute inset-0 pointer-events-none -z-10">
         <div
             v-for="element in fallingElements"
             :key="element.id"
-            class="absolute top-5 opacity-0 animate-fall"
+            class="absolute top-5 opacity-0 animate-fall text-lg sm:text-xl md:text-3xl"
             :style="{
               left: element.left,
-              animationDelay: element.delay,
-              fontSize: element.size
+              animationDelay: element.delay
             }"
         >
           📖
@@ -105,6 +103,7 @@ onMounted(() => {
 
       <ClientOnly>
         <swiper-container
+            class="w-full max-w-screen mx-auto"
             init="false"
             loop="true"
             autoplay-delay="3000"
@@ -116,7 +115,7 @@ onMounted(() => {
             "1024": {"slidesPerView": 5}
           }'
         >
-          <swiper-slide v-for="(slide, idx) in statistics" :key="idx" class="bg-gray-50">
+          <swiper-slide v-for="(slide, idx) in statistics" :key="idx" class="bg-gray-50 min-w-0">
             <div class="flex flex-col items-center justify-between gap-3 p-4">
               <img :src="slide.imageSrc" alt="" class="w-12 h-12">
               <h3 class="font-medium text-lg">{{ slide.title }}</h3>
@@ -128,7 +127,7 @@ onMounted(() => {
     </section>
 
     <!-- Sections with Books -->
-    <div class="container mx-auto px-4 sm:px-6">
+    <div>
       <NuxtLink to="/" class="block mb-6">
         <h1 class="text-3xl sm:text-4xl font-bold text-center">Новинки</h1>
       </NuxtLink>
@@ -150,7 +149,7 @@ onMounted(() => {
     </div>
 
     <!-- Top Users Section -->
-    <div class="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+    <div class="max-w-7xl py-6 sm:py-8">
       <h2 class="text-2xl font-bold text-gray-900 mb-4">Топовые пользователи</h2>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

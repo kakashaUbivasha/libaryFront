@@ -5,9 +5,11 @@ import Footer from "~/components/layout/Footer.vue";
 </script>
 
 <template>
-<Header/>
-  <slot></slot>
-  <Footer/>
+  <Header />
+  <div class="container mx-auto px-4 sm:px-6">
+    <slot />
+  </div>
+  <Footer />
 </template>
 
 <style scoped>

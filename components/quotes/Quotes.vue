@@ -1,16 +1,21 @@
 <script setup>
-import {onMounted, ref} from "vue"
+import { onMounted, ref } from "vue"
 import Quote from "~/components/quotes/Quote.vue";
 const containerRef = ref(null)
 const slides = ref(Array.from({ length: 10 }))
 const swiper = useSwiper(containerRef, {
-
   loop: true,
   autoplay: {
     delay: 5000,
   },
   spaceBetween: 20,
-  slidesPerView: 5,
+  slidesPerView: 1,
+  breakpoints: {
+    640: { slidesPerView: 2 },
+    768: { slidesPerView: 3 },
+    1024: { slidesPerView: 4 },
+    1280: { slidesPerView: 5 },
+  },
   direction: 'horizontal',
 })
 const datas = ref([
@@ -87,16 +92,17 @@ onMounted(()=>{
   <div class="quotes main">
     <h1 class="text-4xl font-bold">Цитаты</h1>
     <ClientOnly>
-      <swiper-container ref="containerRef" :init="false">
+      <swiper-container ref="containerRef" :init="false" class="w-full max-w-screen mx-auto">
         <swiper-slide
             v-for="(slide, idx) in randomBooks"
             :key="idx"
+            class="min-w-0"
             style="background-color: #F0F4F8;"
         >
-          <quote
-          :author="slide.author"
-          :text="slide.text"
-          :title="slide.title"
+          <Quote
+            :author="slide.author"
+            :text="slide.text"
+            :title="slide.title"
           />
         </swiper-slide>
       </swiper-container>
@@ -127,8 +133,4 @@ swiper-slide {
   font-family: 'Roboto', sans-serif;
 }
 
-quote {
-  width: 100%;
-  max-width: 300px;
-}
 </style>

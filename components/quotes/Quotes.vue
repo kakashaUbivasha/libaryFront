@@ -120,10 +120,7 @@ swiper-slide {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
-  height: 20vh;
-  font-size: 4rem;
-  font-weight: bold;
+  height: auto;
   font-family: 'Roboto', sans-serif;
 }
 

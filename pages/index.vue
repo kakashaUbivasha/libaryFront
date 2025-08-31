@@ -3,7 +3,7 @@ import { ref, onMounted, nextTick } from "vue";
 import NewBooks from "~/components/books/NewBooks.vue";
 import EducationBooks from "~/components/books/EducationBooks.vue";
 import {useGlobalStore} from "~/stores/global";
-import Quote from "~/components/quotes/Quote.vue";
+import Quotes from "~/components/quotes/Quotes.vue";
 
 const store = useGlobalStore()
 const statistics = ref([
@@ -134,14 +134,14 @@ onMounted(() => {
       </NuxtLink>
       <NewBooks />
 
-      <Quote />
+      <Quotes />
 
       <NuxtLink to="/" class="block my-6 sm:my-8">
         <h1 class="text-3xl sm:text-4xl font-bold text-center">Образовательные книги</h1>
       </NuxtLink>
       <EducationBooks />
 
-      <Quote />
+      <Quotes />
 
       <NuxtLink to="/" class="block my-6 sm:my-8">
         <h1 class="text-3xl sm:text-4xl font-bold text-center">Случайные книги</h1>

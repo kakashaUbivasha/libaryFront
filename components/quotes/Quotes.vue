@@ -116,16 +116,17 @@ onMounted(()=>{
 }
 
 
-swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: auto;
-  font-family: 'Roboto', sans-serif;
-}
+  :deep(swiper-slide) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    font-family: 'Roboto', sans-serif;
+  }
 
-quote {
-  width: 100%;
-  max-width: 300px;
-}
+
+  :deep(quote) {
+    width: 100%;
+    max-width: 300px;
+  }
 </style>

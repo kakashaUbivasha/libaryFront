@@ -11,24 +11,66 @@
 
 <script setup>
 import { useGlobalStore } from "~/stores/global";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 
 const authStore = useGlobalStore();
 const isInitialized = ref(false);
+let tokenCheckTimeout;
+let tokenExpiry = 0;
+
+function updateTokenInfo() {
+  tokenExpiry = 0;
+  const token = authStore.token;
+  if (!token) return;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload?.exp) {
+      tokenExpiry = payload.exp * 1000;
+    }
+  } catch (e) {
+    // ignore parsing errors
+  }
+}
+
+function scheduleTokenCheck() {
+  if (tokenCheckTimeout) {
+    clearTimeout(tokenCheckTimeout);
+    tokenCheckTimeout = null;
+  }
+
+  if (!authStore.token || !tokenExpiry) return;
+
+  const timeToExpiry = tokenExpiry - Date.now();
+  const delay = Math.max(timeToExpiry - 5 * 60 * 1000, 5 * 60 * 1000);
+
+  tokenCheckTimeout = setTimeout(async () => {
+    try {
+      await authStore.getUser();
+    } finally {
+      updateTokenInfo();
+      scheduleTokenCheck();
+    }
+  }, delay);
+}
 
 onMounted(async () => {
-  // Выполняем инициализацию
   await authStore.initialize();
-  console.log("App.vue: Initialize complete, currentUser:", authStore.currentUser);
-  isInitialized.value = true; // Устанавливаем флаг после завершения
+  isInitialized.value = true;
+  updateTokenInfo();
+  scheduleTokenCheck();
+});
 
-  // Периодическая проверка (раз в 30 минут)
-  setInterval(async () => {
-    console.log("Periodic check");
-    if (localStorage.getItem("token") && !authStore.currentUser) {
-      await authStore.getUser();
-    }
-  }, 30 * 60 * 1000);
+// Перезапускаем проверку при изменении токена (логин/логаут)
+watch(() => authStore.token, () => {
+  updateTokenInfo();
+  scheduleTokenCheck();
+});
+
+onBeforeUnmount(() => {
+  if (tokenCheckTimeout) {
+    clearTimeout(tokenCheckTimeout);
+  }
 });
 </script>
 

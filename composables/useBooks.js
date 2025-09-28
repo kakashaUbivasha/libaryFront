@@ -1,13 +1,18 @@
 // useBooks.js
 const apiKey = 'AIzaSyAcwU-p-csUT5UbMbRKBuss_N5jb4A4M0o';
 export const useBooks = () => {
-    const fetchRandomBooks = async () => {
+    const fetchRandomBooks = async ({ perPage = 20, page = 1 } = {}) => {
         try {
             // Используйте свой API-ключ Google Books (получить его в Google Cloud Console)
             const keywords = ['minima', 'quo', 'voluptatum', 'est'];
             const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
             // Делаем запрос к Google Books API
-            const response = await fetch(`http://127.0.0.1:8000/api/books?genre=${randomKeyword}`);
+            const params = new URLSearchParams({
+                genre: randomKeyword,
+                perPage: String(perPage),
+                page: String(page)
+            });
+            const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`);
             const data = await response.json();
             if (!data || data.data.length === 0) {
                 return [];
@@ -22,9 +27,14 @@ export const useBooks = () => {
     return { fetchRandomBooks };
 };
 export const useNewBook = () => {
-    const fetchRandomBooks = async () => {
+    const fetchRandomBooks = async ({ perPage = 20, page = 1 } = {}) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/books?sort=newest`);
+            const params = new URLSearchParams({
+                sort: 'newest',
+                perPage: String(perPage),
+                page: String(page)
+            });
+            const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`);
             const data = await response.json();
             console.log('books111', data.data)
             if (!data || data.data.length === 0) {
@@ -39,9 +49,14 @@ export const useNewBook = () => {
     return { fetchRandomBooks };
 };
 export const educationBooks = () =>{
-    const fetchRandomBooks = async () => {
+    const fetchRandomBooks = async ({ perPage = 20, page = 1 } = {}) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/books?genre=quo`);
+            const params = new URLSearchParams({
+                genre: 'quo',
+                perPage: String(perPage),
+                page: String(page)
+            });
+            const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`);
             const data = await response.json();
             console.log('books111', data.data)
             if (!data || data.data.length === 0) {

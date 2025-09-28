@@ -64,6 +64,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useGlobalStore } from '~/stores/global'
 
 const genreFile = ref(null)
 const bookFile = ref(null)
@@ -71,6 +72,8 @@ const message = ref('')
 const messageType = ref('success')
 const isGenresLoading = ref(false)
 const isBooksLoading = ref(false)
+
+const globalStore = useGlobalStore()
 
 function onGenreFileChange(event) {
   genreFile.value = event.target.files[0]
@@ -82,6 +85,7 @@ function onBookFileChange(event) {
 
 async function uploadGenres() {
   if (!genreFile.value) return
+  if (!globalStore.token) return navigateTo('/auth/login')
 
   isGenresLoading.value = true
   message.value = ''
@@ -93,6 +97,10 @@ async function uploadGenres() {
     const { $config } = useNuxtApp()
     const response = await fetch(`http://127.0.0.1:8000/api/genres/import`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${globalStore.token}`,
+        accept: 'application/json'
+      },
       body: formData
     })
 
@@ -111,6 +119,7 @@ async function uploadGenres() {
 
 async function uploadBooks() {
   if (!bookFile.value) return
+  if (!globalStore.token) return navigateTo('/auth/login')
 
   isBooksLoading.value = true
   message.value = ''
@@ -122,6 +131,10 @@ async function uploadBooks() {
     const { $config } = useNuxtApp()
     const response = await fetch(`http://127.0.0.1:8000/api/books/import`, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${globalStore.token}`,
+        accept: 'application/json'
+      },
       body: formData
     })
 

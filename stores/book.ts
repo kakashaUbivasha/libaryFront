@@ -10,12 +10,25 @@ export const useBookStore = defineStore('books', {
         comments: []
     }),
     actions: {
-        async get_books(startIndex :number, genre :string){
+        async get_books(perPage: number, genre: string, page: number){
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/books?perPage=${startIndex}&genre=${genre}`)
+                const params = new URLSearchParams({
+                    perPage: String(perPage),
+                    page: String(page),
+                });
+                if (genre) {
+                    params.append('genre', genre);
+                }
+                const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`)
                 const data = await response.json();
-                this.books = data.data
-                return
+                const books = Array.isArray(data.data) ? data.data : [];
+                let booksSlice = books;
+                if (books.length > perPage) {
+                    const start = (page - 1) * perPage;
+                    booksSlice = books.slice(start, start + perPage);
+                }
+                this.books = page === 1 ? booksSlice : [...this.books, ...booksSlice];
+                return booksSlice;
             }catch (error){
              console.error(error)
             }

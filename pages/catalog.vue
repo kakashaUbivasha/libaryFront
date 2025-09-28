@@ -36,7 +36,7 @@
     <!-- Селектор языка -->
     <div class="language-selector">
       <label for="language">Выберите язык:</label>
-      <select id="language" v-model="selectedLanguage" @change="fetchBooksByCategory">
+      <select id="language" v-model="selectedLanguage" @change="handleLanguageChange">
         <option value="ru">Русский</option>
         <option value="en">Английский</option>
         <option value="fr">Французский</option>
@@ -64,28 +64,52 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import {useBookStore} from "~/stores/book";
+
 const store = useBookStore()
 const selectedCategory = ref(''); // Категория по умолчанию
 const selectedLanguage = ref('ru'); // Язык по умолчанию (русский)
-const books = ref<any[]>([]);
-const startIndex = ref(40); // Индекс для пагинации
 const loading = ref(false);
+const perPage = 40;
+const page = ref(1);
+
 const fetchBooksByCategory = async () => {
   loading.value = true;
-  store.get_books(startIndex.value, selectedCategory.value)
-  store.get_categories()
-  loading.value = false;
+  try {
+    await store.get_books(perPage, selectedCategory.value, page.value);
+  } finally {
+    loading.value = false;
+  }
 };
-fetchBooksByCategory();
-watch(selectedCategory, (newVal)=>{
-  store.get_books(startIndex.value, selectedCategory.value)
-})
-const loadMore = () => {
-  startIndex.value += 40;
-  store.get_books(startIndex.value, selectedCategory.value)
+
+const handleLanguageChange = async () => {
+  page.value = 1;
+  await fetchBooksByCategory();
 };
+
+watch(selectedCategory, async () => {
+  page.value = 1;
+  await fetchBooksByCategory();
+});
+
+const loadMore = async () => {
+  if (loading.value) {
+    return;
+  }
+  page.value += 1;
+  await fetchBooksByCategory();
+};
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    await store.get_categories();
+    await fetchBooksByCategory();
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <style scoped>

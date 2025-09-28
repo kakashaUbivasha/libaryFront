@@ -56,6 +56,33 @@
       </form>
     </div>
 
+    <div class="card">
+      <h2 class="subtitle">Импорт тегов</h2>
+      <form @submit.prevent="uploadTags" class="form">
+        <div class="file-upload">
+          <label class="file-label">
+            <input type="file" accept=".xlsx,.xls,.csv" @change="onTagFileChange" class="file-input" required />
+            <span class="file-cta">
+              <span class="file-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </span>
+              <span class="file-label-text">
+                {{ tagFile ? tagFile.name : 'Выберите файл...' }}
+              </span>
+            </span>
+          </label>
+        </div>
+        <button type="submit" class="button" :disabled="isTagsLoading">
+          <span v-if="isTagsLoading" class="loader"></span>
+          {{ isTagsLoading ? 'Загрузка...' : 'Импортировать теги' }}
+        </button>
+      </form>
+    </div>
+
     <div v-if="message" class="notification" :class="{'is-success': messageType === 'success', 'is-error': messageType === 'error'}">
       {{ message }}
     </div>
@@ -68,10 +95,12 @@ import { useGlobalStore } from '~/stores/global'
 
 const genreFile = ref(null)
 const bookFile = ref(null)
+const tagFile = ref(null)
 const message = ref('')
 const messageType = ref('success')
 const isGenresLoading = ref(false)
 const isBooksLoading = ref(false)
+const isTagsLoading = ref(false)
 
 const globalStore = useGlobalStore()
 
@@ -81,6 +110,10 @@ function onGenreFileChange(event) {
 
 function onBookFileChange(event) {
   bookFile.value = event.target.files[0]
+}
+
+function onTagFileChange(event) {
+  tagFile.value = event.target.files[0]
 }
 
 async function uploadGenres() {
@@ -148,6 +181,40 @@ async function uploadBooks() {
     messageType.value = 'error'
   } finally {
     isBooksLoading.value = false
+  }
+}
+
+async function uploadTags() {
+  if (!tagFile.value) return
+  if (!globalStore.token) return navigateTo('/auth/login')
+
+  isTagsLoading.value = true
+  message.value = ''
+
+  const formData = new FormData()
+  formData.append('file', tagFile.value)
+
+  try {
+    const { $config } = useNuxtApp()
+    const response = await fetch(`http://127.0.0.1:8000/api/tags/import`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${globalStore.token}`,
+        accept: 'application/json'
+      },
+      body: formData
+    })
+
+    if (!response.ok) throw new Error('Ошибка при загрузке')
+
+    const data = await response.json()
+    message.value = data.message || 'Теги успешно импортированы'
+    messageType.value = 'success'
+  } catch (error) {
+    message.value = error.message || 'Произошла ошибка при импорте тегов'
+    messageType.value = 'error'
+  } finally {
+    isTagsLoading.value = false
   }
 }
 </script>

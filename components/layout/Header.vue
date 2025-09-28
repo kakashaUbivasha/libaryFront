@@ -126,10 +126,10 @@
             <img src="/img/products-2.jpg" alt="Profile" class="w-10 h-10 rounded-full" />
           </div>
           <ul v-if="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink :to="`/user/${store.currentUser.id}`">Мой профиль</NuxtLink></li>
-            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/history">История бронирований</NuxtLink></li>
-            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/favorites">Избранные книги</NuxtLink></li>
-            <li class="px-4 py-2 text-red-500 hover:bg-gray-100"><button @click="store.logout()">Выйти</button></li>
+            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink :to="`/user/${store.currentUser.id}`" @click="closeDropdown">Мой профиль</NuxtLink></li>
+            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/history" @click="closeDropdown">История бронирований</NuxtLink></li>
+            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/favorites" @click="closeDropdown">Избранные книги</NuxtLink></li>
+            <li class="px-4 py-2 text-red-500 hover:bg-gray-100"><button @click="handleLogout">Выйти</button></li>
           </ul>
         </div>
       </template>
@@ -185,5 +185,12 @@ function goToRandomMobile() {
 }
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
+};
+const closeDropdown = () => {
+  isDropdownOpen.value = false;
+};
+const handleLogout = () => {
+  store.logout();
+  closeDropdown();
 };
 </script>

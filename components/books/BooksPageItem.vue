@@ -1,13 +1,15 @@
 <script setup>
+import { computed, ref } from 'vue';
 import { useGlobalStore } from "~/stores/global";
 import { useReservationStore } from "~/stores/reservation";
 import { useFavoriteStore } from "~/stores/favorite"; // Предполагается, что у вас есть хранилище для избранного
+import { useBookStore } from "~/stores/book";
 import BookWarningModal from "~/components/modal/BookWarningModal.vue";
-import {onMounted} from "vue";
 
-const store = useGlobalStore();
+const globalStore = useGlobalStore();
 const reservation = useReservationStore();
 const favoritesStore = useFavoriteStore();
+const bookStore = useBookStore();
 
 const props = defineProps({
   title: String,
@@ -31,9 +33,12 @@ const emit = defineEmits(['submitReview']);
 const newReview = ref('');
 const editingReviewId = ref(null);
 const editedReview = ref('');
+const isProcessingDeletion = ref(false);
+
+const isAdmin = computed(() => globalStore.currentUser?.role === 'Admin');
 
 const toggleFavorite = async () => {
-  if (!store.isAuthenticated) {
+  if (!globalStore.isAuthenticated) {
     return;
   }
 
@@ -106,6 +111,34 @@ const deleteReview = async (reviewId) => {
 const submitReview = (content, book_id) => {
   emit('submitReview', content, book_id);
 };
+
+const handleEdit = () => {
+  if (!props.id) {
+    return;
+  }
+  navigateTo(`/books/${props.id}/edit`);
+};
+
+const handleDelete = async () => {
+  if (!props.id || isProcessingDeletion.value) {
+    return;
+  }
+
+  if (!confirm('Вы уверены, что хотите удалить эту книгу?')) {
+    return;
+  }
+
+  try {
+    isProcessingDeletion.value = true;
+    await bookStore.deleteBook(Number(props.id));
+    await bookStore.get_books(40, '', 1);
+    await navigateTo('/catalog');
+  } catch (error) {
+    console.error('Ошибка при удалении книги:', error);
+  } finally {
+    isProcessingDeletion.value = false;
+  }
+};
 </script>
 
 <template>
@@ -143,7 +176,26 @@ const submitReview = (content, book_id) => {
 
       <!-- Детали книги -->
       <div class="w-full md:w-2/3 lg:w-3/4">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ title }}</h1>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+          <div v-if="isAdmin" class="flex gap-2">
+            <button
+                type="button"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+                @click="handleEdit"
+            >
+              Редактировать
+            </button>
+            <button
+                type="button"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-full hover:bg-red-700 transition-colors disabled:opacity-70"
+                :disabled="isProcessingDeletion"
+                @click="handleDelete"
+            >
+              Удалить
+            </button>
+          </div>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div v-if="authors" class="flex flex-wrap gap-1">

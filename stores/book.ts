@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useGlobalStore } from '~/stores/global';
 
 
 export const useBookStore = defineStore('books', {
@@ -61,6 +62,75 @@ export const useBookStore = defineStore('books', {
                 console.log(`book`, this.book)
             }catch (error){
                 console.log(error)
+            }
+        },
+        async updateBook(id: number, payload: Record<string, any>) {
+            const globalStore = useGlobalStore();
+            if (!globalStore.token) {
+                throw new Error('Требуется авторизация для обновления книги');
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/books/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${globalStore.token}`,
+                        accept: 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Не удалось обновить книгу');
+                }
+
+                const data = response.status === 204 ? null : await response.json();
+                const updatedBook = data?.data ?? data ?? {};
+                if (Object.keys(updatedBook).length) {
+                    this.book = updatedBook;
+                    this.books = this.books.map((book: any) => Number(book.id) === Number(id) ? updatedBook : book);
+                }
+                return updatedBook;
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        },
+        async deleteBook(id: number) {
+            const globalStore = useGlobalStore();
+            if (!globalStore.token) {
+                throw new Error('Требуется авторизация для удаления книги');
+            }
+
+            const numericId = Number(id);
+            if (Number.isNaN(numericId)) {
+                throw new Error('Некорректный идентификатор книги');
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/books/${numericId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${globalStore.token}`,
+                        accept: 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Не удалось удалить книгу');
+                }
+
+                this.books = this.books.filter((book: any) => Number(book.id) !== numericId);
+                if ((this.book as any)?.id === numericId) {
+                    this.book = {} as any;
+                }
+                this.comments = [];
+            } catch (error) {
+                console.error(error);
+                throw error;
             }
         },
         async getRandomBooks(){

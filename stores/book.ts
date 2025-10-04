@@ -69,12 +69,24 @@ export const useBookStore = defineStore('books', {
             try {
                 const config = useRuntimeConfig();
                 const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+                const globalStore = useGlobalStore();
+
+                if (!globalStore.token) {
+                    return;
+                }
+
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/json',
+                    accept: 'application/json'
+                };
+
+                if (globalStore.token) {
+                    headers.Authorization = `Bearer ${globalStore.token}`;
+                }
+
                 await fetch(`${baseURL}/api/view-book/`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        accept: 'application/json'
-                    },
+                    headers,
                     body: JSON.stringify({
                         book_id: id
                     })

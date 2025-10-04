@@ -29,7 +29,7 @@ onMounted(async () => {
 
 <template>
 <div class="item" ref="containerRef">
-  <h2 class="text-1xl">{{title}}</h2>
+  <h2>{{title}}</h2>
   <p ref="textRef">{{text}}</p>
   <span>{{author}}</span>
 </div>
@@ -51,19 +51,19 @@ onMounted(async () => {
         /* Глубокая тень для объёмности */
 
     h2{
-      font-size: 18px !important;
+      font-size: clamp(1.125rem, 2.2vw, 1.5rem);
       font-weight: 700;
       text-align: center;
     }
     p{
-      font-size: 16px !important;
+      font-size: clamp(1rem, 2vw, 1.25rem);
       text-align: center;
       overflow-wrap: break-word;
       flex-grow: 1;
     }
     span{
       font-style: italic;
-      font-size: 12px;
+      font-size: clamp(0.875rem, 1.8vw, 1rem);
       text-align: end;
     }
   }

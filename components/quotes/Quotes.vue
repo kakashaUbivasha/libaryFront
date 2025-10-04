@@ -4,14 +4,27 @@ import Quote from "~/components/quotes/Quote.vue";
 const containerRef = ref(null)
 const slides = ref(Array.from({ length: 10 }))
 const swiper = useSwiper(containerRef, {
-
   loop: true,
   autoplay: {
     delay: 5000,
   },
-  spaceBetween: 20,
-  slidesPerView: 5,
+  spaceBetween: 16,
+  slidesPerView: 1,
   direction: 'horizontal',
+  breakpoints: {
+    640: {
+      slidesPerView: 2,
+      spaceBetween: 20,
+    },
+    1024: {
+      slidesPerView: 3,
+      spaceBetween: 24,
+    },
+    1280: {
+      slidesPerView: 4,
+      spaceBetween: 28,
+    },
+  },
 })
 const datas = ref([
   { title: 'Анна Каренина', author: 'Лев Толстой', text: 'Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.' },
@@ -126,7 +139,6 @@ onMounted(()=>{
 
 
   :deep(quote) {
-    width: 100%;
-    max-width: 300px;
+    width: min(100%, 320px);
   }
 </style>

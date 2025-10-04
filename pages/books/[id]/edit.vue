@@ -36,10 +36,17 @@ const applyBookToForm = (book: Record<string, any>) => {
   form.isbn = book?.isbn ?? '';
   form.language = book?.language ?? '';
   form.count = Number(book?.count ?? 0);
-  form.genre_id = book?.genre_id ?? book?.genre?.id ?? '';
+  let genreId: string | number | undefined = book?.genre_id ?? book?.genre?.id;
+
+  if (!genreId && typeof book?.genre === 'string') {
+    const matchedGenre = bookStore.genres.find((genre: any) => genre?.name === book.genre);
+    genreId = matchedGenre?.id;
+  }
+
+  form.genre_id = genreId ?? '';
 };
 
-watch(() => bookStore.book, (book: any) => {
+watch(() => [bookStore.book, bookStore.genres], ([book]) => {
   if (book && Object.keys(book).length) {
     applyBookToForm(book);
   }

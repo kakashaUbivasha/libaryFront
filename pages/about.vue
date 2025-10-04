@@ -139,20 +139,21 @@ const onImageLoad = () => {
 
 <style scoped>
 h1{
-  font-size: 44px;
+  font-size: clamp(2rem, 4vw + 1rem, 2.75rem);
   text-transform: uppercase;
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
 }
 .block1{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: clamp(1.75rem, 5vw, 3.125rem);
   p{
-    font-size: 30px;
+    font-size: clamp(1.125rem, 3.5vw, 1.875rem);
     text-align: center;
+    line-height: 1.6;
   }
   img{
     max-width: 100%;
@@ -160,20 +161,21 @@ h1{
   }
 }
 .block2{
-  margin-top: 80px;
+  margin-top: clamp(3rem, 7vw, 5rem);
   .block2__title{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    margin-bottom: 40px;
+    gap: clamp(1.25rem, 3vw, 2rem);
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
     h2{
-      font-size: 40px;
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     }
     p{
-      font-size: 24px;
+      font-size: clamp(1.0625rem, 2.8vw, 1.5rem);
       text-align: center;
+      line-height: 1.7;
     }
     .history{
       width: 80vw;

@@ -26,10 +26,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
   .list{
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    margin-bottom: clamp(1rem, 2.5vw, 1.75rem);
+    line-height: 1.6;
   }
 }
 </style>

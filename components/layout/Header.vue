@@ -37,17 +37,23 @@
     <transition name="fade">
       <nav
           v-if="mobileMenuOpen"
-          class="fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-center justify-center space-y-6 z-50 md:hidden"
+          class="fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-stretch justify-start overflow-y-auto max-h-screen z-50 md:hidden"
       >
-        <NuxtLink @click="closeMobile" to="/catalog" class="text-lg text-white">Каталог</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/about" class="text-lg text-white">О нас</NuxtLink>
-        <button @click="showSearchMobile" class="text-lg text-white">🔍 Поиск</button>
-        <NuxtLink @click="closeMobile" to="/reservations" v-if="store.currentUser?.role==='Admin'" class="text-lg text-white">Бронирования</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="text-lg text-white">Мои бронирования</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/recomendation" class="text-lg text-white">ИИ Рекомендации</NuxtLink>
-        <a @click.prevent="goToRandomMobile" href="/random/book" class="text-lg text-white">Случайная книга</a>
-        <NuxtLink @click="closeMobile" to="/import-files" v-if="store.currentUser?.role==='Admin'" class="text-lg text-white">Импортировать книги</NuxtLink>
-        <button @click="closeMobile" class="absolute top-4 right-4 text-white text-3xl">&times;</button>
+        <div class="w-full max-w-xs sm:max-w-sm mx-auto my-8 p-6 bg-gray-800 rounded-lg flex flex-col space-y-6 relative">
+          <div class="flex justify-end">
+            <button @click="closeMobile" class="text-white text-3xl leading-none focus:outline-none">&times;</button>
+          </div>
+          <div class="flex flex-col space-y-4">
+            <NuxtLink @click="closeMobile" to="/catalog" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Каталог</NuxtLink>
+            <NuxtLink @click="closeMobile" to="/about" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">О нас</NuxtLink>
+            <button @click="showSearchMobile" class="w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">🔍 Поиск</button>
+            <NuxtLink @click="closeMobile" to="/reservations" v-if="store.currentUser?.role==='Admin'" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Бронирования</NuxtLink>
+            <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Мои бронирования</NuxtLink>
+            <NuxtLink @click="closeMobile" to="/recomendation" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">ИИ Рекомендации</NuxtLink>
+            <a @click.prevent="goToRandomMobile" href="/random/book" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Случайная книга</a>
+            <NuxtLink @click="closeMobile" to="/import-files" v-if="store.currentUser?.role==='Admin'" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Импортировать книги</NuxtLink>
+          </div>
+        </div>
       </nav>
     </transition>
 

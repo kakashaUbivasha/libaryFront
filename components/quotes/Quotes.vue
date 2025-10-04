@@ -98,7 +98,7 @@ onMounted(()=>{
 
 <template>
   <div class="quotes main">
-    <h1 class="text-4xl font-bold">Цитаты</h1>
+    <h1 class="text-2xl font-bold sm:text-3xl lg:text-4xl">Цитаты</h1>
     <ClientOnly>
       <swiper-container ref="containerRef" :init="false">
         <swiper-slide

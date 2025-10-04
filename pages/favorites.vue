@@ -10,7 +10,7 @@
         </div>
         <h3 class="text-xl font-semibold text-gray-900 mb-2">У вас пока нет избранных книг</h3>
         <p class="text-gray-600 max-w-md mb-6">Добавляйте книги в избранное, чтобы они отображались здесь</p>
-        <NuxtLink to="/catalogs" class="px-6 py-2 bg-[#6A5ACD] text-white rounded-md hover:bg-[#5a4abd] transition-colors">
+        <NuxtLink to="/catalog" class="px-6 py-2 bg-[#6A5ACD] text-white rounded-md hover:bg-[#5a4abd] transition-colors">
           Перейти к книгам
         </NuxtLink>
       </div>

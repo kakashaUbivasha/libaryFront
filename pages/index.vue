@@ -51,9 +51,9 @@ onMounted(() => {
     <!-- Hero Section -->
     <div class="relative h-[80vh] w-full bg-image-my bg-cover bg-center bg-no-repeat -mt-[170px] rounded-b-2xl">
       <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/30 text-white text-center p-5 rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.7)] animate-fadeIn">
-        <h1 class="text-4xl sm:text-5xl font-bold mb-2">Добро пожаловать в Библиотеку</h1>
-        <h1 class="text-4xl sm:text-5xl font-bold mb-4">"Эпоха Знаний"</h1>
-        <p class="text-xl sm:text-2xl animate-fadeIn delay-500">Место, где живут истории и рождаются идеи</p>
+        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2">Добро пожаловать в Библиотеку</h1>
+        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4">"Эпоха Знаний"</h1>
+        <p class="text-base sm:text-xl lg:text-2xl animate-fadeIn delay-500">Место, где живут истории и рождаются идеи</p>
       </div>
     </div>
 

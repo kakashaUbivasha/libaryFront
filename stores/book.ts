@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useRuntimeConfig } from '#imports';
 import { useGlobalStore } from '~/stores/global';
 
 
@@ -62,6 +63,24 @@ export const useBookStore = defineStore('books', {
                 console.log(`book`, this.book)
             }catch (error){
                 console.log(error)
+            }
+        },
+        async viewBook(id: number) {
+            try {
+                const config = useRuntimeConfig();
+                const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+                await fetch(`${baseURL}/api/view-book/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        accept: 'application/json'
+                    },
+                    body: JSON.stringify({
+                        book_id: id
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to track book view', error);
             }
         },
         async updateBook(id: number, payload: Record<string, any>) {

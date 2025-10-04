@@ -6,7 +6,7 @@ import {fetchBookById} from "~/composables/useBook";
 import {useCommentsStore} from "~/stores/comments";
 const book = ref(null);
 const route = useRoute(); // Получаем объект маршрута
-const id = ref(route.params.id); // Извлекаем ID из параметров маршрута
+const id = ref(Number(route.params.id)); // Извлекаем ID из параметров маршрута
 const store = useBookStore();
 const favoriteStore = useFavoriteStore();
 const commentStore = useCommentsStore();
@@ -19,10 +19,22 @@ const favorited = async(id: number) => {
     isFavorite.value = false
   }
 }
-onMounted(() => {
-  store.getBook(id.value)
-  store.getComments(id.value)
-  favorited(id.value)
+onMounted(async () => {
+  const bookId = Number(id.value);
+  if (Number.isNaN(bookId)) {
+    console.error('Invalid book id', id.value);
+    return;
+  }
+  store.getBook(bookId)
+  store.getComments(bookId)
+  favorited(bookId)
+  if (process.client) {
+    try {
+      await store.viewBook(bookId)
+    } catch (error) {
+      console.error('Failed to track book view', error)
+    }
+  }
 });
 const submitReview = async(content: string, book_id: number)=>{
   try{

@@ -134,6 +134,10 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
+  align-items: stretch;
+  align-content: stretch;
+  justify-items: stretch;
+  grid-auto-rows: 1fr;
 }
 
 @media (min-width: 640px) {

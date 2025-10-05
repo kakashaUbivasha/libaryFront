@@ -43,10 +43,17 @@ ul{
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
   align-self: center;
-  align-items: center;
-  align-content: center;
+  align-items: stretch;
+  align-content: stretch;
+  justify-items: stretch;
+  grid-auto-rows: 1fr;
   justify-self: center;
   text-align: center;
+}
+
+.books > * {
+  display: flex;
+  height: 100%;
 }
 
 @media (min-width: 640px) {

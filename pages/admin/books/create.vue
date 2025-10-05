@@ -249,8 +249,9 @@ const openDefaultTagDeleteDialog = () => {
   }
 };
 
-const closeNewGenreDialog = () => {
-  if (creatingGenre.value) {
+
+const closeNewGenreDialog = (force = false) => {
+  if (creatingGenre.value && !force) {
     return;
   }
   showNewGenreDialog.value = false;
@@ -277,8 +278,9 @@ const closeDeleteGenreDialog = () => {
   editingGenre.value = null;
 };
 
-const closeNewTagDialog = () => {
-  if (creatingTag.value) {
+const closeNewTagDialog = (force = false) => {
+  if (creatingTag.value && !force) {
+
     return;
   }
   showNewTagDialog.value = false;
@@ -342,7 +344,7 @@ const handleCreateGenre = async () => {
       form.genre_id = createdGenre.id;
     }
 
-    closeNewGenreDialog();
+    closeNewGenreDialog(true);
   } catch (error: any) {
     console.error(error);
     newGenreError.value = error?.message || 'Не удалось создать жанр';
@@ -406,7 +408,7 @@ const handleCreateTag = async () => {
       }
     }
 
-    closeNewTagDialog();
+    closeNewTagDialog(true);
   } catch (error: any) {
     console.error(error);
     newTagError.value = error?.message || 'Не удалось создать тег';

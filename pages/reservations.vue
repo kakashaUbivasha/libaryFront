@@ -3,6 +3,8 @@
 import CustomTable from "~/components/all/CustomTable.vue";
 import {useReservationStore} from "~/stores/reservation";
 import {onMounted, ref} from "vue";
+import { reloadNuxtApp } from "#app";
+import { useRoute } from "#imports";
 definePageMeta({
   middleware: 'admin',
 });
@@ -19,6 +21,7 @@ const apiEmitation = () =>{
   },3000)
 }
 const store = useReservationStore();
+const route = useRoute();
 onMounted(()=>{
   store.getAllReservations()
 })
@@ -30,7 +33,7 @@ const rows = ref([
 const deleteBook = async(id: number, user_id: number) => {
     try{
       await store.canceledReservBook(id, user_id)
-      store.getReservBook()
+      reloadNuxtApp({ path: route.fullPath, force: true })
     }catch (e){
       console.log(e)
     }
@@ -38,7 +41,7 @@ const deleteBook = async(id: number, user_id: number) => {
 const issueBook = async(id: number, user_id: number)=>{
   try{
     await store.issueBook(id, user_id)
-    store.getReservBook()
+    reloadNuxtApp({ path: route.fullPath, force: true })
   }catch (e){
     console.log(e)
   }
@@ -46,7 +49,7 @@ const issueBook = async(id: number, user_id: number)=>{
 const returnedBook = async(id: number, user_id: number)=>{
   try{
     await store.returnedBook(id, user_id)
-    store.getReservBook()
+    reloadNuxtApp({ path: route.fullPath, force: true })
   }catch (e){
     console.log(e)
   }

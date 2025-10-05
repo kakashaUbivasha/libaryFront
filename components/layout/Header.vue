@@ -30,6 +30,11 @@
       <NuxtLink to="/my-reservations" v-else class="text-indigo-600 hover:text-indigo-700">Мои бронирования</NuxtLink>
       <NuxtLink to="/recomendation" class="text-indigo-600 hover:text-indigo-700">ИИ Рекомендации</NuxtLink>
       <a href="/random/book" @click.prevent="goToRandom" class="text-indigo-600 hover:text-indigo-700">Случайная книга</a>
+      <NuxtLink
+          v-if="store.currentUser?.role==='Admin'"
+          to="/admin/books/create"
+          class="text-indigo-600 hover:text-indigo-700"
+      >Добавить книгу</NuxtLink>
       <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'" class="text-indigo-600 hover:text-indigo-700">Импортировать книги</NuxtLink>
     </nav>
 
@@ -51,6 +56,12 @@
             <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Мои бронирования</NuxtLink>
             <NuxtLink @click="closeMobile" to="/recomendation" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">ИИ Рекомендации</NuxtLink>
             <a @click.prevent="goToRandomMobile" href="/random/book" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Случайная книга</a>
+            <NuxtLink
+                v-if="store.currentUser?.role==='Admin'"
+                @click="closeMobile"
+                to="/admin/books/create"
+                class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition"
+            >Добавить книгу</NuxtLink>
             <NuxtLink @click="closeMobile" to="/import-files" v-if="store.currentUser?.role==='Admin'" class="block w-full text-left text-lg text-white px-3 py-2 rounded-md hover:bg-gray-700 transition">Импортировать книги</NuxtLink>
           </div>
         </div>

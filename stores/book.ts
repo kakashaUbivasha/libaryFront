@@ -75,15 +75,21 @@ export const useBookStore = defineStore('books', {
                     return;
                 }
 
-                const params = new URLSearchParams({
-                    text: trimmedText,
-                    token: globalStore.token
-                });
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/json',
+                    accept: 'application/json'
+                };
 
-                const response = await fetch(`${baseURL}/npl/suggest-tags?${params.toString()}`, {
-                    headers: {
-                        accept: 'application/json'
-                    }
+                if (globalStore.token) {
+                    headers.Authorization = `Bearer ${globalStore.token}`;
+                }
+
+                const response = await fetch(`${baseURL}/npl/suggest-tags`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({
+                        text: trimmedText
+                    })
                 });
                 const data = await response.json();
                 this.searched_books = Array.isArray(data.books) ? data.books : [];

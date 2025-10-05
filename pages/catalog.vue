@@ -51,6 +51,9 @@
             :title="book.title"
             :author="book.author"
             :image-src="book.image"
+            :genre="resolveGenre(book)"
+            :publication-date="resolvePublicationDate(book)"
+            :description="resolveDescription(book)"
             :id ="book.id"
         />
       </div>
@@ -73,6 +76,27 @@ const selectedLanguage = ref('ru'); // Язык по умолчанию (рус�
 const loading = ref(false);
 const perPage = 40;
 const page = ref(1);
+
+const resolveGenre = (book: Record<string, any>) =>
+  book?.genre?.name ||
+  book?.genre?.title ||
+  book?.genre_name ||
+  book?.genre;
+
+const resolvePublicationDate = (book: Record<string, any>) =>
+  book?.publication_date ||
+  book?.publicationDate ||
+  book?.published_at ||
+  book?.publishedAt ||
+  book?.release_date ||
+  book?.releaseDate;
+
+const resolveDescription = (book: Record<string, any>) =>
+  book?.description ||
+  book?.short_description ||
+  book?.shortDescription ||
+  book?.summary ||
+  book?.annotation;
 
 const fetchBooksByCategory = async () => {
   loading.value = true;

@@ -10,6 +10,9 @@
               :title="book.title"
               :author="book.author"
               :image-src="book.image"
+              :genre="resolveGenre(book)"
+              :publication-date="resolvePublicationDate(book)"
+              :description="resolveDescription(book)"
               :id ="book.id"
           />
         </div>
@@ -36,6 +39,27 @@ const page = ref(1);
 const perPage = 12;
 
 const { fetchRandomBooks } = useNewBook();
+
+const resolveGenre = (book) =>
+  book?.genre?.name ||
+  book?.genre?.title ||
+  book?.genre_name ||
+  book?.genre;
+
+const resolvePublicationDate = (book) =>
+  book?.publication_date ||
+  book?.publicationDate ||
+  book?.published_at ||
+  book?.publishedAt ||
+  book?.release_date ||
+  book?.releaseDate;
+
+const resolveDescription = (book) =>
+  book?.description ||
+  book?.short_description ||
+  book?.shortDescription ||
+  book?.summary ||
+  book?.annotation;
 
 const loadInitialBooks = async () => {
   isInitialLoading.value = true;

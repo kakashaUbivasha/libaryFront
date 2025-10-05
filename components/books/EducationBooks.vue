@@ -12,6 +12,27 @@ const perPage = 12;
 
 const { fetchRandomBooks } = educationBooks();
 
+const resolveGenre = (book: Record<string, any>) =>
+  book?.genre?.name ||
+  book?.genre?.title ||
+  book?.genre_name ||
+  book?.genre;
+
+const resolvePublicationDate = (book: Record<string, any>) =>
+  book?.publication_date ||
+  book?.publicationDate ||
+  book?.published_at ||
+  book?.publishedAt ||
+  book?.release_date ||
+  book?.releaseDate;
+
+const resolveDescription = (book: Record<string, any>) =>
+  book?.description ||
+  book?.short_description ||
+  book?.shortDescription ||
+  book?.summary ||
+  book?.annotation;
+
 const loadInitialBooks = async () => {
   isInitialLoading.value = true;
   try {
@@ -69,6 +90,9 @@ onMounted(() => {
               :title="book.title"
               :author="book.author"
               :image-src="book.image"
+              :genre="resolveGenre(book)"
+              :publication-date="resolvePublicationDate(book)"
+              :description="resolveDescription(book)"
               :id ="book.id"
           />
         </div>

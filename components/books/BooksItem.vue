@@ -3,7 +3,10 @@ defineProps({
   title: String,
   author: String,
   imageSrc: String,
-  id: Number,
+  id: {
+    type: [Number, String],
+    required: true
+  },
   genre: String,
   publication_date: String,
   description: String

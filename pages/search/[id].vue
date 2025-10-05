@@ -1,24 +1,48 @@
 <script setup lang="ts">
-import {useRouter} from 'vue-router';
-import {useBookStore} from "~/stores/book";
-import {onMounted} from "vue";
+import { useBookStore } from "~/stores/book";
+import { computed, onMounted, watch } from "vue";
+
 const store = useBookStore();
-const results = ref([])
-const route = useRoute()
-const keyword = ref(route.params.id)
+const route = useRoute();
+
+const keyword = computed(() => String(route.params.id ?? ""));
+const isAiSearch = computed(() => {
+  const aiParam = route.query.ai;
+  if (Array.isArray(aiParam)) {
+    return aiParam.includes("1") || aiParam.includes("true");
+  }
+  return aiParam === "1" || aiParam === "true";
+});
+
 const searchBooks = async () => {
-  if (keyword.value) {
-    try {
-      store.searchBooks(keyword.value);
-      console.log('searched books', store.searched_books.length)
-    } catch (err) {
-      console.error(err)
+  const currentKeyword = keyword.value.trim();
+  if (!currentKeyword) {
+    store.searched_books = [];
+    return;
+  }
+
+  try {
+    if (isAiSearch.value) {
+      await store.searchBooksAi(currentKeyword);
+    } else {
+      await store.searchBooks(currentKeyword);
     }
+    console.log('searched books', store.searched_books.length);
+  } catch (err) {
+    console.error(err);
   }
 };
-onMounted(()=>{
-  searchBooks()
-})
+
+onMounted(() => {
+  searchBooks();
+});
+
+watch(
+  () => [route.params.id, route.query.ai],
+  () => {
+    searchBooks();
+  }
+);
 </script>
 
 <template>

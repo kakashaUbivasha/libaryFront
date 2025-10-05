@@ -6,6 +6,7 @@ import { useGlobalStore } from '~/stores/global';
 export const useBookStore = defineStore('books', {
     state: ()=>({
         books: [],
+        aiRecommendations: [],
         genres: [],
         tags: [],
         searched_books: [],
@@ -218,6 +219,44 @@ export const useBookStore = defineStore('books', {
                 console.log('comments', this.comments)
             }catch (e){
                 console.error(e)
+            }
+        },
+        async fetchAIRecommendations() {
+            const config = useRuntimeConfig();
+            const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+            const globalStore = useGlobalStore();
+
+            if (!globalStore.token) {
+                this.aiRecommendations = [];
+                throw new Error('Требуется авторизация для получения рекомендаций');
+            }
+
+            try {
+                const response = await fetch(`${baseURL}/api/ai/recommendations`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${globalStore.token}`
+                    }
+                });
+
+                let responseData: any = {};
+                try {
+                    responseData = await response.json();
+                } catch (error) {
+                    responseData = {};
+                }
+
+                if (!response.ok) {
+                    throw new Error(responseData?.message || 'Не удалось получить рекомендации');
+                }
+
+                const recommendations = responseData?.data ?? responseData ?? [];
+                this.aiRecommendations = Array.isArray(recommendations) ? recommendations : [];
+                return this.aiRecommendations;
+            } catch (error) {
+                console.error('Failed to fetch AI recommendations', error);
+                this.aiRecommendations = [];
+                throw error;
             }
         }
     }

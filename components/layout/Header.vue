@@ -189,7 +189,11 @@ const showSearchMobile = () => {
   isSearched.value = true;
 };
 function goToRandom() {
-  router.push({ path: '/random/book', force: true });
+  if (process.client) {
+    window.location.assign('/random/book');
+  } else {
+    router.push('/random/book');
+  }
 }
 function goToRandomMobile() {
   closeMobile();

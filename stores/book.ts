@@ -7,6 +7,7 @@ export const useBookStore = defineStore('books', {
     state: ()=>({
         books: [],
         genres: [],
+        tags: [],
         searched_books: [],
         book: {},
         comments: []
@@ -39,7 +40,7 @@ export const useBookStore = defineStore('books', {
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/genres`)
                 const data = await response.json()
-                this.genres = data.data
+                this.genres = Array.isArray(data.data) ? data.data : []
             }catch (error){
                 console.error(error)
             }
@@ -159,6 +160,41 @@ export const useBookStore = defineStore('books', {
                     this.book = {} as any;
                 }
                 this.comments = [];
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        },
+        async createBook(payload: Record<string, any>) {
+            const globalStore = useGlobalStore();
+            if (!globalStore.token) {
+                throw new Error('Требуется авторизация для создания книги');
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/books', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        accept: 'application/json',
+                        Authorization: `Bearer ${globalStore.token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseData = response.status === 204 ? {} : await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(responseData?.message || 'Не удалось создать книгу');
+                }
+
+                const createdBook = responseData?.data ?? responseData ?? {};
+                if (createdBook && Object.keys(createdBook).length) {
+                    const existingBooks = Array.isArray(this.books) ? this.books : [];
+                    const filteredBooks = existingBooks.filter((book: any) => Number(book?.id) !== Number(createdBook.id));
+                    this.books = [createdBook, ...filteredBooks];
+                }
+
+                return createdBook;
             } catch (error) {
                 console.error(error);
                 throw error;

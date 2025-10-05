@@ -250,7 +250,12 @@ export const useBookStore = defineStore('books', {
                     throw new Error(responseData?.message || 'Не удалось получить рекомендации');
                 }
 
-                const recommendations = responseData?.data ?? responseData ?? [];
+                const recommendations = Array.isArray(responseData?.books)
+                    ? responseData.books
+                    : Array.isArray(responseData?.data)
+                        ? responseData.data
+                        : [];
+
                 this.aiRecommendations = Array.isArray(recommendations) ? recommendations : [];
                 return this.aiRecommendations;
             } catch (error) {

@@ -48,6 +48,9 @@ const toggleFavorite = async () => {
       await favoritesStore.removeFavorites(props.id);
     } else {
       await favoritesStore.addFavorite(props.id);
+      if (process.client) {
+        window.location.reload();
+      }
     }
   } catch (error) {
     console.error('Ошибка при обновлении избранного:', error);

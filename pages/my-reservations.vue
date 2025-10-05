@@ -11,14 +11,17 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { reloadNuxtApp, useRoute } from '#app';
+import { useReservationStore } from "~/stores/reservation";
+import CustomTable from "~/components/all/CustomTable.vue";
+
 definePageMeta({
   middleware: 'auth',
 });
-import {onMounted, ref} from 'vue'
-import {useReservationStore} from "~/stores/reservation";
-import CustomTable from "~/components/all/CustomTable.vue";
 let items = ref([])
 const store = useReservationStore();
+const route = useRoute();
 const headers = [
   { key: 'book_title', label: 'Название книги' },
   { key: 'reservation_time', label: 'Дата бронирования' },
@@ -34,11 +37,14 @@ let rows = ref([
   { name: 'Anna', age: 25, country: 'Canada', id: '2' },
   { name: 'Tom', age: 35, country: 'UK', id: '3' },
 ]);
-const deleteBooks = (bookId: number) => {
- store.canceledReservBook(bookId)
- store.getReservBook()
- return 1
+const deleteBooks = async (bookId: number) => {
+  const result = await store.canceledReservBook(bookId);
 
+  if (result) {
+    await reloadNuxtApp({ path: route.fullPath, force: true });
+  }
+
+  return 1;
 };
 onMounted(()=>{
   store.getReservBook()

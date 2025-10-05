@@ -175,14 +175,30 @@ const closeMobile = () => {
   mobileMenuOpen.value = false;
 };
 const onSearch = () => {
-  if (searchQuery.value.trim()) {
-    isSearched.value = false;
-    navigateTo(`/search/${encodeURIComponent(searchQuery.value.trim())}`);
-    searchQuery.value = "";
-    mobileMenuOpen.value = false;
-  } else {
+  const query = searchQuery.value.trim();
+  if (!query) {
     isSearched.value = true;
+    return;
   }
+
+  isSearched.value = false;
+  mobileMenuOpen.value = false;
+
+  if (isNpl.value) {
+    if (!store.token) {
+      console.warn('Для AI-поиска необходимо авторизоваться. Выполняем обычный поиск.');
+      navigateTo(`/search/${encodeURIComponent(query)}`);
+    } else {
+      navigateTo({
+        path: `/search/${encodeURIComponent(query)}`,
+        query: { ai: '1' }
+      });
+    }
+  } else {
+    navigateTo(`/search/${encodeURIComponent(query)}`);
+  }
+
+  searchQuery.value = "";
 };
 const showSearchMobile = () => {
   closeMobile();

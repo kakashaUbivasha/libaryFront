@@ -57,6 +57,47 @@ export const useBookStore = defineStore('books', {
                 console.log(error);
             }
         },
+        async searchBooksAi(text: string) {
+            const trimmedText = text?.trim();
+            if (!trimmedText) {
+                this.searched_books = [];
+                return;
+            }
+
+            try {
+                const config = useRuntimeConfig();
+                const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+                const globalStore = useGlobalStore();
+
+                if (!globalStore.token) {
+                    console.warn('AI поиск доступен только авторизованным пользователям');
+                    this.searched_books = [];
+                    return;
+                }
+
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/json',
+                    accept: 'application/json'
+                };
+
+                if (globalStore.token) {
+                    headers.Authorization = `Bearer ${globalStore.token}`;
+                }
+
+                const response = await fetch(`${baseURL}/npl/suggest-tags`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({
+                        text: trimmedText
+                    })
+                });
+                const data = await response.json();
+                this.searched_books = Array.isArray(data.books) ? data.books : [];
+            } catch (error) {
+                console.error('AI search failed', error);
+                this.searched_books = [];
+            }
+        },
         async getBook(id: number){
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/books/${id}`)

@@ -68,5 +68,9 @@ onMounted(fetchBooks)
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
+  align-items: stretch;
+  align-content: stretch;
+  justify-items: stretch;
+  grid-auto-rows: 1fr;
 }
 </style>

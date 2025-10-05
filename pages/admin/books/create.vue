@@ -33,6 +33,8 @@ const showEditGenreDialog = ref(false);
 const showDeleteGenreDialog = ref(false);
 const showEditTagDialog = ref(false);
 const showDeleteTagDialog = ref(false);
+const showGenreList = ref(false);
+const showTagList = ref(false);
 const newGenreName = ref('');
 const newTagName = ref('');
 const newGenreError = ref('');
@@ -52,6 +54,12 @@ const tagFormName = ref('');
 
 const tags = computed(() => Array.isArray(bookStore.tags) ? bookStore.tags : []);
 const genres = computed(() => Array.isArray(bookStore.genres) ? bookStore.genres : []);
+const genreListToggleLabel = computed(() =>
+  showGenreList.value ? 'Скрыть список жанров' : 'Показать список жанров'
+);
+const tagListToggleLabel = computed(() =>
+  showTagList.value ? 'Скрыть список тегов' : 'Показать список тегов'
+);
 
 const fetchTags = async () => {
   if (!globalStore.token) {
@@ -690,29 +698,66 @@ onMounted(() => {
               {{ genre.name }}
             </option>
           </select>
-          <div v-if="genres.length" class="mt-3 space-y-2 rounded-md border border-gray-200 p-3">
-            <p class="text-xs uppercase tracking-wide text-gray-500">Список жанров</p>
+          <div class="mt-3 rounded-md border border-gray-200 p-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button
+                type="button"
+                class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-indigo-600 transition-colors hover:text-indigo-700 disabled:cursor-not-allowed disabled:text-gray-400"
+                :disabled="!genres.length"
+                @click="showGenreList = !showGenreList"
+              >
+                <span>{{ genreListToggleLabel }}</span>
+                <svg
+                  v-if="genres.length"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  :class="{ 'rotate-180 transform': showGenreList }"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <span
+                v-if="!genres.length"
+                class="text-xs text-gray-400"
+              >
+                Нет доступных жанров
+              </span>
+              <span
+                v-else-if="!showGenreList"
+                class="text-xs text-gray-400"
+              >
+                Список скрыт
+              </span>
+            </div>
             <div
-              v-for="genre in genres"
-              :key="`genre-${genre.id}`"
-              class="flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
+              v-if="showGenreList && genres.length"
+              class="mt-3 space-y-2"
             >
-              <span class="text-sm text-gray-700">{{ genre.name }}</span>
-              <div class="flex items-center gap-2 text-xs">
-                <button
-                  type="button"
-                  class="text-indigo-600 hover:text-indigo-700"
-                  @click="openEditGenreDialog(genre.id)"
-                >
-                  Редактировать
-                </button>
-                <button
-                  type="button"
-                  class="text-red-600 hover:text-red-700"
-                  @click="openDeleteGenreDialog(genre.id)"
-                >
-                  Удалить
-                </button>
+              <div
+                v-for="genre in genres"
+                :key="`genre-${genre.id}`"
+                class="flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
+              >
+                <span class="text-sm text-gray-700">{{ genre.name }}</span>
+                <div class="flex items-center gap-2 text-xs">
+                  <button
+                    type="button"
+                    class="text-indigo-600 hover:text-indigo-700"
+                    @click="openEditGenreDialog(genre.id)"
+                  >
+                    Редактировать
+                  </button>
+                  <button
+                    type="button"
+                    class="text-red-600 hover:text-red-700"
+                    @click="openDeleteGenreDialog(genre.id)"
+                  >
+                    Удалить
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -762,29 +807,66 @@ onMounted(() => {
             </option>
           </select>
           <p class="mt-1 text-sm text-gray-500">Используйте Ctrl/Cmd для выбора нескольких тегов.</p>
-          <div v-if="tags.length" class="mt-3 space-y-2 rounded-md border border-gray-200 p-3">
-            <p class="text-xs uppercase tracking-wide text-gray-500">Список тегов</p>
+          <div class="mt-3 rounded-md border border-gray-200 p-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button
+                type="button"
+                class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-indigo-600 transition-colors hover:text-indigo-700 disabled:cursor-not-allowed disabled:text-gray-400"
+                :disabled="!tags.length"
+                @click="showTagList = !showTagList"
+              >
+                <span>{{ tagListToggleLabel }}</span>
+                <svg
+                  v-if="tags.length"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  :class="{ 'rotate-180 transform': showTagList }"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <span
+                v-if="!tags.length"
+                class="text-xs text-gray-400"
+              >
+                Нет доступных тегов
+              </span>
+              <span
+                v-else-if="!showTagList"
+                class="text-xs text-gray-400"
+              >
+                Список скрыт
+              </span>
+            </div>
             <div
-              v-for="tag in tags"
-              :key="`tag-${tag.id}`"
-              class="flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
+              v-if="showTagList && tags.length"
+              class="mt-3 space-y-2"
             >
-              <span class="text-sm text-gray-700">{{ tag.name }}</span>
-              <div class="flex items-center gap-2 text-xs">
-                <button
-                  type="button"
-                  class="text-indigo-600 hover:text-indigo-700"
-                  @click="openEditTagDialog(tag)"
-                >
-                  Редактировать
-                </button>
-                <button
-                  type="button"
-                  class="text-red-600 hover:text-red-700"
-                  @click="openDeleteTagDialog(tag)"
-                >
-                  Удалить
-                </button>
+              <div
+                v-for="tag in tags"
+                :key="`tag-${tag.id}`"
+                class="flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
+              >
+                <span class="text-sm text-gray-700">{{ tag.name }}</span>
+                <div class="flex items-center gap-2 text-xs">
+                  <button
+                    type="button"
+                    class="text-indigo-600 hover:text-indigo-700"
+                    @click="openEditTagDialog(tag)"
+                  >
+                    Редактировать
+                  </button>
+                  <button
+                    type="button"
+                    class="text-red-600 hover:text-red-700"
+                    @click="openDeleteTagDialog(tag)"
+                  >
+                    Удалить
+                  </button>
+                </div>
               </div>
             </div>
           </div>

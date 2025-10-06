@@ -31,6 +31,7 @@ const onLogin = async () => {
 
 <template>
   <div class="form__block">
+    <span class="logo">LibraryApp</span>
     <form action="" class="form" @submit.prevent>
       <div class="input__block">
         <label for="email">Ваша почта</label>
@@ -44,7 +45,6 @@ const onLogin = async () => {
       <button type="button" class="btn" @click="onLogin">Войти</button>
       <NuxtLink style="text-align: center" to="/auth/register">Зарегистрироваться</NuxtLink>
     </form>
-    <span class="logo">LibraryApp</span>
   </div>
 </template>
 
@@ -108,6 +108,7 @@ const onLogin = async () => {
     font-size: clamp(32px, 10vw, 40px);
     font-weight: 600;
     letter-spacing: 2px;
+    text-align: center;
   }
 }
 
@@ -134,11 +135,7 @@ const onLogin = async () => {
   }
 
   .logo {
-    position: absolute;
-    right: -70px;
-    top: 50%;
-    transform: translateY(-50%);
-    rotate: -90deg;
+    text-align: center;
   }
 }
 </style>

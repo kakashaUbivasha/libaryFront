@@ -13,6 +13,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  emptyMessage: {
+    type: String,
+    default: 'Нет зарезервированных книг'
+  },
     isUser: {
     type: Boolean,
     default: true
@@ -186,7 +190,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
     </div>
   </div>
   <div v-else class="text-center py-8 text-gray-500">
-    Нет зарезервированных книг
+    {{ emptyMessage }}
   </div>
 </template>
 

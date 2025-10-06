@@ -60,11 +60,12 @@ export const useReservationStore = defineStore('reservation', {
                 console.log(e)
             }
         },
-        async getAllReservations()
+        async getAllReservations(user?: string)
         {
             const store = useGlobalStore()
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservations`, {
+                const query = user ? `?user=${encodeURIComponent(user)}` : ''
+                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservations${query}`, {
                     headers: {
                         Authorization: `Bearer ${store.token}`,
                         accept: 'application/json',
@@ -77,8 +78,9 @@ export const useReservationStore = defineStore('reservation', {
                 }
                 const data = await response.json()
                 this.all_reservations = data.data
-            }catch (e){
-                console.log(error)
+            }catch (error){
+                console.error(error)
+                this.all_reservations = []
             }
         },
         async canceledReservBook(book_id: number, user_id: number)

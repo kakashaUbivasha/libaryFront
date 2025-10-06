@@ -622,12 +622,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="max-w-3xl mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Создание книги</h1>
+  <div class="create-book-page max-w-3xl mx-auto rounded-3xl border border-white/10 bg-slate-950/60 px-4 py-10 shadow-2xl shadow-indigo-500/20 backdrop-blur">
+    <h1 class="mb-6 text-3xl font-bold text-slate-100">Создание книги</h1>
 
-    <div v-if="loading" class="text-center text-gray-600 py-10">Загрузка данных...</div>
+    <div v-if="loading" class="py-10 text-center text-slate-300">Загрузка данных...</div>
     <div v-else>
-      <div v-if="errorMessage" class="mb-4 rounded-md bg-red-50 p-4 text-red-600">
+      <div v-if="errorMessage" class="mb-4 rounded-2xl border border-rose-400/40 bg-rose-500/10 p-4 text-rose-200">
         {{ errorMessage }}
       </div>
 
@@ -1155,3 +1155,85 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.create-book-page {
+  color: #e2e8f0;
+}
+
+.create-book-page :deep(label),
+.create-book-page :deep(p),
+.create-book-page :deep(span),
+.create-book-page :deep(h2),
+.create-book-page :deep(h3) {
+  color: rgba(226, 232, 240, 0.9) !important;
+}
+
+.create-book-page :deep(.text-gray-900),
+.create-book-page :deep(.text-gray-800),
+.create-book-page :deep(.text-gray-700) {
+  color: #e2e8f0 !important;
+}
+
+.create-book-page :deep(.text-gray-600),
+.create-book-page :deep(.text-gray-500),
+.create-book-page :deep(.text-gray-400) {
+  color: rgba(148, 163, 184, 0.85) !important;
+}
+
+.create-book-page :deep(input),
+.create-book-page :deep(select),
+.create-book-page :deep(textarea) {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #e2e8f0 !important;
+  border-radius: 12px !important;
+}
+
+.create-book-page :deep(input:focus),
+.create-book-page :deep(select:focus),
+.create-book-page :deep(textarea:focus) {
+  border-color: rgba(129, 140, 248, 0.8) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35) !important;
+}
+
+.create-book-page :deep(.border-gray-300),
+.create-book-page :deep(.border-gray-200),
+.create-book-page :deep(.border-gray-100) {
+  border-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+.create-book-page :deep(.bg-gray-50),
+.create-book-page :deep(.bg-gray-100) {
+  background: rgba(15, 23, 42, 0.55) !important;
+}
+
+.create-book-page :deep(.bg-white) {
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.35)) !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  color: #e2e8f0 !important;
+}
+
+.create-book-page :deep(.text-indigo-600),
+.create-book-page :deep(.text-indigo-700) {
+  color: rgba(165, 180, 252, 0.9) !important;
+}
+
+.create-book-page :deep(.text-red-600),
+.create-book-page :deep(.text-red-700) {
+  color: rgba(248, 113, 113, 0.9) !important;
+}
+
+.create-book-page :deep(.border-red-600) {
+  border-color: rgba(248, 113, 113, 0.65) !important;
+}
+
+.create-book-page :deep(button:hover) {
+  filter: brightness(1.05);
+}
+
+.create-book-page :deep(.bg-black\/40) {
+  background-color: rgba(2, 6, 23, 0.75) !important;
+  backdrop-filter: blur(10px);
+}
+</style>

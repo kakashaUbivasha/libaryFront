@@ -40,31 +40,31 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-    border: 1px solid #eaeaea;
-    padding: 20px;
-    border-radius: 20px;
-    width: 100%;
-    height: 150px;
-    overflow: hidden;
-    box-shadow:
-        0 4px 8px rgba(0, 0, 0, 0.1);  /* Мягкая тень снизу */
-        /* Глубокая тень для объёмности */
+  padding: 20px;
+  border-radius: 20px;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  color: #e2e8f0;
+  text-shadow: 0 6px 18px rgba(15, 23, 42, 0.6);
 
-    h2{
-      font-size: clamp(1.125rem, 2.2vw, 1.5rem);
-      font-weight: 700;
-      text-align: center;
-    }
-    p{
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      text-align: center;
-      overflow-wrap: break-word;
-      flex-grow: 1;
-    }
-    span{
-      font-style: italic;
-      font-size: clamp(0.875rem, 1.8vw, 1rem);
-      text-align: end;
-    }
+  h2{
+    font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+    font-weight: 700;
+    text-align: center;
   }
+  p{
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    text-align: center;
+    overflow-wrap: break-word;
+    flex-grow: 1;
+    color: rgba(226, 232, 240, 0.9);
+  }
+  span{
+    font-style: italic;
+    font-size: clamp(0.875rem, 1.8vw, 1rem);
+    text-align: end;
+    color: rgba(165, 180, 252, 0.9);
+  }
+}
   </style>

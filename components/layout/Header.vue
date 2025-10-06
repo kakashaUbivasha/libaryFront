@@ -51,7 +51,7 @@
     <transition name="fade">
       <nav
           v-if="mobileMenuOpen"
-          class="fixed inset-0 z-50 flex flex-col items-center justify-center space-y-6 bg-slate-950/80 px-6 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
+          class="fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center space-y-6 bg-slate-950/85 px-6 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
       >
         <NuxtLink @click="closeMobile" to="/" class="transition hover:text-indigo-200">Домой</NuxtLink>
         <NuxtLink @click="closeMobile" to="/catalog" class="transition hover:text-indigo-200">Каталог</NuxtLink>
@@ -157,8 +157,8 @@
     <!-- Профиль/авторизация (справа) -->
     <div class="flex items-center space-x-2">
       <template v-if="isAuthenticated">
-        <div class="relative">
-          <div @click="toggleDropdown" class="cursor-pointer">
+        <div class="relative" ref="dropdownRef">
+          <div @click.stop="toggleDropdown" class="cursor-pointer">
             <img src="/img/products-2.jpg" alt="Profile" class="h-10 w-10 rounded-full border border-white/20 shadow-lg shadow-indigo-500/20" />
           </div>
           <ul
@@ -195,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useGlobalStore } from "~/stores/global";
 import { navigateTo, useRouter } from "#app";
 
@@ -205,6 +205,7 @@ const isDropdownOpen = ref(false);
 const isSearched = ref(false);
 const isNpl = ref(false);
 const mobileMenuOpen = ref(false);
+const dropdownRef = ref(null);
 const router = useRouter();
 
 const isAuthenticated = computed(() => store.isAuthenticated);
@@ -266,4 +267,34 @@ const handleLogout = () => {
   store.logout();
   closeDropdown();
 };
+
+const handleClickOutside = (event) => {
+  if (!isDropdownOpen.value) {
+    return;
+  }
+
+  const container = dropdownRef.value;
+  const target = event.target;
+  if (container && target && !container.contains(target)) {
+    isDropdownOpen.value = false;
+  }
+};
+
+const handleKeydown = (event) => {
+  if (event.key === "Escape") {
+    isDropdownOpen.value = false;
+    isSearched.value = false;
+    mobileMenuOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+  document.addEventListener("keydown", handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+  document.removeEventListener("keydown", handleKeydown);
+});
 </script>

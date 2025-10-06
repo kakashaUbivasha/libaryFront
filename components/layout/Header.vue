@@ -1,6 +1,6 @@
 <template>
   <header
-      class="relative flex items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 shadow-lg shadow-indigo-500/20 backdrop-blur-2xl transition-colors sm:gap-6 sm:px-6"
+      class="relative z-30 flex items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 shadow-lg shadow-indigo-500/20 backdrop-blur-2xl transition-colors sm:gap-6 sm:px-6"
   >
     <!-- Бургер или логотип -->
     <div class="flex items-center">
@@ -86,7 +86,7 @@
     <transition name="fade">
       <div
           v-if="isSearched"
-          class="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 px-4 pt-12 text-slate-100 backdrop-blur-xl sm:items-center sm:px-0 sm:pt-0"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 py-10 text-slate-100 backdrop-blur-xl sm:px-0"
       >
         <div class="relative w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-indigo-500/20 backdrop-blur-xl sm:p-6">
           <button @click="closeInput" class="absolute right-4 top-4 text-slate-300 transition hover:text-indigo-200">
@@ -163,7 +163,7 @@
           </div>
           <ul
               v-if="isDropdownOpen"
-              class="absolute right-0 mt-3 w-52 rounded-2xl border border-white/10 bg-slate-900/90 p-2 text-sm text-slate-100 shadow-xl shadow-indigo-500/20 backdrop-blur-xl"
+              class="absolute right-0 z-40 mt-3 w-52 rounded-2xl border border-white/10 bg-slate-900/90 p-2 text-sm text-slate-100 shadow-xl shadow-indigo-500/20 backdrop-blur-xl"
           >
             <li class="rounded-xl px-4 py-2 transition hover:bg-white/10">
               <NuxtLink :to="`/user/${store.currentUser.id}`" @click="closeDropdown">Мой профиль</NuxtLink>

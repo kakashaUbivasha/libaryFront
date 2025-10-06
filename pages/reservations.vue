@@ -24,25 +24,25 @@ const emptyMessage = computed(() =>
         ? `Для такого "${appliedSearch.value}" данных нет`
         : 'Нет зарезервированных книг'
 );
-const fetchReservations = async (query?: string) => {
+const fetchReservations = async ({ query, page }: { query?: string; page?: number } = {}) => {
   try {
     isLoading.value = true;
-    await store.getAllReservations(query);
+    await store.getAllReservations({ user: query, page });
   } finally {
     isLoading.value = false;
   }
 };
 const onSearch = async () => {
   appliedSearch.value = searchQuery.value.trim();
-  await fetchReservations(appliedSearch.value || undefined);
+  await fetchReservations({ query: appliedSearch.value || undefined, page: 1 });
 };
 const resetSearch = async () => {
   searchQuery.value = '';
   appliedSearch.value = '';
-  await fetchReservations();
+  await fetchReservations({ page: 1 });
 };
 onMounted(()=>{
-  fetchReservations();
+  fetchReservations({ page: 1 });
 })
 const deleteBook = async(id: number, user_id: number) => {
     try{
@@ -68,6 +68,27 @@ const returnedBook = async(id: number, user_id: number)=>{
     console.log(e)
   }
 }
+const pagination = computed(() => {
+  const meta = store.allReservationsMeta;
+  if (!meta) {
+    return null;
+  }
+  return {
+    currentPage: meta.current_page ?? 1,
+    lastPage: meta.last_page ?? 1,
+    perPage: meta.per_page,
+  };
+});
+const changePage = async (page: number) => {
+  const total = pagination.value?.lastPage ?? 1;
+  if (page < 1 || page > total) {
+    return;
+  }
+  await fetchReservations({
+    query: appliedSearch.value || undefined,
+    page,
+  });
+};
 </script>
 
 <template>
@@ -118,6 +139,8 @@ const returnedBook = async(id: number, user_id: number)=>{
         @return-book="returnedBook"
         :is-user="false"
         :empty-message="emptyMessage"
+        :pagination="pagination"
+        @change-page="changePage"
     />
   </div>
 

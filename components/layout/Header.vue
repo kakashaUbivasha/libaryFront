@@ -1,65 +1,84 @@
 <template>
-  <header class="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200 relative z-10">
+  <header
+      class="relative flex items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 shadow-lg shadow-indigo-500/20 backdrop-blur-2xl transition-colors sm:gap-6 sm:px-6"
+  >
     <!-- Бургер или логотип -->
     <div class="flex items-center">
       <!-- Бургер на мобиле -->
       <button
           @click="mobileMenuOpen = !mobileMenuOpen"
-          class="md:hidden focus:outline-none mr-2"
+          class="mr-2 rounded-full border border-white/10 bg-white/10 p-2 text-slate-100 transition hover:bg-white/20 md:hidden"
           aria-label="Открыть меню"
       >
-        <svg v-if="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg v-if="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
       <!-- Логотип на десктопе -->
-      <NuxtLink to="/" class="hidden md:block text-2xl font-bold text-indigo-600 select-none">LibraryApp</NuxtLink>
+      <NuxtLink
+          to="/"
+          class="hidden select-none bg-gradient-to-r from-indigo-400 via-sky-300 to-purple-400 bg-clip-text text-2xl font-semibold text-transparent md:block"
+      >LibraryApp</NuxtLink>
     </div>
 
     <!-- Навигация (десктоп) -->
-    <nav class="hidden md:flex flex-1 justify-center items-center space-x-6">
-      <NuxtLink to="/catalog" class="text-indigo-600 hover:text-indigo-700">Каталог</NuxtLink>
-      <NuxtLink to="/about" class="text-indigo-600 hover:text-indigo-700">О нас</NuxtLink>
+    <nav class="hidden flex-1 items-center justify-center space-x-5 text-sm font-medium md:flex">
+      <NuxtLink to="/catalog" class="transition hover:text-indigo-200">Каталог</NuxtLink>
+      <NuxtLink to="/about" class="transition hover:text-indigo-200">О нас</NuxtLink>
       <div class="relative">
-        <button @click="isSearched = true" class="px-2 py-1 rounded hover:bg-indigo-100">🔍</button>
+        <button @click="isSearched = true" class="rounded-full bg-white/10 px-3 py-2 transition hover:bg-white/20">🔍</button>
       </div>
-      <NuxtLink to="/reservations" v-if="store.currentUser?.role==='Admin'" class="text-indigo-600 hover:text-indigo-700">Бронирования</NuxtLink>
-      <NuxtLink to="/my-reservations" v-else class="text-indigo-600 hover:text-indigo-700">Мои бронирования</NuxtLink>
-      <NuxtLink to="/recomendation" class="text-indigo-600 hover:text-indigo-700">ИИ Рекомендации</NuxtLink>
-      <a href="/random/book" @click.prevent="goToRandom" class="text-indigo-600 hover:text-indigo-700">Случайная книга</a>
+      <NuxtLink
+          to="/reservations"
+          v-if="store.currentUser?.role==='Admin'"
+          class="transition hover:text-indigo-200"
+      >Бронирования</NuxtLink>
+      <NuxtLink to="/my-reservations" v-else class="transition hover:text-indigo-200">Мои бронирования</NuxtLink>
+      <NuxtLink to="/recomendation" class="transition hover:text-indigo-200">ИИ Рекомендации</NuxtLink>
+      <a href="/random/book" @click.prevent="goToRandom" class="transition hover:text-indigo-200">Случайная книга</a>
       <NuxtLink
           v-if="store.currentUser?.role==='Admin'"
           to="/admin/books/create"
-          class="text-indigo-600 hover:text-indigo-700"
+          class="transition hover:text-indigo-200"
       >Добавить книгу</NuxtLink>
-      <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'" class="text-indigo-600 hover:text-indigo-700">Импортировать книги</NuxtLink>
+      <NuxtLink to="/import-files" v-if="store.currentUser?.role==='Admin'" class="transition hover:text-indigo-200">Импортировать книги</NuxtLink>
     </nav>
 
     <!-- Мобильное меню -->
     <transition name="fade">
       <nav
           v-if="mobileMenuOpen"
-          class="fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-center justify-center space-y-6 z-50 md:hidden"
+          class="fixed inset-0 z-50 flex flex-col items-center justify-center space-y-6 bg-slate-950/80 px-6 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
       >
-        <NuxtLink @click="closeMobile" to="/" class="text-lg text-white">Домой</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/catalog" class="text-lg text-white">Каталог</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/about" class="text-lg text-white">О нас</NuxtLink>
-        <button @click="showSearchMobile" class="text-lg text-white">🔍 Поиск</button>
-        <NuxtLink @click="closeMobile" to="/reservations" v-if="store.currentUser?.role==='Admin'" class="text-lg text-white">Бронирования</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="text-lg text-white">Мои бронирования</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/recomendation" class="text-lg text-white">ИИ Рекомендации</NuxtLink>
-        <a @click.prevent="goToRandomMobile" href="/random/book" class="text-lg text-white">Случайная книга</a>
+        <NuxtLink @click="closeMobile" to="/" class="transition hover:text-indigo-200">Домой</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/catalog" class="transition hover:text-indigo-200">Каталог</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/about" class="transition hover:text-indigo-200">О нас</NuxtLink>
+        <button @click="showSearchMobile" class="rounded-full bg-white/10 px-4 py-2 transition hover:bg-white/20">🔍 Поиск</button>
+        <NuxtLink
+            @click="closeMobile"
+            to="/reservations"
+            v-if="store.currentUser?.role==='Admin'"
+            class="transition hover:text-indigo-200"
+        >Бронирования</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="transition hover:text-indigo-200">Мои бронирования</NuxtLink>
+        <NuxtLink @click="closeMobile" to="/recomendation" class="transition hover:text-indigo-200">ИИ Рекомендации</NuxtLink>
+        <a @click.prevent="goToRandomMobile" href="/random/book" class="transition hover:text-indigo-200">Случайная книга</a>
         <NuxtLink
             v-if="store.currentUser?.role==='Admin'"
             @click="closeMobile"
             to="/admin/books/create"
-            class="block w-full text-lg text-white px-3 py-2 rounded-md transition text-center"
-        >Добавить книгу</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/import-files" v-if="store.currentUser?.role==='Admin'" class="text-lg text-white">Импортировать книги</NuxtLink>
-        <button @click="closeMobile" class="absolute top-4 right-4 text-white text-3xl">&times;</button>
+            class="block w-full rounded-full border border-white/10 bg-white/10 px-4 py-2 text-center text-base transition hover:bg-white/20"
+        >Добавить нигу</NuxtLink>
+        <NuxtLink
+            @click="closeMobile"
+            to="/import-files"
+            v-if="store.currentUser?.role==='Admin'"
+            class="transition hover:text-indigo-200"
+        >Импортировать книги</NuxtLink>
+        <button @click="closeMobile" class="absolute right-5 top-5 text-4xl text-slate-200">&times;</button>
       </nav>
     </transition>
 
@@ -67,29 +86,29 @@
     <transition name="fade">
       <div
           v-if="isSearched"
-          class="fixed inset-0 flex items-start sm:items-center justify-center bg-black bg-opacity-50 z-50 px-4 sm:px-0 pt-12 sm:pt-0"
+          class="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 px-4 pt-12 text-slate-100 backdrop-blur-xl sm:items-center sm:px-0 sm:pt-0"
       >
-        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md relative">
-          <button @click="closeInput" class="absolute top-2 right-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="relative w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-indigo-500/20 backdrop-blur-xl sm:p-6">
+          <button @click="closeInput" class="absolute right-4 top-4 text-slate-300 transition hover:text-indigo-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
-          <div class="flex flex-col space-y-3 w-full">
+          <div class="flex w-full flex-col space-y-4">
             <!-- Поле поиска с кнопками -->
             <div class="relative flex items-center">
               <input
                   v-model="searchQuery"
                   type="text"
                   placeholder="Поиск книг..."
-                  class="flex-1 p-3 pr-16 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
+                  class="flex-1 rounded-full border border-white/10 bg-slate-900/60 p-3 pr-20 text-sm text-slate-100 transition placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
                   @keyup.enter="onSearch"
               />
               <!-- Кнопка очистки -->
               <button
                   v-if="searchQuery"
                   @click="searchQuery = ''"
-                  class="absolute right-10 p-1 text-gray-500 hover:text-gray-700 transition-colors"
+                  class="absolute right-12 rounded-full p-1 text-slate-400 transition hover:text-indigo-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -98,7 +117,7 @@
               <!-- Кнопка поиска -->
               <button
                   @click="onSearch"
-                  class="absolute right-2 p-1 text-indigo-600 hover:text-indigo-800 transition-colors"
+                  class="absolute right-3 flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/80 text-white transition hover:bg-indigo-400"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -107,23 +126,25 @@
             </div>
 
             <!-- Нижний блок с настройками -->
-            <div class="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
-              <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div class="flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
+              <div class="flex flex-wrap items-center gap-3">
                 <!-- Переключатель AI поиска -->
-                <label class="inline-flex items-center cursor-pointer">
+                <label class="inline-flex cursor-pointer items-center gap-2 text-xs sm:text-sm">
                   <input v-model="isNpl" type="checkbox" class="sr-only peer">
-                  <div class="relative w-10 h-5 sm:w-10 sm:h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-                  <span class="ml-1 sm:ml-2 text-xs sm:text-sm font-medium text-gray-700">AI Поиск</span>
+                  <div class="relative h-5 w-10 rounded-full bg-slate-700 transition peer-focus:outline-none peer-checked:bg-indigo-500">
+                    <span class="absolute left-[3px] top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-slate-200 transition peer-checked:translate-x-5 peer-checked:bg-white"></span>
+                  </div>
+                  <span class="font-medium text-slate-200">AI Поиск</span>
                 </label>
 
                 <!-- Иконка с подсказкой -->
-                <div class="relative group">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="group relative">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-help text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
-                  <div class="absolute z-10 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-56 sm:w-64 bg-gray-800 text-white text-xs sm:text-sm rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-lg whitespace-normal">
+                  <div class="absolute bottom-full left-1/2 z-10 w-60 -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-900/90 px-4 py-3 text-xs text-slate-100 opacity-0 shadow-xl shadow-indigo-500/20 backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-[-4px] group-hover:opacity-100 sm:w-64 sm:text-sm">
                     Включает продвинутый поиск. Вы можете написать описание книги, и система подберёт книги с помощью ИИ.
-                    <div class="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-0 border-t-4 border-gray-800 border-solid"></div>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-r border-b border-white/10 bg-slate-900/90"></div>
                   </div>
                 </div>
               </div>
@@ -138,19 +159,36 @@
       <template v-if="isAuthenticated">
         <div class="relative">
           <div @click="toggleDropdown" class="cursor-pointer">
-            <img src="/img/products-2.jpg" alt="Profile" class="w-10 h-10 rounded-full" />
+            <img src="/img/products-2.jpg" alt="Profile" class="h-10 w-10 rounded-full border border-white/20 shadow-lg shadow-indigo-500/20" />
           </div>
-          <ul v-if="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink :to="`/user/${store.currentUser.id}`" @click="closeDropdown">Мой профиль</NuxtLink></li>
-            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/history" @click="closeDropdown">История бронирований</NuxtLink></li>
-            <li class="px-4 py-2 hover:bg-gray-100"><NuxtLink to="/favorites" @click="closeDropdown">Избранные книги</NuxtLink></li>
-            <li class="px-4 py-2 text-red-500 hover:bg-gray-100"><button @click="handleLogout">Выйти</button></li>
+          <ul
+              v-if="isDropdownOpen"
+              class="absolute right-0 mt-3 w-52 rounded-2xl border border-white/10 bg-slate-900/90 p-2 text-sm text-slate-100 shadow-xl shadow-indigo-500/20 backdrop-blur-xl"
+          >
+            <li class="rounded-xl px-4 py-2 transition hover:bg-white/10">
+              <NuxtLink :to="`/user/${store.currentUser.id}`" @click="closeDropdown">Мой профиль</NuxtLink>
+            </li>
+            <li class="rounded-xl px-4 py-2 transition hover:bg-white/10">
+              <NuxtLink to="/history" @click="closeDropdown">История бронирований</NuxtLink>
+            </li>
+            <li class="rounded-xl px-4 py-2 transition hover:bg-white/10">
+              <NuxtLink to="/favorites" @click="closeDropdown">Избранные книги</NuxtLink>
+            </li>
+            <li class="rounded-xl px-4 py-2 text-rose-300 transition hover:bg-white/10">
+              <button @click="handleLogout">Выйти</button>
+            </li>
           </ul>
         </div>
       </template>
       <template v-else>
-        <NuxtLink to="/auth/login" class="px-3 py-1 bg-indigo-600 text-white rounded-md">Войти</NuxtLink>
-        <NuxtLink to="/auth/register" class="px-3 py-1 bg-indigo-600 text-white rounded-md">Зарегистрироваться</NuxtLink>
+        <NuxtLink
+            to="/auth/login"
+            class="rounded-full border border-indigo-400/50 bg-indigo-500/80 px-4 py-2 text-sm font-semibold text-white shadow shadow-indigo-500/30 transition hover:bg-indigo-400"
+        >Войти</NuxtLink>
+        <NuxtLink
+            to="/auth/register"
+            class="rounded-full border border-sky-400/40 bg-sky-500/70 px-4 py-2 text-sm font-semibold text-white shadow shadow-sky-500/30 transition hover:bg-sky-400"
+        >Зарегистрироваться</NuxtLink>
       </template>
     </div>
   </header>

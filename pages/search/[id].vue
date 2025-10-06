@@ -46,27 +46,28 @@ watch(
 </script>
 
 <template>
-<h2 class="text-4xl text-center mb-10">Результаты поиска:</h2>
-  <div v-if="!store.searched_books.length" class="">
-    <h2 class="text-center text-3xl">По запросу <i><b>{{keyword}}</b></i> ничего не найдено</h2>
-  </div>
-  <div v-else class="results main">
-    <div v-for="book in store.searched_books"  class="">
-      <books-item
+  <section class="main flex flex-col gap-6 sm:gap-8">
+    <h2 class="text-center text-2xl sm:text-3xl lg:text-4xl font-semibold mb-2 sm:mb-4 lg:mb-6">
+      Результаты поиска:
+    </h2>
+    <div v-if="!store.searched_books.length" class="flex justify-center">
+      <h2 class="max-w-3xl text-center text-lg sm:text-xl md:text-2xl">
+        По запросу <i><b>{{ keyword }}</b></i> ничего не найдено
+      </h2>
+    </div>
+    <div
+      v-else
+      class="grid gap-5 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+    >
+      <div v-for="book in store.searched_books" :key="book.id" class="h-full">
+        <books-item
           :title="book.title"
           :author="book.author"
           :image-src="book.image"
-          :id ="book.id"
-      />
+          :id="book.id"
+          class="h-full"
+        />
+      </div>
     </div>
-
-  </div>
+  </section>
 </template>
-
-<style scoped>
-.results{
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-}
-</style>

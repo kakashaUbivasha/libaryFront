@@ -104,7 +104,7 @@ onMounted(()=>{
         <swiper-slide
             v-for="(slide, idx) in randomBooks"
             :key="idx"
-            style="background-color: #F0F4F8;"
+            class="quote-slide"
         >
           <quote
           :author="slide.author"
@@ -125,6 +125,7 @@ onMounted(()=>{
     margin-top: 40px;
     text-align: center;
     margin-bottom: 40px;
+    color: #e2e8f0;
   }
 }
 
@@ -141,4 +142,12 @@ onMounted(()=>{
   :deep(quote) {
     width: min(100%, 320px);
   }
+.quote-slide {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.85), rgba(30, 64, 175, 0.35));
+  border-radius: 24px;
+  border: 1px solid rgba(226, 232, 240, 0.08);
+  padding: 24px 0;
+  box-shadow: 0 25px 45px rgba(79, 70, 229, 0.15);
+  backdrop-filter: blur(12px);
+}
 </style>

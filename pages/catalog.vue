@@ -33,17 +33,6 @@
       </div>
     </div>
 
-    <!-- Селектор языка -->
-    <div class="language-selector">
-      <label for="language">Выберите язык:</label>
-      <select id="language" v-model="selectedLanguage" @change="handleLanguageChange">
-        <option value="ru">Русский</option>
-        <option value="en">Английский</option>
-        <option value="fr">Французский</option>
-        <!-- Добавьте другие языки по необходимости -->
-      </select>
-    </div>
-
     <!-- Список книг -->
     <div class="books">
       <div class="book-card" v-for="book in store.books" :key="book.id">
@@ -72,7 +61,6 @@ import {useBookStore} from "~/stores/book";
 
 const store = useBookStore()
 const selectedCategory = ref(''); // Категория по умолчанию
-const selectedLanguage = ref('ru'); // Язык по умолчанию (русский)
 const loading = ref(false);
 const perPage = 40;
 const page = ref(1);
@@ -107,11 +95,6 @@ const fetchBooksByCategory = async () => {
   }
 };
 
-const handleLanguageChange = async () => {
-  page.value = 1;
-  await fetchBooksByCategory();
-};
-
 watch(selectedCategory, async () => {
   page.value = 1;
   await fetchBooksByCategory();
@@ -139,19 +122,11 @@ onMounted(async () => {
 <style scoped>
 .catalog {
   padding: 20px;
+  color: #e2e8f0;
 }
 
-.category-selector, .language-selector {
-  margin-bottom: 20px;
-}
-
-.category-selector label, .language-selector label {
-  margin-right: 10px;
-}
-
-.category-selector select, .language-selector select {
-  padding: 5px;
-  font-size: 16px;
+.category-selector {
+  margin-bottom: 24px;
 }
 
 .books {
@@ -191,16 +166,27 @@ onMounted(async () => {
 }
 
 .pagination button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  padding: 10px 24px;
+  background: linear-gradient(120deg, rgba(129, 140, 248, 0.9), rgba(56, 189, 248, 0.6));
+  color: #0b1120;
   border: none;
-  border-radius: 5px;
+  border-radius: 9999px;
   cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 12px 25px rgba(79, 70, 229, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .pagination button:disabled {
-  background-color: #ccc;
+  background: rgba(100, 116, 139, 0.4);
+  color: rgba(226, 232, 240, 0.6);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pagination button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 28px rgba(56, 189, 248, 0.28);
 }
 .category-selector-wrapper {
   margin: 1.5rem 0;
@@ -215,6 +201,7 @@ onMounted(async () => {
   position: relative;
 }
 
+
 .styled-select {
   appearance: none;
   width: 100%;
@@ -222,23 +209,24 @@ onMounted(async () => {
   padding-right: 40px;
   font-size: 16px;
   line-height: 1.5;
-  color: #333;
-  background-color: #fff;
-  border: 2px solid #6A5ACD;
-  border-radius: 8px;
+  color: #e2e8f0;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.92), rgba(30, 64, 175, 0.35));
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 35px rgba(49, 46, 129, 0.25);
+  backdrop-filter: blur(10px);
 }
 
 .styled-select:focus {
   outline: none;
-  border-color: #4F46E5;
-  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.2);
+  border-color: rgba(129, 140, 248, 0.8);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
 }
 
 .styled-select:hover {
-  border-color: #4F46E5;
+  border-color: rgba(129, 140, 248, 0.8);
 }
 
 .select-arrow {
@@ -247,18 +235,18 @@ onMounted(async () => {
   right: 16px;
   transform: translateY(-50%);
   pointer-events: none;
-  color: #6A5ACD;
+  color: rgba(165, 180, 252, 0.85);
 }
 
 /* Стили для опций */
 .styled-select option {
   padding: 8px;
-  background: white;
-  color: #333;
+  background: #0f172a;
+  color: #e2e8f0;
 }
 
 .styled-select option:disabled {
-  color: #999;
+  color: rgba(148, 163, 184, 0.6);
   font-style: italic;
 }
 

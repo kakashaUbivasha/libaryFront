@@ -20,10 +20,10 @@ const statistics = ref([
 
 const showContent = ref(false);
 const listItems = ref([
-  "Искать книги по автору, жанру или популярности.",
-  "Читать отзывы и делиться своими впечатлениями.",
-  "Резервировать книги для чтения в библиотеке или на вынос.",
-  "Получать персональные рекомендации благодаря AI."
+  "Находите книги по жанрам, авторам и коллекциям в пару кликов.",
+  "Бронируйте экземпляры заранее и забирайте их в удобное время.",
+  "Получайте персональные AI-рекомендации на основе ваших интересов.",
+  "Обменивайтесь отзывами с другими читателями и ведите историю чтения."
 ]);
 
 const fallingElements = ref([])
@@ -49,13 +49,27 @@ onMounted(() => {
 <template>
   <div>
     <!-- Hero Section -->
-    <div class="relative h-[80vh] w-full bg-image-my bg-cover bg-center bg-no-repeat -mt-[170px] rounded-b-2xl">
-      <div class="absolute top-[35%] sm:top-1/2 left-1/2 transform -translate-x-1/2 sm:-translate-y-1/2 bg-black/30 text-white text-center p-5 rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.7)] animate-fadeIn">
-        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2">Добро пожаловать в Библиотеку</h1>
-        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4">"Эпоха Знаний"</h1>
-        <p class="text-base sm:text-xl lg:text-2xl animate-fadeIn delay-500">Место, где живут истории и рождаются идеи</p>
+    <section class="relative -mt-[170px] pb-12 pt-32">
+      <div class="mx-auto max-w-6xl">
+        <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-950/90 via-indigo-900/70 to-slate-950/80 px-6 py-16 text-center shadow-2xl shadow-indigo-500/20 sm:px-10 lg:px-16">
+          <div class="pointer-events-none absolute -left-20 top-10 h-40 w-40 rounded-full bg-indigo-500/30 blur-3xl"></div>
+          <div class="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full bg-sky-500/30 blur-3xl"></div>
+          <div class="relative z-10 space-y-4">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-200/90">Библиотечный портал нового поколения</p>
+            <h1 class="text-3xl font-bold text-slate-100 sm:text-4xl lg:text-5xl">Добро пожаловать в Библиотеку</h1>
+            <h2 class="text-3xl font-bold text-slate-100 sm:text-4xl lg:text-5xl">«Эпоха Знаний»</h2>
+            <p class="mx-auto max-w-3xl text-base text-slate-200/90 sm:text-lg lg:text-xl">
+              Здесь вы бронируете любимые книги и получаете точные рекомендации от искусственного интеллекта, настроенного на ваши литературные предпочтения.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3 pt-4 text-sm text-slate-200/80 sm:text-base">
+              <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">Быстрая бронь книг</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">Умные подборки</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">Комьюнити читателей</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- About Section -->
     <section class="relative py-12 sm:py-16 text-center overflow-hidden">
@@ -74,14 +88,14 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="bg-gray-50 max-w-4xl mx-auto p-6 sm:p-8 rounded-lg shadow-md">
+      <div class="max-w-4xl mx-auto rounded-3xl border border-white/10 bg-slate-950/60 p-6 shadow-xl shadow-indigo-500/20 backdrop-blur">
         <transition
             enter-active-class="animate-fadeBounce"
             appear
         >
           <div v-if="showContent" class="mb-8">
-            <h2 class="text-3xl sm:text-4xl font-bold mb-4">О нашей библиотеке</h2>
-            <p class="text-lg sm:text-xl">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4 text-slate-100">О нашей библиотеке</h2>
+            <p class="text-lg sm:text-xl text-slate-200/90">
               Добро пожаловать на платформу "Эпоха Знаний" — ваш личный проводник в мире книг.
               Здесь вы можете:
             </p>
@@ -89,7 +103,7 @@ onMounted(() => {
         </transition>
 
         <div v-for="(item, index) in listItems" :key="item" :data-aos="index%2==0?'fade-right':'fade-left'">
-          <p class="text-xl sm:text-2xl max-w-3xl mx-auto my-8 sm:my-10 py-8 border border-gray-200 shadow-sm">
+          <p class="text-xl sm:text-2xl text-slate-100 max-w-3xl mx-auto my-8 sm:my-10 rounded-2xl border border-white/5 bg-white/5 px-6 py-8 shadow-md shadow-indigo-500/10 backdrop-blur">
             {{ item }}
           </p>
         </div>
@@ -99,8 +113,8 @@ onMounted(() => {
     <!-- Statistics Section -->
     <section class="mb-10 sm:mb-16 px-4">
       <div class="mb-8 sm:mb-12 flex flex-col items-center gap-5">
-        <h2 class="text-2xl sm:text-3xl font-bold">Сейчас в библиотеке:</h2>
-        <span class="text-xl sm:text-2xl italic">7231 книги</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-100">Сейчас в библиотеке:</h2>
+        <span class="text-xl sm:text-2xl italic text-indigo-200">7231 книги</span>
       </div>
 
       <ClientOnly>
@@ -116,11 +130,11 @@ onMounted(() => {
             "1024": {"slidesPerView": 5}
           }'
         >
-          <swiper-slide v-for="(slide, idx) in statistics" :key="idx" class="bg-gray-50">
-            <div class="flex flex-col items-center justify-between gap-3 p-4">
-              <img :src="slide.imageSrc" alt="" class="w-12 h-12">
-              <h3 class="font-medium text-lg">{{ slide.title }}</h3>
-              <span class="italic">{{ slide.text }}</span>
+          <swiper-slide v-for="(slide, idx) in statistics" :key="idx" class="rounded-2xl border border-white/10 bg-slate-950/60">
+            <div class="flex flex-col items-center justify-between gap-3 p-5 text-slate-100">
+              <img :src="slide.imageSrc" alt="" class="h-12 w-12 opacity-90">
+              <h3 class="text-lg font-semibold text-indigo-100">{{ slide.title }}</h3>
+              <span class="italic text-slate-200/80">{{ slide.text }}</span>
             </div>
           </swiper-slide>
         </swiper-container>
@@ -150,24 +164,27 @@ onMounted(() => {
     </div>
 
     <!-- Top Users Section -->
-    <div class="max-w-7xl mx-auto px-4 py-6 sm:py-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Топовые пользователи</h2>
+    <div
+        v-if="store.topUsers && store.topUsers.length"
+        class="max-w-7xl mx-auto px-4 py-6 sm:py-8"
+    >
+      <h2 class="mb-6 text-center text-2xl font-bold text-slate-100">Топовые пользователи</h2>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         <div
             v-for="user in store.topUsers"
             :key="user.id"
-            class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+            class="rounded-2xl border border-white/10 bg-slate-950/60 shadow-lg shadow-indigo-500/10 transition-transform hover:-translate-y-1 hover:shadow-indigo-500/20"
         >
           <NuxtLink
               :to="`/user/${user.id}`"
-              class="flex flex-col items-center p-4"
+              class="flex flex-col items-center gap-3 p-5 text-slate-100"
           >
-            <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center text-lg font-bold mb-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-indigo-500/80 text-lg font-bold text-white shadow-lg shadow-indigo-500/30">
               {{ user.name.charAt(0).toUpperCase() }}
             </div>
             <div class="text-center">
-              <h3 class="font-medium text-gray-900 hover:text-blue-500 transition-colors">
+              <h3 class="font-medium text-slate-100 transition-colors hover:text-indigo-200">
                 {{ user.name }}
               </h3>
             </div>
@@ -218,8 +235,5 @@ onMounted(() => {
 
 .animate-fall {
   animation: fall 10s linear infinite;
-}
-.bg-image-my{
-  background-image: url("../public/img/libary.jpg");
 }
 </style>

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import {useGlobalStore} from "~/stores/global";

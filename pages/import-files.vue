@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container import-page">
     <h1 class="title">Импорт данных</h1>
 
-    <div class="card">
+    <div class="card glass-card">
       <h2 class="subtitle">Импорт жанров</h2>
       <form @submit.prevent="uploadGenres" class="form">
         <div class="file-upload">
@@ -29,7 +29,7 @@
       </form>
     </div>
 
-    <div class="card">
+    <div class="card glass-card">
       <h2 class="subtitle">Импорт книг</h2>
       <form @submit.prevent="uploadBooks" class="form">
         <div class="file-upload">
@@ -56,7 +56,7 @@
       </form>
     </div>
 
-    <div class="card">
+    <div class="card glass-card">
       <h2 class="subtitle">Импорт тегов</h2>
       <form @submit.prevent="uploadTags" class="form">
         <div class="file-upload">
@@ -83,7 +83,7 @@
       </form>
     </div>
 
-    <div class="card">
+    <div class="card glass-card">
       <h2 class="subtitle">Импорт тегов книг</h2>
       <form @submit.prevent="uploadBookTags" class="form">
         <div class="file-upload">
@@ -291,6 +291,7 @@ async function uploadBookTags() {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  color: #e2e8f0;
 }
 
 .title {
@@ -298,22 +299,28 @@ async function uploadBookTags() {
   font-weight: 600;
   margin-bottom: 2rem;
   text-align: center;
-  color: #2d3748;
+  color: #f8fafc;
+  text-shadow: 0 12px 30px rgba(15, 23, 42, 0.6);
 }
 
 .subtitle {
   font-size: 1.25rem;
   font-weight: 500;
   margin-bottom: 1rem;
-  color: #4a5568;
+  color: rgba(226, 232, 240, 0.9);
 }
 
 .card {
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.glass-card {
+  background: linear-gradient(150deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.35));
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 25px 50px rgba(30, 64, 175, 0.18);
+  backdrop-filter: blur(12px);
 }
 
 .form {
@@ -344,81 +351,88 @@ async function uploadBookTags() {
 }
 
 .file-cta {
-  background-color: #f7fafc;
-  border: 1px dashed #cbd5e0;
-  border-radius: 0.375rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px dashed rgba(129, 140, 248, 0.45);
+  border-radius: 0.75rem;
   padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   transition: all 0.2s;
+  color: #e2e8f0;
 }
 
 .file-cta:hover {
-  background-color: #edf2f7;
-  border-color: #a0aec0;
+  background: rgba(30, 41, 59, 0.75);
+  border-color: rgba(165, 180, 252, 0.65);
 }
 
 .file-icon {
   margin-right: 0.5rem;
-  color: #4a5568;
+  color: rgba(165, 180, 252, 0.9);
 }
 
 .file-label-text {
-  color: #4a5568;
-  font-size: 0.875rem;
+  color: rgba(226, 232, 240, 0.9);
+  font-size: 0.9rem;
 }
 
 .button {
-  background-color: #6A5ACD;
-  color: white;
+  background: linear-gradient(120deg, rgba(129, 140, 248, 0.9), rgba(56, 189, 248, 0.6));
+  color: #0b1120;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
+  border-radius: 9999px;
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 3rem;
+  box-shadow: 0 15px 30px rgba(79, 70, 229, 0.35);
 }
 
 .button:hover {
-  background-color: #3182ce;
+  transform: translateY(-1px);
+  box-shadow: 0 20px 35px rgba(56, 189, 248, 0.35);
 }
 
 .button:disabled {
-  background-color: #bee3f8;
+  background: rgba(100, 116, 139, 0.4);
+  color: rgba(226, 232, 240, 0.6);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
 .notification {
   padding: 1rem;
-  border-radius: 0.375rem;
+  border-radius: 0.75rem;
   margin-top: 1rem;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.35);
 }
 
-.is-success {
-  background-color: #f0fff4;
-  color: #2f855a;
-  border: 1px solid #c6f6d5;
+.notification.is-success {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: rgba(190, 242, 100, 0.9);
 }
 
-.is-error {
-  background-color: #fff5f5;
-  color: #c53030;
-  border: 1px solid #fed7d7;
+.notification.is-error {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: rgba(252, 165, 165, 0.95);
 }
 
 .loader {
   width: 1rem;
   height: 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(15, 23, 42, 0.35);
   border-radius: 50%;
-  border-top-color: white;
+  border-top-color: rgba(226, 232, 240, 0.8);
   animation: spin 1s ease-in-out infinite;
   margin-right: 0.5rem;
 }

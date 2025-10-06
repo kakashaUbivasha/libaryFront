@@ -1,6 +1,8 @@
 <template>
   <div class="main">
-    <h1 class="text-4xl text-center mb-10 font-bold">Мои бронирования</h1>
+    <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center mb-10 font-bold">
+      Мои бронирования
+    </h1>
     <custom-table
         :rows="store.reservations"
         :headers="headers"

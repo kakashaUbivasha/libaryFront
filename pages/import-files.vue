@@ -118,7 +118,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useGlobalStore } from '~/stores/global'
+import { useGlobalStore } from '~/stores/global.ts'
 
 const genreFile = ref(null)
 const bookFile = ref(null)

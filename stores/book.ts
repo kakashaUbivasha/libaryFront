@@ -66,7 +66,7 @@ export const useBookStore = defineStore('books', {
 
             try {
                 const config = useRuntimeConfig();
-                const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+                const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000/api';
                 const globalStore = useGlobalStore();
 
                 if (!globalStore.token) {
@@ -80,9 +80,6 @@ export const useBookStore = defineStore('books', {
                     accept: 'application/json'
                 };
 
-                if (globalStore.token) {
-                    headers.Authorization = `Bearer ${globalStore.token}`;
-                }
 
                 const response = await fetch(`${baseURL}/npl/suggest-tags`, {
                     method: 'POST',

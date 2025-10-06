@@ -65,21 +65,24 @@
 
     <!-- Поиск (оверлей, универсальный) -->
     <transition name="fade">
-      <div v-if="isSearched" class="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white p-4 mt-12 rounded-lg shadow-lg w-full max-w-md relative">
+      <div
+          v-if="isSearched"
+          class="fixed inset-0 flex items-start sm:items-center justify-center bg-black bg-opacity-50 z-50 px-4 sm:px-0 pt-12 sm:pt-0"
+      >
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md relative">
           <button @click="closeInput" class="absolute top-2 right-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
-          <div class="flex flex-col space-y-3 w-full max-w-xs">
+          <div class="flex flex-col space-y-3 w-full">
             <!-- Поле поиска с кнопками -->
             <div class="relative flex items-center">
               <input
                   v-model="searchQuery"
                   type="text"
                   placeholder="Поиск книг..."
-                  class="flex-1 p-2 pr-16 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
+                  class="flex-1 p-3 pr-16 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
                   @keyup.enter="onSearch"
               />
               <!-- Кнопка очистки -->
@@ -104,21 +107,21 @@
             </div>
 
             <!-- Нижний блок с настройками -->
-            <div class="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2">
-              <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <!-- Переключатель AI поиска -->
                 <label class="inline-flex items-center cursor-pointer">
                   <input v-model="isNpl" type="checkbox" class="sr-only peer">
-                  <div class="relative w-8 h-4 sm:w-10 sm:h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] sm:after:top-[2px] sm:after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 sm:after:h-4 sm:after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div class="relative w-10 h-5 sm:w-10 sm:h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                   <span class="ml-1 sm:ml-2 text-xs sm:text-sm font-medium text-gray-700">AI Поиск</span>
                 </label>
 
                 <!-- Иконка с подсказкой -->
                 <div class="relative group">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
-                  <div class="absolute z-10 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-48 sm:w-64 bg-gray-800 text-white text-xs sm:text-sm rounded-lg py-1 px-2 sm:py-2 sm:px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-lg whitespace-normal">
+                  <div class="absolute z-10 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-56 sm:w-64 bg-gray-800 text-white text-xs sm:text-sm rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-lg whitespace-normal">
                     Включает продвинутый поиск. Вы можете написать описание книги, и система подберёт книги с помощью ИИ.
                     <div class="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-0 border-t-4 border-gray-800 border-solid"></div>
                   </div>

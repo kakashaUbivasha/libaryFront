@@ -5,7 +5,7 @@ import Footer from "~/components/layout/Footer.vue";
 </script>
 
 <template>
-  <div class="relative min-h-screen overflow-hidden text-slate-100">
+  <div class="relative min-h-screen overflow-x-hidden text-slate-100">
     <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
       <div class="absolute -left-32 -top-40 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl sm:h-80 sm:w-80"></div>
       <div class="absolute bottom-[-180px] left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-500/10 blur-3xl"></div>

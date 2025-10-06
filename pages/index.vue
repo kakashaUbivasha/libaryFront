@@ -49,7 +49,7 @@ onMounted(() => {
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative -mt-[170px] pb-12 pt-32">
+    <section class="relative pb-12 pt-24 sm:pt-28 lg:pt-32">
       <div class="mx-auto max-w-6xl">
         <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-950/90 via-indigo-900/70 to-slate-950/80 px-6 py-16 text-center shadow-2xl shadow-indigo-500/20 sm:px-10 lg:px-16">
           <div class="pointer-events-none absolute -left-20 top-10 h-40 w-40 rounded-full bg-indigo-500/30 blur-3xl"></div>

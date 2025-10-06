@@ -106,15 +106,15 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
 </script>
 
 <template>
-  <div v-if="rows.length" class="overflow-x-auto">
+  <div v-if="rows.length" class="overflow-x-auto rounded-3xl border border-white/10 bg-slate-950/40 shadow-xl shadow-indigo-500/20 backdrop-blur">
     <!-- Таблица -->
-    <table class="min-w-full table-auto border-collapse border border-gray-300 text-left shadow-lg">
+    <table class="min-w-full table-auto border-separate border-spacing-0 text-left text-sm text-slate-100">
       <thead>
-      <tr class="bg-main text-white">
+      <tr class="bg-white/5 text-indigo-100">
         <th
             v-for="(header, index) in tableHeaders"
             :key="index"
-            class="border border-gray-300 p-3 text-sm font-semibold uppercase tracking-wide"
+            class="border-b border-white/10 px-4 py-3 text-xs font-semibold uppercase tracking-wide first:rounded-tl-3xl last:rounded-tr-3xl"
         >
           {{ header }}
         </th>
@@ -124,15 +124,15 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
       <tr
           v-for="(row, rowIndex) in paginatedRows"
           :key="rowIndex"
-          class="hover:bg-gray-100 odd:bg-white even:bg-gray-50 transition-colors"
+          class="transition-colors odd:bg-white/5 even:bg-white/10 hover:bg-indigo-500/10"
       >
         <!-- Номер строки -->
-        <td class="border border-gray-300 p-3 text-gray-700 text-sm font-medium">
+        <td class="border-b border-white/5 px-4 py-3 text-sm font-semibold text-slate-100">
           {{ (currentPage - 1) * rowsPerPage + rowIndex + 1 }}
         </td>
 
         <!-- Название книги -->
-        <td class="border border-gray-300 p-3 text-gray-600 text-sm">
+        <td class="border-b border-white/5 px-4 py-3 text-sm text-slate-200">
           <NuxtLink :to="`/books/${row.book_id}`">
             {{ row.book_title }}
           </NuxtLink>
@@ -140,77 +140,77 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
         </td>
 
         <!-- Дата бронирования -->
-        <td class="border border-gray-300 p-3 text-gray-600 text-sm">
+        <td class="border-b border-white/5 px-4 py-3 text-sm text-slate-300">
           {{ formatDate(row.reservation_time) }}
         </td>
 
         <!-- Статус -->
-        <td class="border border-gray-300 p-3 text-gray-600 text-sm">
+        <td class="border-b border-white/5 px-4 py-3 text-sm text-slate-200">
           {{ row.status === 'active' ? 'Активна' : row.status === 'passed' ? 'Выдана' : row.status === 'expired'?'Просрочена':'Бронь отменена' }}
         </td>
 
         <!-- Пользователь (только для админа) -->
-        <td v-if="store.currentUser?.role==='Admin'" class="border border-gray-300 p-3 text-gray-600 text-sm">
+        <td v-if="store.currentUser?.role==='Admin'" class="border-b border-white/5 px-4 py-3 text-sm text-slate-200">
           {{ row.user.name }}
         </td>
 
         <!-- Кнопки действий -->
-        <td class="border border-gray-300 p-3 text-center space-y-1">
+        <td class="border-b border-white/5 px-4 py-3 text-center text-slate-100">
           <!-- Статус: отменена -->
           <span
               v-if="row.status === 'canceled'"
-              class="text-sm text-red-600 font-semibold"
+              class="text-sm font-semibold text-rose-300"
           >
     Бронь отменена
   </span>
 
           <!-- Статус: просрочена -->
-          <div v-else-if="row.status === 'expired'" class="flex flex-col justify-center items-center">
+          <div v-else-if="row.status === 'expired'" class="flex flex-col items-center justify-center gap-2">
             <span
-                class="text-sm text-yellow-600 font-semibold"
+                class="text-sm font-semibold text-amber-300"
             >
     Возврат просрочен
   </span>
             <button
-                class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+                class="rounded-full bg-emerald-500/90 px-4 py-1 text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-300/80"
                 @click="returnBook(row.book_id, row.user.id)"
             >
               Подтвердить возврат
             </button>
           </div>
           <!-- Статус: выдана -->
-          <div v-else-if="row.status === 'passed'" class="flex flex-col justify-center items-center">
+          <div v-else-if="row.status === 'passed'" class="flex flex-col items-center justify-center gap-2">
             <span
-                class="text-sm text-green-400 font-semibold">
+                class="text-sm font-semibold text-emerald-300">
     Книга выдана, возврат: {{row.reserved_until}}
   </span>
             <button
-                class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+                class="rounded-full bg-emerald-500/90 px-4 py-1 text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-300/80"
                 @click="returnBook(row.book_id, row.user.id)"
             >
               Подтвердить возврат
             </button>
           </div>
-          <div v-else-if="row.status === 'returned'" class="flex flex-col justify-center items-center">
+          <div v-else-if="row.status === 'returned'" class="flex flex-col items-center justify-center">
             <span
-                class="text-sm text-yellow-600 font-semibold"
+                class="text-sm font-semibold text-indigo-200"
             >
               Книга возвращена
             </span>
           </div>
 
           <!-- Статус: активная -->
-          <div v-else-if="row.status === 'active'" class="flex justify-center flex-wrap gap-2">
+          <div v-else-if="row.status === 'active'" class="flex flex-wrap justify-center gap-2">
             <button
                 @click="deleteRow(row.book_id, row.user.id)"
-                class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition"
+                class="rounded-full bg-rose-500/90 px-4 py-1 text-sm font-semibold text-white shadow-md shadow-rose-500/30 transition hover:bg-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-300/80"
             >
               Отменить бронь
             </button>
             <button
                 v-if="store.currentUser?.role === 'Admin'"
                 @click="issueBook(row.book_id, row.user.id)"
-                class="bg-green-500 text-white py-1 px-4 rounded-md hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-1 transition"
+                class="rounded-full bg-sky-500/90 px-4 py-1 text-sm font-semibold text-white shadow-md shadow-sky-500/30 transition hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300/80"
             >
               Выдать книгу
             </button>
@@ -221,25 +221,25 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
     </table>
 
     <!-- Пагинация -->
-    <div class="mt-4 flex justify-center items-center space-x-2">
+    <div class="mt-4 flex flex-wrap items-center justify-center gap-3 px-4 pb-4">
       <button
           @click="goToPrevious"
           :disabled="currentPage === 1"
-          class="bg-gray-300 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+          class="rounded-full bg-white/10 px-4 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
       >
         Назад
       </button>
-      <span class="text-gray-600 text-sm font-medium">Страница {{ currentPage }} из {{ totalPages }}</span>
+      <span class="text-sm font-medium text-slate-200">Страница {{ currentPage }} из {{ totalPages }}</span>
       <button
           @click="goToNext"
           :disabled="currentPage === totalPages"
-          class="bg-gray-300 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+          class="rounded-full bg-white/10 px-4 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
       >
         Вперед
       </button>
     </div>
   </div>
-  <div v-else class="text-center py-8 text-gray-500">
+  <div v-else class="py-8 text-center text-slate-300">
     {{ emptyMessage }}
   </div>
 </template>

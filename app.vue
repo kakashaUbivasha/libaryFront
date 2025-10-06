@@ -1,7 +1,10 @@
 <template>
   <div>
     <!-- Показываем загрузку, пока инициализация не завершена -->
-    <div v-if="!isInitialized" class="loading">Загрузка...</div>
+    <div v-if="!isInitialized" class="loading">
+      <span class="loading__spinner"></span>
+      <p class="loading__text">Загружаем библиотеку будущего...</p>
+    </div>
     <!-- Рендерим содержимое только после инициализации -->
     <nuxt-layout v-else>
       <nuxt-page />
@@ -69,10 +72,41 @@ onBeforeUnmount(() => {
 <style scoped>
 .loading {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 18px;
   height: 100vh;
-  font-size: 1.5rem;
-  color: #333;
+  color: #e2e8f0;
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgba(99, 102, 241, 0.4) 0%, rgba(15, 23, 42, 0) 60%),
+    radial-gradient(80% 80% at 100% 0%, rgba(244, 114, 182, 0.25) 0%, rgba(4, 8, 21, 0) 65%),
+    radial-gradient(120% 120% at 50% 100%, rgba(56, 189, 248, 0.18) 0%, rgba(4, 8, 21, 0) 70%),
+    linear-gradient(180deg, #020617 0%, #050b19 45%, #030617 100%);
+}
+
+.loading__spinner {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 4px solid rgba(148, 163, 184, 0.25);
+  border-top-color: rgba(129, 140, 248, 0.9);
+  animation: spin 0.9s linear infinite;
+}
+
+.loading__text {
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

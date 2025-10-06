@@ -1,8 +1,15 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import type { PropType } from 'vue';
 import {useGlobalStore} from "~/stores/global";
 
-const emit = defineEmits(['deleteBook', 'issueBook', 'returnBook']);
+const emit = defineEmits(['deleteBook', 'issueBook', 'returnBook', 'changePage']);
+
+type PaginationInfo = {
+  currentPage: number;
+  lastPage: number;
+  perPage?: number;
+};
 
 const props = defineProps({
   headers: {
@@ -20,20 +27,63 @@ const props = defineProps({
     isUser: {
     type: Boolean,
     default: true
+  },
+  pagination: {
+    type: Object as PropType<PaginationInfo | null>,
+    default: null,
   }
 });
 const store = useGlobalStore();
 // Пагинация
-const currentPage = ref(1);
-const rowsPerPage = 50;
+const localPage = ref(1);
+const DEFAULT_ROWS_PER_PAGE = 50;
+const rowsPerPage = computed(() => props.pagination?.perPage ?? DEFAULT_ROWS_PER_PAGE);
 
-const totalPages = computed(() => Math.ceil(props.rows.length / rowsPerPage));
+watch(
+    () => props.rows,
+    () => {
+      if (!props.pagination) {
+        localPage.value = 1;
+      }
+    }
+);
+
+const currentPage = computed(() => props.pagination?.currentPage ?? localPage.value);
+const totalPages = computed(() => {
+  if (props.pagination) {
+    return props.pagination.lastPage || 1;
+  }
+  const pages = Math.ceil(props.rows.length / rowsPerPage.value);
+  return pages > 0 ? pages : 1;
+});
 
 const paginatedRows = computed(() => {
-  const startIndex = (currentPage.value - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
+  if (props.pagination) {
+    return props.rows;
+  }
+  const startIndex = (localPage.value - 1) * rowsPerPage.value;
+  const endIndex = startIndex + rowsPerPage.value;
   return props.rows.slice(startIndex, endIndex);
 });
+
+const goToPage = (page: number) => {
+  if (page < 1 || page > totalPages.value) {
+    return;
+  }
+  if (props.pagination) {
+    emit('changePage', page);
+  } else {
+    localPage.value = page;
+  }
+};
+
+const goToPrevious = () => {
+  goToPage(currentPage.value - 1);
+};
+
+const goToNext = () => {
+  goToPage(currentPage.value + 1);
+};
 
 const deleteRow = (id, user_id) => {
   emit('deleteBook', id, user_id);
@@ -173,7 +223,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
     <!-- Пагинация -->
     <div class="mt-4 flex justify-center items-center space-x-2">
       <button
-          @click="currentPage--"
+          @click="goToPrevious"
           :disabled="currentPage === 1"
           class="bg-gray-300 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
       >
@@ -181,7 +231,7 @@ const tableHeaders = computed(() => ['№', ...props.headers.map(header => heade
       </button>
       <span class="text-gray-600 text-sm font-medium">Страница {{ currentPage }} из {{ totalPages }}</span>
       <button
-          @click="currentPage++"
+          @click="goToNext"
           :disabled="currentPage === totalPages"
           class="bg-gray-300 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
       >

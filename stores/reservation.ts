@@ -2,10 +2,18 @@ import { defineStore } from 'pinia';
 import {useGlobalStore} from "./global";
 
 
+type ReservationMeta = {
+    current_page: number;
+    last_page: number;
+    per_page?: number;
+    total?: number;
+};
+
 export const useReservationStore = defineStore('reservation', {
     state: ()=>({
         reservations: [],
         all_reservations: [],
+        allReservationsMeta: null as ReservationMeta | null,
         history: [],
         error_message: ''
     }),
@@ -60,12 +68,19 @@ export const useReservationStore = defineStore('reservation', {
                 console.log(e)
             }
         },
-        async getAllReservations(user?: string)
+        async getAllReservations({ user, page }: { user?: string; page?: number } = {})
         {
             const store = useGlobalStore()
             try{
-                const query = user ? `?user=${encodeURIComponent(user)}` : ''
-                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservations${query}`, {
+                const params = new URLSearchParams()
+                if(user){
+                    params.append('user', user)
+                }
+                if(page){
+                    params.append('page', String(page))
+                }
+                const query = params.toString()
+                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservations${query ? `?${query}` : ''}`, {
                     headers: {
                         Authorization: `Bearer ${store.token}`,
                         accept: 'application/json',
@@ -78,9 +93,11 @@ export const useReservationStore = defineStore('reservation', {
                 }
                 const data = await response.json()
                 this.all_reservations = data.data
+                this.allReservationsMeta = data.meta ?? null
             }catch (error){
                 console.error(error)
                 this.all_reservations = []
+                this.allReservationsMeta = null
             }
         },
         async canceledReservBook(book_id: number, user_id: number)

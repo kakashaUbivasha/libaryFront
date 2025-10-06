@@ -74,12 +74,12 @@ const goToPage = (page) => {
 // Получение класса для статуса
 const getStatusClass = (status) => {
   switch (status) {
-    case 'active': return 'bg-blue-100 text-blue-800';
-    case 'canceled': return 'bg-red-100 text-red-800';
-    case 'passed': return 'bg-purple-100 text-purple-800';
-    case 'returned': return 'bg-green-100 text-green-800';
-    case 'expired': return 'bg-amber-100 text-amber-800';
-    default: return 'bg-gray-100 text-gray-800';
+    case 'active': return 'bg-indigo-500/20 text-indigo-100';
+    case 'canceled': return 'bg-rose-500/20 text-rose-200';
+    case 'passed': return 'bg-emerald-500/20 text-emerald-100';
+    case 'returned': return 'bg-sky-500/20 text-sky-100';
+    case 'expired': return 'bg-amber-500/20 text-amber-100';
+    default: return 'bg-white/10 text-slate-100';
   }
 };
 
@@ -100,15 +100,15 @@ const getStatusText = (status) => {
   <div class="reservation-history">
     <!-- Фильтры -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-      <h2 class="text-2xl font-bold text-gray-800">История бронирований</h2>
+      <h2 class="text-2xl font-bold text-slate-100">История бронирований</h2>
 
       <div class="flex items-center gap-4">
         <div class="flex items-center">
-          <label for="status-filter" class="mr-2 text-sm font-medium text-gray-700">Статус:</label>
+          <label for="status-filter" class="mr-2 text-sm font-medium text-slate-300">Статус:</label>
           <select
               id="status-filter"
               v-model="statusFilter"
-              class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-main focus:border-main"
+              class="rounded-xl border border-white/10 bg-slate-900/80 px-3 py-1 text-sm text-slate-100 shadow-inner shadow-indigo-500/10 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
           >
             <option
                 v-for="option in statusOptions"
@@ -123,58 +123,58 @@ const getStatusText = (status) => {
     </div>
 
     <!-- Таблица -->
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+    <div class="overflow-x-auto rounded-3xl border border-white/10 bg-slate-950/40 shadow-xl shadow-indigo-500/20 backdrop-blur">
+      <table class="min-w-full table-auto border-separate border-spacing-0 text-sm text-slate-100">
+        <thead class="bg-white/5 text-indigo-100">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="border-b border-white/10 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
             Книга
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="border-b border-white/10 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
             Срок сдачи
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="border-b border-white/10 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
             Дата бронирования
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th class="border-b border-white/10 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
             Статус
           </th>
-          <th v-if="isAdmin" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th v-if="isAdmin" class="border-b border-white/10 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
             Пользователь
           </th>
         </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="divide-y divide-white/5">
         <tr
             v-for="reservation in paginatedReservations"
             :key="reservation.reservation_time"
-            class="hover:bg-gray-50 transition-colors"
+            class="transition-colors odd:bg-white/5 even:bg-white/10 hover:bg-indigo-500/10"
         >
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm font-medium text-gray-900">
+          <td class="px-6 py-4 text-sm font-medium text-slate-100">
+            <div>
               {{ reservation.book_title }}
             </div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td class="px-6 py-4 text-sm text-slate-300">
             {{ reservation.reserved_until }}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td class="px-6 py-4 text-sm text-slate-300">
             {{ formatDate(reservation.reservation_time) }}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
+          <td class="px-6 py-4">
               <span
                   :class="['px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full', getStatusClass(reservation.status)]"
               >
                 {{ getStatusText(reservation.status) }}
               </span>
           </td>
-          <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td v-if="isAdmin" class="px-6 py-4 text-sm text-slate-300">
             {{ reservation.user.name }} (ID: {{ reservation.user.id }})
           </td>
         </tr>
 
         <tr v-if="paginatedReservations.length === 0">
-          <td :colspan="isAdmin ? 5 : 4" class="px-6 py-4 text-center text-sm text-gray-500">
+          <td :colspan="isAdmin ? 5 : 4" class="px-6 py-4 text-center text-sm text-slate-300">
             Нет данных о бронированиях
           </td>
         </tr>
@@ -184,17 +184,17 @@ const getStatusText = (status) => {
 
     <!-- Пагинация -->
     <div class="mt-4 flex flex-col sm:flex-row items-center justify-between px-2">
-      <div class="text-sm text-gray-700 mb-2 sm:mb-0">
+      <div class="mb-2 text-sm text-slate-300 sm:mb-0">
         Показано с {{ (currentPage - 1) * rowsPerPage + 1 }} по
         {{ Math.min(currentPage * rowsPerPage, sortedReservations.length) }} из
         {{ sortedReservations.length }} записей
       </div>
 
-      <div class="flex space-x-1">
+      <div class="flex flex-wrap gap-2">
         <button
             @click="goToPage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="rounded-full border border-white/10 bg-white/10 px-4 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Назад
         </button>
@@ -202,7 +202,7 @@ const getStatusText = (status) => {
         <template v-for="page in totalPages" :key="page">
           <button
               @click="goToPage(page)"
-              :class="['px-3 py-1 border rounded-md text-sm font-medium', currentPage === page ? 'bg-main border-main text-white' : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50']"
+              :class="['rounded-full border px-4 py-1 text-sm font-medium transition', currentPage === page ? 'border-indigo-400 bg-indigo-500/90 text-white shadow shadow-indigo-500/30' : 'border-white/10 bg-white/10 text-slate-200 hover:bg-white/20']"
           >
             {{ page }}
           </button>
@@ -211,7 +211,7 @@ const getStatusText = (status) => {
         <button
             @click="goToPage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="rounded-full border border-white/10 bg-white/10 px-4 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Вперед
         </button>
@@ -222,10 +222,10 @@ const getStatusText = (status) => {
 
 <style scoped>
 .reservation-history {
-  @apply p-4 bg-gray-50 rounded-lg;
+  @apply rounded-3xl border border-white/10 bg-slate-950/20 p-4 shadow-lg shadow-indigo-500/10 backdrop-blur;
 }
 
 th {
-  @apply sticky top-0 z-10;
+  @apply sticky top-0 z-10 bg-slate-950/60 backdrop-blur;
 }
 </style>

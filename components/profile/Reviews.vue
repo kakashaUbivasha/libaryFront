@@ -12,6 +12,20 @@ const swiper = useSwiper(containerRef, {
   },
   spaceBetween: 20,
   slidesPerView: 3,
+  breakpoints: {
+    0: {
+      slidesPerView: 1
+    },
+    640: {
+      slidesPerView: 1
+    },
+    768: {
+      slidesPerView: 2
+    },
+    1024: {
+      slidesPerView: 3
+    }
+  },
   direction: 'horizontal',
 })
 const wordCut = (string: string) => {
@@ -34,7 +48,10 @@ const wordCut = (string: string) => {
             v-for="(slide, idx) in array"
             :key="idx"
         >
-          <div class="review-card">
+          <NuxtLink
+              class="review-card"
+              :to="`/books/${slide.book_id}`"
+          >
             <div class="book-title">{{ slide.book_title }}</div>
             <div class="review-content">{{ wordCut(slide.content) }}</div>
             <div class="review-footer">
@@ -44,7 +61,7 @@ const wordCut = (string: string) => {
                 <span class="dislikes">👎 {{ slide.dislikes }}</span>
               </div>
             </div>
-          </div>
+          </NuxtLink>
         </swiper-slide>
       </swiper-container>
     </div>
@@ -72,6 +89,7 @@ const wordCut = (string: string) => {
   flex-direction: column;
   transition: all 0.3s ease;
   border: 1px solid #e0e7ff;
+  text-decoration: none;
 }
 
 .review-card:hover {

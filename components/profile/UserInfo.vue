@@ -43,23 +43,23 @@ const getBackgroundStyle = () => {
 
 <template>
   <div class="flex flex-col items-center justify-center p-10 rounded-3xl bg-user-main" :style="getBackgroundStyle()">
-    <div class="bg-user px-20 py-10">
+    <div class="bg-user px-20 py-10 text-gray-900">
       <div class="text-center flex flex-col justify-center items-center">
         <img src="/img/img1.jpg" alt="User avatar" class="mb-5" /> <!-- Обновил путь и добавил alt -->
-        <p class="text-xl font-bold">{{ name }}</p>
-        <span>Уровень: 1</span>
+        <p class="text-xl font-bold text-gray-900">{{ name }}</p>
+        <span class="text-gray-700">Уровень: 1</span>
       </div>
-      <div class="text-center">
+      <div class="text-center text-gray-800">
         <p>Количество прочитанных книг: {{ totalBooks }}</p>
-        <p :class="isCurrentUser ? 'mb-10' : ''">С нами с: {{ formatDate(registerDate) }}</p>
+        <p :class="['text-gray-800', isCurrentUser ? 'mb-10' : '']">С нами с: {{ formatDate(registerDate) }}</p>
         <span class="bg-red-500 hover:bg-red-600 py-2 px-5 rounded-md text-white cursor-pointer" v-if="isCurrentUser">Выйти</span>
       </div>
     </div>
   </div>
   <div class="my-20">
     <h2 class="text-center text-2xl mb-10">Рецензии пользователя</h2>
-    <reviews v-if="array" :array="array" />
-    <h2 class="text-center text-xl mb-10">У пользователя нет рецензий(</h2>
+    <reviews v-if="array && array.length" :array="array" />
+    <h2 v-else class="text-center text-xl mb-10">У пользователя нет рецензий(</h2>
   </div>
 </template>
 

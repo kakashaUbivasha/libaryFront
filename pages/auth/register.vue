@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'nuxt/app';
+import {useGlobalStore} from "~/stores/global";
 
 const router = useRouter();
 const name = ref('');
@@ -9,6 +10,20 @@ const email = ref('');
 const password2 = ref('');
 const isError = ref(false);
 const errorMessage = ref(''); // Исправлено с errorMassage на errorMessage
+const shouldSkipRedirect = ref(false);
+const globalStore = useGlobalStore();
+
+if (process.client) {
+  watch(
+      () => globalStore.currentUser,
+      (user) => {
+        if (!shouldSkipRedirect.value && user) {
+          router.replace(`/user/${user.id}`);
+        }
+      },
+      { immediate: true }
+  );
+}
 
 const onRegistr = async () => {
   if (!name.value.trim() || !email.value.trim() || !password.value.trim() || !password2.value.trim()) {
@@ -23,6 +38,7 @@ const onRegistr = async () => {
   }
 
   try {
+    shouldSkipRedirect.value = true;
     const response = await fetch('http://127.0.0.1:8000/api/register', {
       method: 'POST',
       headers: {

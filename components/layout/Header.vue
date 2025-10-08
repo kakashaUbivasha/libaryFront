@@ -85,76 +85,82 @@
     </Teleport>
 
     <!-- Поиск (оверлей, универсальный) -->
-    <transition name="fade">
-      <div
-          v-if="isSearched"
-          class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 py-10 text-slate-100 backdrop-blur-xl sm:px-0"
-      >
-        <div class="relative w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-indigo-500/20 backdrop-blur-xl sm:p-6">
-          <button @click="closeInput" class="absolute right-4 top-4 text-slate-300 transition hover:text-indigo-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-          <div class="flex w-full flex-col space-y-4">
-            <!-- Поле поиска с кнопками -->
-            <div class="relative flex items-center">
-              <input
-                  v-model="searchQuery"
-                  type="text"
-                  placeholder="Поиск книг..."
-                  class="flex-1 rounded-full border border-white/10 bg-slate-900/60 p-3 pr-20 text-sm text-slate-100 transition placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                  @keyup.enter="onSearch"
-              />
-              <!-- Кнопка очистки -->
-              <button
-                  v-if="searchQuery"
-                  @click="searchQuery = ''"
-                  class="absolute right-12 rounded-full p-1 text-slate-400 transition hover:text-indigo-200"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-              </button>
-              <!-- Кнопка поиска -->
-              <button
-                  @click="onSearch"
-                  class="absolute right-3 flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/80 text-white transition hover:bg-indigo-400"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-              </button>
-            </div>
-
-            <!-- Нижний блок с настройками -->
-            <div class="flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
-              <div class="flex flex-wrap items-center gap-3">
-                <!-- Переключатель AI поиска -->
-                <label class="inline-flex cursor-pointer items-center gap-2 text-xs sm:text-sm">
-                  <input v-model="isNpl" type="checkbox" class="sr-only peer">
-                  <div class="relative h-5 w-10 rounded-full bg-slate-700 transition peer-focus:outline-none peer-checked:bg-indigo-500">
-                    <span class="absolute left-[3px] top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-slate-200 transition peer-checked:translate-x-5 peer-checked:bg-white"></span>
-                  </div>
-                  <span class="font-medium text-slate-200">AI Поиск</span>
-                </label>
-
-                <!-- Иконка с подсказкой -->
-                <div class="group relative">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-help text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    <Teleport to="body">
+      <transition name="fade">
+        <div
+            v-if="isSearched"
+            class="fixed inset-0 z-50 flex min-h-screen items-center justify-center bg-slate-950/80 px-4 py-12 text-slate-100 backdrop-blur-xl"
+            @click.self="closeInput"
+        >
+          <div class="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-slate-900/85 p-6 shadow-2xl shadow-indigo-500/20 backdrop-blur-2xl sm:p-8">
+            <button @click="closeInput" class="absolute right-6 top-6 text-slate-300 transition hover:text-indigo-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            <div class="flex w-full flex-col space-y-6">
+              <!-- Поле поиска с кнопками -->
+              <div class="relative flex items-center">
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Поиск книг..."
+                    class="flex-1 rounded-full border border-white/10 bg-slate-900/60 p-4 pr-24 text-base text-slate-100 transition placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    @keyup.enter="onSearch"
+                    autofocus
+                />
+                <!-- Кнопка очистки -->
+                <button
+                    v-if="searchQuery"
+                    @click="searchQuery = ''"
+                    class="absolute right-16 rounded-full p-1.5 text-slate-400 transition hover:text-indigo-200"
+                    aria-label="Очистить запрос"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
-                  <div class="absolute bottom-full left-1/2 z-10 w-60 -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-900/90 px-4 py-3 text-xs text-slate-100 opacity-0 shadow-xl shadow-indigo-500/20 backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-[-4px] group-hover:opacity-100 sm:w-64 sm:text-sm">
-                    Включает продвинутый поиск. Вы можете написать описание книги, и система подберёт книги с помощью ИИ.
-                    <div class="absolute top-full left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-r border-b border-white/10 bg-slate-900/90"></div>
+                </button>
+                <!-- Кнопка поиска -->
+                <button
+                    @click="onSearch"
+                    class="absolute right-3 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-500/80 text-white transition hover:bg-indigo-400"
+                    aria-label="Искать"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Нижний блок с настройками -->
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex flex-wrap items-center gap-4">
+                  <!-- Переключатель AI поиска -->
+                  <label class="inline-flex cursor-pointer items-center gap-2 text-sm">
+                    <input v-model="isNpl" type="checkbox" class="sr-only peer">
+                    <div class="relative h-5 w-10 rounded-full bg-slate-700 transition peer-focus:outline-none peer-checked:bg-indigo-500">
+                      <span class="absolute left-[3px] top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-slate-200 transition peer-checked:translate-x-5 peer-checked:bg-white"></span>
+                    </div>
+                    <span class="font-medium text-slate-200">AI Поиск</span>
+                  </label>
+
+                  <!-- Иконка с подсказкой -->
+                  <div class="group relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-help text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 z-10 w-64 -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-900/90 px-4 py-3 text-xs text-slate-100 opacity-0 shadow-xl shadow-indigo-500/20 backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-[-4px] group-hover:opacity-100 sm:text-sm">
+                      Включает продвинутый поиск. Вы можете написать описание книги, и система подберёт книги с помощью ИИ.
+                      <div class="absolute top-full left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-r border-b border-white/10 bg-slate-900/90"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </Teleport>
 
     <!-- Профиль/авторизация (справа) -->
     <div class="flex items-center space-x-2">
@@ -212,13 +218,15 @@ const router = useRouter();
 
 const isAuthenticated = computed(() => store.isAuthenticated);
 
-watch(mobileMenuOpen, (isOpen) => {
+const updateBodyScroll = () => {
   if (!process.client) {
     return;
   }
 
-  document.body.style.overflow = isOpen ? "hidden" : "";
-});
+  document.body.style.overflow = mobileMenuOpen.value || isSearched.value ? "hidden" : "";
+};
+
+watch([mobileMenuOpen, isSearched], updateBodyScroll);
 
 const closeInput = () => {
   isSearched.value = false;

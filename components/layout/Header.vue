@@ -51,7 +51,7 @@
     <transition name="fade">
       <nav
           v-if="mobileMenuOpen"
-          class="fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center space-y-6 bg-slate-950/85 px-6 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
+          class="fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center space-y-6 bg-slate-950/85 px-0 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
       >
         <NuxtLink @click="closeMobile" to="/" class="transition hover:text-indigo-200">Домой</NuxtLink>
         <NuxtLink @click="closeMobile" to="/catalog" class="transition hover:text-indigo-200">Каталог</NuxtLink>
@@ -195,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useGlobalStore } from "~/stores/global";
 import { navigateTo, useRouter } from "#app";
 
@@ -209,6 +209,14 @@ const dropdownRef = ref(null);
 const router = useRouter();
 
 const isAuthenticated = computed(() => store.isAuthenticated);
+
+watch(mobileMenuOpen, (isOpen) => {
+  if (!process.client) {
+    return;
+  }
+
+  document.body.style.overflow = isOpen ? "hidden" : "";
+});
 
 const closeInput = () => {
   isSearched.value = false;
@@ -296,5 +304,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
   document.removeEventListener("keydown", handleKeydown);
+  if (process.client) {
+    document.body.style.overflow = "";
+  }
 });
 </script>

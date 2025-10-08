@@ -92,8 +92,8 @@
             class="fixed inset-0 z-50 flex min-h-screen items-center justify-center bg-slate-950/80 px-4 py-12 text-slate-100 backdrop-blur-xl"
             @click.self="closeInput"
         >
-          <div class="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-slate-900/85 p-5 shadow-2xl shadow-indigo-500/20 backdrop-blur-2xl sm:p-8 max-h-[75vh] overflow-y-auto sm:max-h-none sm:overflow-visible">
-            <button @click="closeInput" class="absolute right-4 top-4 text-slate-300 transition hover:text-indigo-200 sm:right-6 sm:top-6">
+          <div class="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-slate-900/85 p-5 py-7 shadow-2xl shadow-indigo-500/20 backdrop-blur-2xl sm:p-8 max-h-[75vh] overflow-y-auto sm:max-h-none sm:overflow-visible">
+            <button @click="closeInput" class="absolute right-2 top-2 text-slate-300 transition hover:text-indigo-200 sm:right-3 sm:top-4">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>

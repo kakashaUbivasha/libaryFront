@@ -40,7 +40,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  padding: 15px;
   border-radius: 20px;
   width: 100%;
   height: 150px;

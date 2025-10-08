@@ -72,7 +72,7 @@
               @click="closeMobile"
               to="/admin/books/create"
               class="block w-full rounded-full border border-white/10 bg-white/10 px-4 py-2 text-center text-base transition hover:bg-white/20"
-          >Добавить нигу</NuxtLink>
+          >Добавить книгу</NuxtLink>
           <NuxtLink
               @click="closeMobile"
               to="/import-files"

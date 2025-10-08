@@ -163,7 +163,7 @@
     </Teleport>
 
     <!-- Профиль/авторизация (справа) -->
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-1 sm:space-x-2">
       <template v-if="isAuthenticated">
         <div class="relative" ref="dropdownRef">
           <div @click.stop="toggleDropdown" class="cursor-pointer">
@@ -191,12 +191,29 @@
       <template v-else>
         <NuxtLink
             to="/auth/login"
-            class="rounded-full border border-indigo-400/50 bg-indigo-500/80 px-4 py-2 text-sm font-semibold text-white shadow shadow-indigo-500/30 transition hover:bg-indigo-400"
-        >Войти</NuxtLink>
+            class="flex items-center gap-1 rounded-full border border-indigo-400/50 bg-indigo-500/80 px-3 py-1.5 text-xs font-semibold text-white shadow shadow-indigo-500/30 transition hover:bg-indigo-400 sm:gap-2 sm:px-4 sm:py-2 sm:text-sm"
+            aria-label="Войти"
+        >
+          <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H9m0 0l3-3m-3 3l3 3" />
+          </svg>
+          <span class="sr-only sm:hidden">Войти</span>
+          <span class="hidden sm:inline">Войти</span>
+        </NuxtLink>
         <NuxtLink
             to="/auth/register"
-            class="rounded-full border border-sky-400/40 bg-sky-500/70 px-4 py-2 text-sm font-semibold text-white shadow shadow-sky-500/30 transition hover:bg-sky-400"
-        >Зарегистрироваться</NuxtLink>
+            class="flex items-center gap-1 rounded-full border border-sky-400/40 bg-sky-500/70 px-3 py-1.5 text-xs font-semibold text-white shadow shadow-sky-500/30 transition hover:bg-sky-400 sm:gap-2 sm:px-4 sm:py-2 sm:text-sm"
+            aria-label="Зарегистрироваться"
+        >
+          <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 12h-9" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v6m-3-3h6" />
+          </svg>
+          <span class="sr-only sm:hidden">Зарегистрироваться</span>
+          <span class="hidden sm:inline">Зарегистрироваться</span>
+        </NuxtLink>
       </template>
     </div>
   </header>

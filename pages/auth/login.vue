@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'nuxt/app'; // Для перенаправления после успешного логина
 import {useGlobalStore} from "~/stores/global";
 
@@ -7,9 +7,22 @@ const password = ref('');
 const email = ref('');
 const isError = ref(false);
 const errorMessage = ref(''); // Для более конкретного сообщения об ошибке
+const shouldSkipRedirect = ref(false);
 
 const router = useRouter(); // Инициализация роутера Nuxt
 const globalStore = useGlobalStore()
+
+if (process.client) {
+  watch(
+      () => globalStore.currentUser,
+      (user) => {
+        if (!shouldSkipRedirect.value && user) {
+          router.replace(`/user/${user.id}`);
+        }
+      },
+      { immediate: true }
+  );
+}
 const onLogin = async () => {
   if (!password.value.trim() || !email.value.trim()) {
     isError.value = true;
@@ -17,6 +30,7 @@ const onLogin = async () => {
     return;
   }
   try {
+    shouldSkipRedirect.value = true;
     await globalStore.login(email.value, password.value);
     isError.value = false;
     errorMessage.value = '';

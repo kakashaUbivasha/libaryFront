@@ -48,39 +48,41 @@
     </nav>
 
     <!-- Мобильное меню -->
-    <transition name="fade">
-      <nav
-          v-if="mobileMenuOpen"
-          class="fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center space-y-6 bg-slate-950/85 px-6 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
-      >
-        <NuxtLink @click="closeMobile" to="/" class="transition hover:text-indigo-200">Домой</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/catalog" class="transition hover:text-indigo-200">Каталог</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/about" class="transition hover:text-indigo-200">О нас</NuxtLink>
-        <button @click="showSearchMobile" class="rounded-full bg-white/10 px-4 py-2 transition hover:bg-white/20">🔍 Поиск</button>
-        <NuxtLink
-            @click="closeMobile"
-            to="/reservations"
-            v-if="store.currentUser?.role==='Admin'"
-            class="transition hover:text-indigo-200"
-        >Бронирования</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="transition hover:text-indigo-200">Мои бронирования</NuxtLink>
-        <NuxtLink @click="closeMobile" to="/recomendation" class="transition hover:text-indigo-200">ИИ Рекомендации</NuxtLink>
-        <a @click.prevent="goToRandomMobile" href="/random/book" class="transition hover:text-indigo-200">Случайная книга</a>
-        <NuxtLink
-            v-if="store.currentUser?.role==='Admin'"
-            @click="closeMobile"
-            to="/admin/books/create"
-            class="block w-full rounded-full border border-white/10 bg-white/10 px-4 py-2 text-center text-base transition hover:bg-white/20"
-        >Добавить нигу</NuxtLink>
-        <NuxtLink
-            @click="closeMobile"
-            to="/import-files"
-            v-if="store.currentUser?.role==='Admin'"
-            class="transition hover:text-indigo-200"
-        >Импортировать книги</NuxtLink>
-        <button @click="closeMobile" class="absolute right-5 top-5 text-4xl text-slate-200">&times;</button>
-      </nav>
-    </transition>
+    <Teleport to="body">
+      <transition name="fade">
+        <nav
+            v-if="mobileMenuOpen"
+            class="fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center space-y-6 bg-slate-950/85 px-0 py-8 text-lg text-slate-100 backdrop-blur-xl md:hidden"
+        >
+          <NuxtLink @click="closeMobile" to="/" class="transition hover:text-indigo-200">Домой</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/catalog" class="transition hover:text-indigo-200">Каталог</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/about" class="transition hover:text-indigo-200">О нас</NuxtLink>
+          <button @click="showSearchMobile" class="rounded-full bg-white/10 px-4 py-2 transition hover:bg-white/20">🔍 Поиск</button>
+          <NuxtLink
+              @click="closeMobile"
+              to="/reservations"
+              v-if="store.currentUser?.role==='Admin'"
+              class="transition hover:text-indigo-200"
+          >Бронирования</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/my-reservations" v-else class="transition hover:text-indigo-200">Мои бронирования</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/recomendation" class="transition hover:text-indigo-200">ИИ Рекомендации</NuxtLink>
+          <a @click.prevent="goToRandomMobile" href="/random/book" class="transition hover:text-indigo-200">Случайная книга</a>
+          <NuxtLink
+              v-if="store.currentUser?.role==='Admin'"
+              @click="closeMobile"
+              to="/admin/books/create"
+              class="block w-full rounded-full border border-white/10 bg-white/10 px-4 py-2 text-center text-base transition hover:bg-white/20"
+          >Добавить нигу</NuxtLink>
+          <NuxtLink
+              @click="closeMobile"
+              to="/import-files"
+              v-if="store.currentUser?.role==='Admin'"
+              class="transition hover:text-indigo-200"
+          >Импортировать книги</NuxtLink>
+          <button @click="closeMobile" class="absolute right-5 top-5 text-4xl text-slate-200">&times;</button>
+        </nav>
+      </transition>
+    </Teleport>
 
     <!-- Поиск (оверлей, универсальный) -->
     <transition name="fade">
@@ -195,7 +197,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useGlobalStore } from "~/stores/global";
 import { navigateTo, useRouter } from "#app";
 
@@ -209,6 +211,14 @@ const dropdownRef = ref(null);
 const router = useRouter();
 
 const isAuthenticated = computed(() => store.isAuthenticated);
+
+watch(mobileMenuOpen, (isOpen) => {
+  if (!process.client) {
+    return;
+  }
+
+  document.body.style.overflow = isOpen ? "hidden" : "";
+});
 
 const closeInput = () => {
   isSearched.value = false;
@@ -296,5 +306,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
   document.removeEventListener("keydown", handleKeydown);
+  if (process.client) {
+    document.body.style.overflow = "";
+  }
 });
 </script>

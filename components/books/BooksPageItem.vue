@@ -37,6 +37,10 @@ const editedReview = ref('');
 const isProcessingDeletion = ref(false);
 
 const isAdmin = computed(() => globalStore.currentUser?.role === 'Admin');
+const currentUserId = computed(() => Number(globalStore.currentUser?.id ?? 0));
+const canManageReview = (reviewUserId) => {
+  return currentUserId.value === Number(reviewUserId ?? 0);
+};
 
 const toggleFavorite = async () => {
   if (!globalStore.isAuthenticated) {
@@ -332,7 +336,7 @@ const handleDelete = async () => {
               </div>
 
               <div
-                  v-if="store.currentUser.id === review.user_id"
+                  v-if="canManageReview(review.user_id)"
                   class="flex gap-2"
               >
                 <button

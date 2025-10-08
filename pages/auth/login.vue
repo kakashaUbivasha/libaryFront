@@ -85,6 +85,12 @@ const onLogin = async () => {
         border-radius: 20px;
         border: 1px solid #2C3E50;
         font-size: 16px;
+        color: #1f2937;
+        background-color: #ffffff;
+      }
+
+      input::placeholder {
+        color: #6b7280;
       }
     }
 

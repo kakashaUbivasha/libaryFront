@@ -4,6 +4,7 @@ import {useBookStore} from "~/stores/book";
 import { useRoute } from 'vue-router';
 import {fetchBookById} from "~/composables/useBook";
 import {useCommentsStore} from "~/stores/comments";
+import { useFavoriteStore } from "~/stores/favorite";
 const book = ref(null);
 const route = useRoute(); // Получаем объект маршрута
 const id = ref(Number(route.params.id)); // Извлекаем ID из параметров маршрута

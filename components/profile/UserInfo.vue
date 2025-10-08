@@ -42,8 +42,11 @@ const getBackgroundStyle = () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center p-10 rounded-3xl bg-user-main" :style="getBackgroundStyle()">
-    <div class="bg-user px-20 py-10 text-gray-900">
+  <div
+    class="flex flex-col items-center justify-center rounded-3xl bg-user-main p-6 sm:p-10"
+    :style="getBackgroundStyle()"
+  >
+    <div class="bg-user w-full max-w-xs px-6 py-8 text-gray-900 sm:max-w-2xl sm:px-20 sm:py-10">
       <div class="text-center flex flex-col justify-center items-center">
         <img src="/img/img1.jpg" alt="User avatar" class="mb-5" /> <!-- Обновил путь и добавил alt -->
         <p class="text-xl font-bold text-gray-900">{{ name }}</p>

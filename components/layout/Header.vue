@@ -93,6 +93,7 @@
             @click.self="closeInput"
         >
           <div class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900/85 p-5 shadow-2xl shadow-indigo-500/20 backdrop-blur-2xl sm:max-w-2xl sm:p-8 sm:max-h-none max-h-[85vh] overflow-y-auto">
+
             <button @click="closeInput" class="absolute right-6 top-6 text-slate-300 transition hover:text-indigo-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -106,6 +107,7 @@
                     type="text"
                     placeholder="Поиск книг..."
                     class="w-full max-w-[20rem] rounded-full border border-white/10 bg-slate-900/60 p-3 pr-24 text-sm text-slate-100 transition placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300 sm:flex-1 sm:max-w-none sm:p-4 sm:text-base"
+
                     @keyup.enter="onSearch"
                     autofocus
                 />

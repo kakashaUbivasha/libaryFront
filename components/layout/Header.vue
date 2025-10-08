@@ -89,10 +89,11 @@
       <transition name="fade">
         <div
             v-if="isSearched"
-            class="fixed inset-0 z-50 flex min-h-screen items-center justify-center bg-slate-950/80 px-4 py-12 text-slate-100 backdrop-blur-xl"
+            class="fixed inset-0 z-50 flex min-h-screen items-start justify-center bg-slate-950/80 px-4 py-8 text-slate-100 backdrop-blur-xl sm:items-center sm:py-12"
             @click.self="closeInput"
         >
-          <div class="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-slate-900/85 p-6 shadow-2xl shadow-indigo-500/20 backdrop-blur-2xl sm:p-8">
+          <div class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900/85 p-5 shadow-2xl shadow-indigo-500/20 backdrop-blur-2xl sm:max-w-2xl sm:p-8 sm:max-h-none max-h-[85vh] overflow-y-auto">
+
             <button @click="closeInput" class="absolute right-6 top-6 text-slate-300 transition hover:text-indigo-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -105,7 +106,8 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Поиск книг..."
-                    class="flex-1 rounded-full border border-white/10 bg-slate-900/60 p-4 pr-24 text-base text-slate-100 transition placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    class="w-full max-w-[20rem] rounded-full border border-white/10 bg-slate-900/60 p-3 pr-24 text-sm text-slate-100 transition placeholder:text-slate-400 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300 sm:flex-1 sm:max-w-none sm:p-4 sm:text-base"
+
                     @keyup.enter="onSearch"
                     autofocus
                 />
@@ -149,7 +151,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-help text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <div class="absolute bottom-full left-1/2 z-10 w-64 -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-900/90 px-4 py-3 text-xs text-slate-100 opacity-0 shadow-xl shadow-indigo-500/20 backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-[-4px] group-hover:opacity-100 sm:text-sm">
+                    <div class="pointer-events-none absolute bottom-full left-1/2 z-10 w-56 -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-900/90 px-3 py-2 text-[11px] text-slate-100 opacity-0 shadow-xl shadow-indigo-500/20 backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-[-4px] group-hover:opacity-100 group-hover:pointer-events-auto sm:w-64 sm:px-4 sm:py-3 sm:text-sm">
                       Включает продвинутый поиск. Вы можете написать описание книги, и система подберёт книги с помощью ИИ.
                       <div class="absolute top-full left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-r border-b border-white/10 bg-slate-900/90"></div>
                     </div>

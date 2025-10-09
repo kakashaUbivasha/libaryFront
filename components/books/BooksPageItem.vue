@@ -81,8 +81,21 @@ const formatReviewDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ru-RU');
 };
 
-const startEditing = (review) => {
-  editingReviewId.value = review.id;
+const getReviewIdentifier = (review, index) => {
+  if (!review || typeof review !== 'object') {
+    return `index-${index}`;
+  }
+
+  return (
+    review.id ??
+    review.comment_id ??
+    review.review_id ??
+    `${review.user_id ?? 'user'}-${review.created_at ?? ''}-${index}`
+  );
+};
+
+const startEditing = (review, index) => {
+  editingReviewId.value = getReviewIdentifier(review, index);
   editedReview.value = review.content;
 };
 
@@ -309,11 +322,11 @@ const handleDelete = async () => {
 
       <div class="grid gap-4">
         <div
-            v-for="review in reviews"
-            :key="review.id"
+            v-for="(review, index) in reviews"
+            :key="getReviewIdentifier(review, index)"
             class="rounded-2xl border border-white/10 bg-slate-950/50 p-6 shadow-lg shadow-indigo-500/10"
         >
-          <div v-if="editingReviewId !== review.id">
+          <div v-if="editingReviewId !== getReviewIdentifier(review, index)">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
               <h3 class="text-lg font-semibold text-slate-100">{{ review.book_title || title }}</h3>
               <div class="flex gap-4 text-sm">
@@ -340,7 +353,7 @@ const handleDelete = async () => {
                   class="flex gap-2"
               >
                 <button
-                    @click="startEditing(review)"
+                    @click="startEditing(review, index)"
                     class="rounded-full border border-indigo-400/40 bg-indigo-500/10 px-3 py-1 text-sm text-indigo-200 transition hover:bg-indigo-500/20"
                 >
                   Редактировать

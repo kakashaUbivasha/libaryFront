@@ -40,7 +40,10 @@ onMounted(async () => {
 const submitReview = async(content: string, book_id: number)=>{
   try{
     await commentStore.postComments(content, book_id)
-    store.getComments(id.value)
+    await store.getComments(id.value)
+    if (process.client) {
+      window.location.reload()
+    }
   }catch (e)
   {
     console.error(e)

@@ -4,13 +4,14 @@ import { useGlobalStore } from "~/stores/global";
 import { useReservationStore } from "~/stores/reservation";
 import { useFavoriteStore } from "~/stores/favorite";
 import { useBookStore } from "~/stores/book";
-import { navigateTo } from '#app';
+import { navigateTo, useNuxtApp } from '#app';
 import BookWarningModal from "~/components/modal/BookWarningModal.vue";
 
 const globalStore = useGlobalStore();
 const reservation = useReservationStore();
 const favoritesStore = useFavoriteStore();
 const bookStore = useBookStore();
+const { $api } = useNuxtApp();
 
 const props = defineProps({
   title: String,
@@ -81,9 +82,58 @@ const formatReviewDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ru-RU');
 };
 
-const startEditing = (review) => {
-  editingReviewId.value = review.id;
-  editedReview.value = review.content;
+const getReviewMutationId = (review) => {
+  if (!review || typeof review !== 'object') {
+    return null;
+  }
+
+  return (
+    review.id ??
+    review.comment_id ??
+    review.review_id ??
+    review.commentId ??
+    review.commentID ??
+    review.comment?.id ??
+    null
+  );
+};
+
+const getReviewIdentifier = (review, index) => {
+  const mutationId = getReviewMutationId(review);
+  if (mutationId) {
+    return mutationId;
+  }
+
+  if (!review || typeof review !== 'object') {
+    return `index-${index}`;
+  }
+
+  return `${review.user_id ?? 'user'}-${review.created_at ?? ''}-${index}`;
+};
+
+const getReviewContent = (review) => {
+  if (!review || typeof review !== 'object') {
+    return '';
+  }
+
+  return (
+    review.content ??
+    review.comment ??
+    review.text ??
+    review.body ??
+    ''
+  );
+};
+
+const reloadPage = () => {
+  if (process.client) {
+    window.location.reload();
+  }
+};
+
+const startEditing = (review, index) => {
+  editingReviewId.value = getReviewIdentifier(review, index);
+  editedReview.value = getReviewContent(review);
 };
 
 const cancelEditing = () => {
@@ -91,26 +141,38 @@ const cancelEditing = () => {
   editedReview.value = '';
 };
 
-const updateReview = async (reviewId) => {
+const updateReview = async (review) => {
+  const reviewId = getReviewMutationId(review);
+  if (!reviewId) {
+    console.error('Не удалось определить идентификатор рецензии для обновления');
+    return;
+  }
+
   if (!editedReview.value.trim()) return;
 
   try {
-    await $api.put(`/reviews/${reviewId}`, {
+    await $api.put(`/book/comment/${reviewId}`, {
       content: editedReview.value
     });
     editingReviewId.value = null;
-    // Обновить список рецензий
+    reloadPage();
   } catch (error) {
     console.error('Ошибка при обновлении рецензии:', error);
   }
 };
 
-const deleteReview = async (reviewId) => {
+const deleteReview = async (review) => {
+  const reviewId = getReviewMutationId(review);
+  if (!reviewId) {
+    console.error('Не удалось определить идентификатор рецензии для удаления');
+    return;
+  }
+
   if (!confirm('Вы уверены, что хотите удалить эту рецензию?')) return;
 
   try {
-    await $api.delete(`/reviews/${reviewId}`);
-    // Обновить список рецензий
+    await $api.delete(`/book/comment/${reviewId}`);
+    reloadPage();
   } catch (error) {
     console.error('Ошибка при удалении рецензии:', error);
   }
@@ -309,11 +371,11 @@ const handleDelete = async () => {
 
       <div class="grid gap-4">
         <div
-            v-for="review in reviews"
-            :key="review.id"
+            v-for="(review, index) in reviews"
+            :key="getReviewIdentifier(review, index)"
             class="rounded-2xl border border-white/10 bg-slate-950/50 p-6 shadow-lg shadow-indigo-500/10"
         >
-          <div v-if="editingReviewId !== review.id">
+          <div v-if="editingReviewId !== getReviewIdentifier(review, index)">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
               <h3 class="text-lg font-semibold text-slate-100">{{ review.book_title || title }}</h3>
               <div class="flex gap-4 text-sm">
@@ -322,7 +384,7 @@ const handleDelete = async () => {
               </div>
             </div>
 
-            <p class="mb-4 whitespace-pre-line text-slate-200/90">{{ review.content }}</p>
+            <p class="mb-4 whitespace-pre-line text-slate-200/90">{{ getReviewContent(review) }}</p>
 
             <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
               <div>
@@ -340,13 +402,13 @@ const handleDelete = async () => {
                   class="flex gap-2"
               >
                 <button
-                    @click="startEditing(review)"
+                    @click="startEditing(review, index)"
                     class="rounded-full border border-indigo-400/40 bg-indigo-500/10 px-3 py-1 text-sm text-indigo-200 transition hover:bg-indigo-500/20"
                 >
                   Редактировать
                 </button>
                 <button
-                    @click="deleteReview(review.id)"
+                    @click="deleteReview(review)"
                     class="rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-sm text-rose-200 transition hover:bg-rose-500/20"
                 >
                   Удалить
@@ -363,7 +425,7 @@ const handleDelete = async () => {
             ></textarea>
             <div class="flex justify-end gap-2">
               <button
-                  @click="updateReview(review.id)"
+                  @click="updateReview(review)"
                   class="rounded-full bg-emerald-500/80 px-3 py-1 text-sm text-white transition hover:bg-emerald-400"
               >
                 Сохранить

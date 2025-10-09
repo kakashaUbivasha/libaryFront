@@ -104,6 +104,10 @@ interface NormalizedBook {
   description: string
 }
 
+definePageMeta({
+  middleware: 'auth',
+})
+
 const bookStore = useBookStore()
 const globalStore = useGlobalStore()
 

@@ -84,6 +84,19 @@ const formatReviewDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ru-RU');
 };
 
+const normalizeReviewId = (value) => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const numericValue = Number(String(value).trim());
+  if (!Number.isFinite(numericValue) || numericValue <= 0) {
+    return null;
+  }
+
+  return numericValue;
+};
+
 const resolveReviewId = (review) => {
   if (!review || typeof review !== 'object') {
     return null;
@@ -98,7 +111,14 @@ const resolveReviewId = (review) => {
     review?.comment?.review_id
   ];
 
-  return possibleIds.find((value) => value !== undefined && value !== null && `${value}`.trim() !== '') ?? null;
+  for (const candidate of possibleIds) {
+    const normalized = normalizeReviewId(candidate);
+    if (normalized !== null) {
+      return normalized;
+    }
+  }
+
+  return null;
 };
 
 const getReviewIdentifier = (review, index) => {
@@ -122,10 +142,11 @@ const cancelEditing = () => {
   editedReview.value = '';
 };
 
-const isValidReviewId = (id) => id !== null && id !== undefined && `${id}`.trim() !== '';
+const isValidReviewId = (id) => typeof id === 'number' && Number.isFinite(id) && id > 0;
 
 const updateReview = async (reviewId) => {
-  if (!isValidReviewId(reviewId)) {
+  const normalizedReviewId = normalizeReviewId(reviewId);
+  if (!isValidReviewId(normalizedReviewId)) {
     commentsStore.errorMessage = 'Не удалось определить комментарий для обновления.';
     return;
   }
@@ -138,7 +159,7 @@ const updateReview = async (reviewId) => {
   }
 
   try {
-    await commentsStore.updateComment(reviewId, editedReview.value.trim());
+    await commentsStore.updateComment(normalizedReviewId, editedReview.value.trim());
     editingReviewId.value = null;
   } catch (error) {
     console.error('Ошибка при обновлении рецензии:', error);
@@ -146,7 +167,8 @@ const updateReview = async (reviewId) => {
 };
 
 const deleteReview = async (reviewId) => {
-  if (!isValidReviewId(reviewId)) {
+  const normalizedReviewId = normalizeReviewId(reviewId);
+  if (!isValidReviewId(normalizedReviewId)) {
     commentsStore.errorMessage = 'Не удалось определить комментарий для удаления.';
     return;
   }
@@ -156,7 +178,7 @@ const deleteReview = async (reviewId) => {
   if (!confirm('Вы уверены, что хотите удалить эту рецензию?')) return;
 
   try {
-    await commentsStore.deleteComment(reviewId);
+    await commentsStore.deleteComment(normalizedReviewId);
   } catch (error) {
     console.error('Ошибка при удалении рецензии:', error);
   }

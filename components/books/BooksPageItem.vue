@@ -146,7 +146,7 @@ const updateReview = async (review) => {
   }
 
   try {
-    await commentsStore.updateComment(commentId, editedReview.value.trim());
+    await commentsStore.updateComment(commentId, editedReview.value.trim(), props.id);
     cancelEditing();
   } catch (error) {
     console.error('Ошибка при обновлении рецензии:', error);

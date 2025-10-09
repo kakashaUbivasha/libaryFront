@@ -114,7 +114,7 @@ const getReviewKey = (review, index) => {
     return `comment-${commentId}`;
   }
 
-  return `fallback-${review?.user_id ?? 'user'}-${review?.created_at ?? ''}-${index}`;
+  return `review-${index}`;
 };
 
 const startEditing = (review, index) => {

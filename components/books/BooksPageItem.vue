@@ -109,8 +109,24 @@ const cancelEditing = () => {
   editedReview.value = '';
 };
 
+const normalizeReviewId = (review) => {
+  const candidateIds = [
+    review?.comment_id,
+    review?.id,
+    review?.review_id,
+    review?.comment?.id,
+    review?.comment?.comment_id,
+    review?.commentId,
+    review?.commentID,
+    review?.reviewId,
+    review?.reviewID,
+  ];
+
+  return candidateIds.find((id) => id !== undefined && id !== null && id !== '') ?? null;
+};
+
 const updateReview = async (reviewId) => {
-  if (!reviewId) {
+  if (reviewId === undefined || reviewId === null || reviewId === '') {
     commentsStore.errorMessage = 'Не удалось определить комментарий для обновления.';
     return;
   }
@@ -131,7 +147,7 @@ const updateReview = async (reviewId) => {
 };
 
 const deleteReview = async (reviewId) => {
-  if (!reviewId) {
+  if (reviewId === undefined || reviewId === null || reviewId === '') {
     commentsStore.errorMessage = 'Не удалось определить комментарий для удаления.';
     return;
   }
@@ -183,7 +199,7 @@ watch(editedReview, () => {
 });
 
 const getReviewId = (review) => {
-  return review?.comment_id ?? review?.id ?? review?.review_id;
+  return normalizeReviewId(review);
 };
 
 const handleEdit = () => {

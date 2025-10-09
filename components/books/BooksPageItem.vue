@@ -6,6 +6,7 @@ import { useFavoriteStore } from "~/stores/favorite";
 import { useBookStore } from "~/stores/book";
 import { navigateTo } from '#app';
 import BookWarningModal from "~/components/modal/BookWarningModal.vue";
+import { useCommentsStore } from "~/stores/comments";
 
 const globalStore = useGlobalStore();
 const reservation = useReservationStore();
@@ -30,11 +31,15 @@ const props = defineProps({
   isFavorite: Boolean
 });
 
+const commentStore = useCommentsStore();
 const emit = defineEmits(['submitReview']);
 const newReview = ref('');
 const editingReviewId = ref(null);
 const editedReview = ref('');
 const isProcessingDeletion = ref(false);
+const isSavingReview = ref(false);
+const deletingCommentId = ref(null);
+const commentError = computed(() => commentStore.errorMessage);
 
 const isAdmin = computed(() => globalStore.currentUser?.role === 'Admin');
 const currentUserId = computed(() => Number(globalStore.currentUser?.id ?? 0));
@@ -94,43 +99,91 @@ const getReviewIdentifier = (review, index) => {
   );
 };
 
+const getCommentId = (review) => {
+  if (!review || typeof review !== 'object') {
+    return null;
+  }
+
+  return review.id ?? review.comment_id ?? review.review_id ?? null;
+};
+
 const startEditing = (review, index) => {
+  commentStore.clearError();
   editingReviewId.value = getReviewIdentifier(review, index);
   editedReview.value = review.content;
 };
 
 const cancelEditing = () => {
+  commentStore.clearError();
   editingReviewId.value = null;
   editedReview.value = '';
 };
 
-const updateReview = async (reviewId) => {
-  if (!editedReview.value.trim()) return;
+const updateReview = async (review) => {
+  commentStore.clearError();
+
+  const commentId = getCommentId(review);
+  const updatedContent = editedReview.value?.trim() ?? '';
+
+  if (!commentId) {
+    commentStore.setError('Не удалось определить комментарий для обновления.');
+    return;
+  }
+
+  if (!updatedContent.length) {
+    commentStore.setError('Комментарий не может быть пустым.');
+    return;
+  }
+
+  if (isSavingReview.value) {
+    return;
+  }
 
   try {
-    await $api.put(`/reviews/${reviewId}`, {
-      content: editedReview.value
-    });
-    editingReviewId.value = null;
-    // Обновить список рецензий
+    isSavingReview.value = true;
+    await commentStore.updateComment(commentId, updatedContent);
   } catch (error) {
-    console.error('Ошибка при обновлении рецензии:', error);
+    console.error('Ошибка при обновлении комментария:', error);
+  } finally {
+    isSavingReview.value = false;
   }
 };
 
-const deleteReview = async (reviewId) => {
-  if (!confirm('Вы уверены, что хотите удалить эту рецензию?')) return;
+const deleteReview = async (review) => {
+  commentStore.clearError();
+
+  const commentId = getCommentId(review);
+  if (!commentId) {
+    commentStore.setError('Не удалось определить комментарий для удаления.');
+    return;
+  }
+
+  if (deletingCommentId.value) {
+    return;
+  }
+
+  if (!confirm('Вы уверены, что хотите удалить этот комментарий?')) return;
 
   try {
-    await $api.delete(`/reviews/${reviewId}`);
-    // Обновить список рецензий
+    deletingCommentId.value = commentId;
+    await commentStore.deleteComment(commentId);
   } catch (error) {
-    console.error('Ошибка при удалении рецензии:', error);
+    console.error('Ошибка при удалении комментария:', error);
+  } finally {
+    deletingCommentId.value = null;
   }
 };
 
 const submitReview = (content, book_id) => {
-  emit('submitReview', content, book_id);
+  commentStore.clearError();
+  const preparedContent = content?.trim() ?? '';
+
+  if (!preparedContent.length) {
+    commentStore.setError('Комментарий не может быть пустым.');
+    return;
+  }
+
+  emit('submitReview', preparedContent, book_id);
 };
 
 const handleEdit = () => {
@@ -306,6 +359,12 @@ const handleDelete = async () => {
           placeholder="Напишите ваше мнение о книге..."
           class="min-h-[100px] w-full rounded-2xl border border-white/10 bg-slate-900/60 p-4 text-slate-100 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/60"
       ></textarea>
+      <p
+          v-if="commentError"
+          class="mt-3 text-sm font-medium text-rose-400"
+      >
+        {{ commentError }}
+      </p>
       <button
           @click="submitReview(newReview, id)"
           class="mt-3 inline-flex items-center justify-center rounded-full bg-indigo-500/80 px-6 py-2 font-medium text-white transition-colors hover:bg-indigo-400"
@@ -329,10 +388,6 @@ const handleDelete = async () => {
           <div v-if="editingReviewId !== getReviewIdentifier(review, index)">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
               <h3 class="text-lg font-semibold text-slate-100">{{ review.book_title || title }}</h3>
-              <div class="flex gap-4 text-sm">
-                <span class="text-emerald-300">👍 {{ review.likes || 0 }}</span>
-                <span class="text-rose-300">👎 {{ review.dislikes || 0 }}</span>
-              </div>
             </div>
 
             <p class="mb-4 whitespace-pre-line text-slate-200/90">{{ review.content }}</p>
@@ -359,8 +414,9 @@ const handleDelete = async () => {
                   Редактировать
                 </button>
                 <button
-                    @click="deleteReview(review.id)"
-                    class="rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-sm text-rose-200 transition hover:bg-rose-500/20"
+                    @click="deleteReview(review)"
+                    :disabled="deletingCommentId === getCommentId(review)"
+                    class="rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-sm text-rose-200 transition hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Удалить
                 </button>
@@ -374,10 +430,17 @@ const handleDelete = async () => {
                 v-model="editedReview"
                 class="mb-3 min-h-[100px] w-full rounded-2xl border border-white/10 bg-slate-900/60 p-4 text-slate-100 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/60"
             ></textarea>
+            <p
+                v-if="commentError"
+                class="mb-3 text-sm font-medium text-rose-400"
+            >
+              {{ commentError }}
+            </p>
             <div class="flex justify-end gap-2">
               <button
-                  @click="updateReview(review.id)"
-                  class="rounded-full bg-emerald-500/80 px-3 py-1 text-sm text-white transition hover:bg-emerald-400"
+                  @click="updateReview(review)"
+                  :disabled="isSavingReview"
+                  class="rounded-full bg-emerald-500/80 px-3 py-1 text-sm text-white transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Сохранить
               </button>

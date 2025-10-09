@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import {useBookStore} from "~/stores/book";
 import { useRoute } from 'vue-router';
-import {fetchBookById} from "~/composables/useBook";
 import {useCommentsStore} from "~/stores/comments";
 import { useFavoriteStore } from "~/stores/favorite";
 const book = ref(null);
@@ -40,7 +39,6 @@ onMounted(async () => {
 const submitReview = async(content: string, book_id: number)=>{
   try{
     await commentStore.postComments(content, book_id)
-    store.getComments(id.value)
   }catch (e)
   {
     console.error(e)

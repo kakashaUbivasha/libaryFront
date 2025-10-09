@@ -34,7 +34,7 @@ const props = defineProps({
 
 const emit = defineEmits(['submitReview']);
 const newReview = ref('');
-const editingReviewId = ref(null);
+const editingReviewKey = ref(null);
 const editedReview = ref('');
 const isProcessingDeletion = ref(false);
 const localError = ref('');
@@ -84,7 +84,7 @@ const formatReviewDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ru-RU');
 };
 
-const resolveReviewId = (review) => {
+const extractCommentId = (review) => {
   if (!review || typeof review !== 'object') {
     return null;
   }
@@ -98,34 +98,42 @@ const resolveReviewId = (review) => {
     review?.comment?.review_id
   ];
 
-  return possibleIds.find((value) => value !== undefined && value !== null && `${value}`.trim() !== '') ?? null;
-};
-
-const getReviewIdentifier = (review, index) => {
-  const resolvedId = resolveReviewId(review);
-  if (resolvedId !== null) {
-    return resolvedId;
+  for (const candidate of possibleIds) {
+    const numericId = Number(candidate);
+    if (Number.isFinite(numericId) && numericId > 0) {
+      return numericId;
+    }
   }
 
-  return `${review?.user_id ?? 'user'}-${review?.created_at ?? ''}-${index}`;
+  return null;
+};
+
+const getReviewKey = (review, index) => {
+  const commentId = extractCommentId(review);
+  if (commentId !== null) {
+    return `comment-${commentId}`;
+  }
+
+  return `review-${index}`;
 };
 
 const startEditing = (review, index) => {
   clearError();
-  editingReviewId.value = getReviewIdentifier(review, index);
+  editingReviewKey.value = getReviewKey(review, index);
   editedReview.value = review.content;
 };
 
 const cancelEditing = () => {
   clearError();
-  editingReviewId.value = null;
+  editingReviewKey.value = null;
   editedReview.value = '';
 };
 
-const isValidReviewId = (id) => id !== null && id !== undefined && `${id}`.trim() !== '';
+const isValidCommentId = (id) => typeof id === 'number' && Number.isFinite(id) && id > 0;
 
-const updateReview = async (reviewId) => {
-  if (!isValidReviewId(reviewId)) {
+const updateReview = async (review) => {
+  const commentId = extractCommentId(review);
+  if (!isValidCommentId(commentId)) {
     commentsStore.errorMessage = 'Не удалось определить комментарий для обновления.';
     return;
   }
@@ -138,15 +146,16 @@ const updateReview = async (reviewId) => {
   }
 
   try {
-    await commentsStore.updateComment(reviewId, editedReview.value.trim());
-    editingReviewId.value = null;
+    await commentsStore.updateComment(commentId, editedReview.value.trim());
+    cancelEditing();
   } catch (error) {
     console.error('Ошибка при обновлении рецензии:', error);
   }
 };
 
-const deleteReview = async (reviewId) => {
-  if (!isValidReviewId(reviewId)) {
+const deleteReview = async (review) => {
+  const commentId = extractCommentId(review);
+  if (!isValidCommentId(commentId)) {
     commentsStore.errorMessage = 'Не удалось определить комментарий для удаления.';
     return;
   }
@@ -156,7 +165,7 @@ const deleteReview = async (reviewId) => {
   if (!confirm('Вы уверены, что хотите удалить эту рецензию?')) return;
 
   try {
-    await commentsStore.deleteComment(reviewId);
+    await commentsStore.deleteComment(commentId);
   } catch (error) {
     console.error('Ошибка при удалении рецензии:', error);
   }
@@ -197,7 +206,7 @@ watch(editedReview, () => {
   }
 });
 
-const getReviewId = (review) => resolveReviewId(review);
+const isEditingReview = (review, index) => editingReviewKey.value === getReviewKey(review, index);
 
 const handleEdit = () => {
   if (!props.id) {
@@ -392,10 +401,10 @@ const handleDelete = async () => {
       <div class="grid gap-4">
         <div
             v-for="(review, index) in reviews"
-            :key="getReviewIdentifier(review, index)"
+            :key="getReviewKey(review, index)"
             class="rounded-2xl border border-white/10 bg-slate-950/50 p-6 shadow-lg shadow-indigo-500/10"
         >
-          <div v-if="editingReviewId !== getReviewIdentifier(review, index)">
+          <div v-if="!isEditingReview(review, index)">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
               <h3 class="text-lg font-semibold text-slate-100">{{ review.book_title || title }}</h3>
             </div>
@@ -424,7 +433,7 @@ const handleDelete = async () => {
                   Редактировать
                 </button>
                 <button
-                    @click="deleteReview(getReviewId(review))"
+                    @click="deleteReview(review)"
                     class="rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-sm text-rose-200 transition hover:bg-rose-500/20"
                 >
                   Удалить
@@ -444,7 +453,7 @@ const handleDelete = async () => {
             </p>
             <div class="flex justify-end gap-2">
               <button
-                  @click="updateReview(getReviewId(review))"
+                  @click="updateReview(review)"
                   class="rounded-full bg-emerald-500/80 px-3 py-1 text-sm text-white transition hover:bg-emerald-400"
               >
                 Сохранить

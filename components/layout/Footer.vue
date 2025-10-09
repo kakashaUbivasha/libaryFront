@@ -81,5 +81,8 @@
         </div>
       </div>
     </div>
+    <p class="mt-6 text-center text-xs text-slate-400/80">
+      Сделал студент ТУИТ, группы 321-21 Палазник Максим
+    </p>
   </footer>
 </template>

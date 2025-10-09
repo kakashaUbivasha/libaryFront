@@ -84,17 +84,30 @@ const formatReviewDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ru-RU');
 };
 
-const getReviewIdentifier = (review, index) => {
+const resolveReviewId = (review) => {
   if (!review || typeof review !== 'object') {
-    return `index-${index}`;
+    return null;
   }
 
-  return (
-    review.id ??
-    review.comment_id ??
-    review.review_id ??
-    `${review.user_id ?? 'user'}-${review.created_at ?? ''}-${index}`
-  );
+  const possibleIds = [
+    review.comment_id,
+    review.id,
+    review.review_id,
+    review?.comment?.id,
+    review?.comment?.comment_id,
+    review?.comment?.review_id
+  ];
+
+  return possibleIds.find((value) => value !== undefined && value !== null && `${value}`.trim() !== '') ?? null;
+};
+
+const getReviewIdentifier = (review, index) => {
+  const resolvedId = resolveReviewId(review);
+  if (resolvedId !== null) {
+    return resolvedId;
+  }
+
+  return `${review?.user_id ?? 'user'}-${review?.created_at ?? ''}-${index}`;
 };
 
 const startEditing = (review, index) => {
@@ -109,8 +122,10 @@ const cancelEditing = () => {
   editedReview.value = '';
 };
 
+const isValidReviewId = (id) => id !== null && id !== undefined && `${id}`.trim() !== '';
+
 const updateReview = async (reviewId) => {
-  if (!reviewId) {
+  if (!isValidReviewId(reviewId)) {
     commentsStore.errorMessage = 'Не удалось определить комментарий для обновления.';
     return;
   }
@@ -131,7 +146,7 @@ const updateReview = async (reviewId) => {
 };
 
 const deleteReview = async (reviewId) => {
-  if (!reviewId) {
+  if (!isValidReviewId(reviewId)) {
     commentsStore.errorMessage = 'Не удалось определить комментарий для удаления.';
     return;
   }
@@ -182,9 +197,7 @@ watch(editedReview, () => {
   }
 });
 
-const getReviewId = (review) => {
-  return review?.comment_id ?? review?.id ?? review?.review_id;
-};
+const getReviewId = (review) => resolveReviewId(review);
 
 const handleEdit = () => {
   if (!props.id) {

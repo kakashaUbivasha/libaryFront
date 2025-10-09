@@ -50,7 +50,7 @@ export const useCommentsStore = defineStore('comments', {
                 this.isProcessing = false;
             }
         },
-        async updateComment(commentId: number | string, content: string) {
+        async updateComment(commentId: number | string, content: string, bookId: number | string) {
             const store = useGlobalStore();
             this.isProcessing = true;
             this.clearError();
@@ -63,7 +63,10 @@ export const useCommentsStore = defineStore('comments', {
                         accept: 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ content })
+                    body: JSON.stringify({
+                        content,
+                        book_id: Number(bookId)
+                    })
                 });
 
                 if (!response.ok) {

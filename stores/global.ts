@@ -102,6 +102,9 @@ export const useGlobalStore = defineStore('global', {
     }),
     actions: {
         async logout() {
+            const authToken = useCookie('auth_token')
+            const userRole = useCookie('user_role')
+
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/logout`,{
                     headers:{
@@ -110,13 +113,18 @@ export const useGlobalStore = defineStore('global', {
                     }
                 })
                 console.log(response)
+            }catch (e){
+                console.log(e)
+            } finally {
                 this.token = null;
                 this.currentUser = null;
+
+                authToken.value = null
+                userRole.value = null
+
                 if (process.client) {
                     localStorage.removeItem('token');
                 }
-            }catch (e){
-                console.log(e)
             }
 
         },

@@ -164,21 +164,68 @@ export const useGlobalStore = defineStore('global', {
             }
         },
         async login(email :string, password :string) {
-            const response = await fetch('http://127.0.0.1:8000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-            const data = await response.json();
-            if (!data.token) {
-                throw new Error('Authentication failed');
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const contentType = response.headers.get('content-type') ?? '';
+                const payload: any = contentType.includes('application/json') ? await response.json() : null;
+
+                const resolveErrorMessage = (data: any) => {
+                    if (!data) {
+                        return null;
+                    }
+                    if (typeof data.message === 'string' && data.message.trim()) {
+                        return data.message;
+                    }
+                    if (typeof data.error === 'string' && data.error.trim()) {
+                        return data.error;
+                    }
+                    if (data.errors && typeof data.errors === 'object') {
+                        const firstEntry = Object.values(data.errors).find((value) => {
+                            if (Array.isArray(value)) {
+                                return value.length > 0;
+                            }
+                            return Boolean(value);
+                        });
+                        if (Array.isArray(firstEntry) && firstEntry.length > 0) {
+                            return String(firstEntry[0]);
+                        }
+                        if (firstEntry) {
+                            return String(firstEntry);
+                        }
+                    }
+                    return null;
+                };
+
+                if (!response.ok) {
+                    const serverMessage = resolveErrorMessage(payload);
+                    throw new Error(serverMessage || 'Неверная почта или пароль');
+                }
+
+                if (!payload?.token) {
+                    throw new Error('Неверная почта или пароль');
+                }
+
+                this.token = payload.token;
+                if (process.client) {
+                    localStorage.setItem('token', payload.token);
+                }
+                await this.initialize();
+                navigateTo('/dashboard');
+            } catch (error) {
+                console.error('Login failed', error);
+                if (error instanceof Error) {
+                    if (error.message === 'Failed to fetch') {
+                        throw new Error('Не удалось связаться с сервером');
+                    }
+                    throw error;
+                }
+                throw new Error('Неверная почта или пароль');
             }
-            this.token = data.token;
-            if (process.client) {
-                localStorage.setItem('token', data.token);
-            }
-            await this.initialize();
-            navigateTo('/dashboard');
         },
         async initialize() {
             if (process.client) { // Только на клиенте

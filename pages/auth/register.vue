@@ -51,18 +51,37 @@ const onRegistr = async () => {
       }),
     });
 
+    const data: any = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Ошибка регистрации: проверьте данные');
+      let validationMessage = data?.message;
+
+      if (!validationMessage && data?.errors && typeof data.errors === 'object') {
+        const firstEntry = Object.values(data.errors).find((value) => {
+          if (Array.isArray(value)) {
+            return value.length > 0;
+          }
+          return Boolean(value);
+        });
+        if (Array.isArray(firstEntry) && firstEntry.length > 0) {
+          validationMessage = String(firstEntry[0]);
+        } else if (firstEntry) {
+          validationMessage = String(firstEntry);
+        }
+      }
+
+      throw new Error(validationMessage || 'Ошибка регистрации: проверьте данные');
     }
-    const data = await response.json();
     console.log('Успешная регистрация:', data);
     isError.value = false;
     errorMessage.value = '';
     router.push('/auth/login');
   } catch (error) {
     isError.value = true;
-    errorMessage.value = error.message || 'Произошла ошибка при регистрации';
+    errorMessage.value =
+        error.message === 'Failed to fetch'
+            ? 'Не удалось связаться с сервером'
+            : error.message || 'Произошла ошибка при регистрации';
     console.error('Ошибка:', error);
   }
 };

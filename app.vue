@@ -99,6 +99,25 @@ onBeforeUnmount(() => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(226, 232, 240, 0.85);
+  text-align: center;
+  line-height: 1.6;
+  max-width: min(90vw, 420px);
+  padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+  .loading__text {
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading__text {
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
 }
 
 @keyframes spin {

@@ -82,9 +82,10 @@ const formatReviewDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ru-RU');
 };
 
-const getReviewMutationId = (review) => {
+
+const getReviewIdentifier = (review, index) => {
   if (!review || typeof review !== 'object') {
-    return null;
+    return `index-${index}`;
   }
 
   return (

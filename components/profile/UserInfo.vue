@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { toRefs } from "vue";
+import { useRouter } from "nuxt/app";
 import Reviews from "~/components/profile/Reviews.vue";
+import { useGlobalStore } from "~/stores/global";
 
-defineProps({
+const props = defineProps({
   name: String,
   level: String,
   totalBooks: String,
@@ -9,6 +12,18 @@ defineProps({
   isCurrentUser: Boolean,
   array: [],
 });
+
+const { name, level, totalBooks, registerDate, isCurrentUser, array } = toRefs(props);
+
+const store = useGlobalStore();
+const router = useRouter();
+
+const handleLogout = async () => {
+  await store.logout();
+  if (isCurrentUser.value) {
+    await router.push("/auth/login");
+  }
+};
 
 // Функция для форматирования даты
 const formatDate = (isoDate: string) => {
@@ -55,7 +70,14 @@ const getBackgroundStyle = () => {
       <div class="text-center text-gray-800">
         <p>Количество прочитанных книг: {{ totalBooks }}</p>
         <p :class="['text-gray-800', isCurrentUser ? 'mb-10' : '']">С нами с: {{ formatDate(registerDate) }}</p>
-        <span class="bg-red-500 hover:bg-red-600 py-2 px-5 rounded-md text-white cursor-pointer" v-if="isCurrentUser">Выйти</span>
+        <button
+          v-if="isCurrentUser"
+          type="button"
+          class="bg-red-500 hover:bg-red-600 py-2 px-5 rounded-md text-white cursor-pointer transition"
+          @click="handleLogout"
+        >
+          Выйти
+        </button>
       </div>
     </div>
   </div>

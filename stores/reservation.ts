@@ -27,7 +27,7 @@ export const useReservationStore = defineStore('reservation', {
             }
 
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/reservation`, {
+                const response = await fetch(`https://api.libaryai.uz/api/reservation`, {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${store.token}`,
@@ -50,7 +50,7 @@ export const useReservationStore = defineStore('reservation', {
         async getReservBook(){
             const store = useGlobalStore()
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/reservations`, {
+                const response = await fetch(`https://api.libaryai.uz/api/reservations`, {
                     headers: {
                         Authorization: `Bearer ${store.token}`,
                         accept: 'application/json',
@@ -80,7 +80,7 @@ export const useReservationStore = defineStore('reservation', {
                     params.append('page', String(page))
                 }
                 const query = params.toString()
-                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservations${query ? `?${query}` : ''}`, {
+                const response = await fetch(`https://api.libaryai.uz/api/admin/reservations${query ? `?${query}` : ''}`, {
                     headers: {
                         Authorization: `Bearer ${store.token}`,
                         accept: 'application/json',
@@ -105,7 +105,7 @@ export const useReservationStore = defineStore('reservation', {
             const store = useGlobalStore()
             console.log(`book_id`, book_id)
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/reservation/canceled`, {
+                const response = await fetch(`https://api.libaryai.uz/api/reservation/canceled`, {
                     method: 'PUT',
                     headers: {
                         Authorization: `Bearer ${store.token}`,
@@ -128,7 +128,7 @@ export const useReservationStore = defineStore('reservation', {
         async historyReservBook(){
             const store = useGlobalStore()
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/reservation/history`, {
+                const response = await fetch(`https://api.libaryai.uz/api/reservation/history`, {
                     headers: {
                         Authorization: `Bearer ${store.token}`,
                         accept: 'application/json',
@@ -149,7 +149,7 @@ export const useReservationStore = defineStore('reservation', {
         {
             const store = useGlobalStore()
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservation/issuance`, {
+                const response = await fetch(`https://api.libaryai.uz/api/admin/reservation/issuance`, {
                     method: 'PATCH',
                     headers: {
                         Authorization: `Bearer ${store.token}`,
@@ -172,7 +172,7 @@ export const useReservationStore = defineStore('reservation', {
         {
             const store = useGlobalStore();
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/admin/reservation/returned`, {
+                const response = await fetch(`https://api.libaryai.uz/api/admin/reservation/returned`, {
                     method: 'PATCH',
                     headers: {
                         Authorization: `Bearer ${store.token}`,

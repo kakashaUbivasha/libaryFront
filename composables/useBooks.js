@@ -12,7 +12,7 @@ export const useBooks = () => {
                 perPage: String(perPage),
                 page: String(page)
             });
-            const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`);
+            const response = await fetch(`https://api.libaryai.uz/api/books?${params.toString()}`);
             const data = await response.json();
             if (!data || data.data.length === 0) {
                 return [];
@@ -34,7 +34,7 @@ export const useNewBook = () => {
                 perPage: String(perPage),
                 page: String(page)
             });
-            const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`);
+            const response = await fetch(`https://api.libaryai.uz/api/books?${params.toString()}`);
             const data = await response.json();
             console.log('books111', data.data)
             if (!data || data.data.length === 0) {
@@ -56,7 +56,7 @@ export const educationBooks = () =>{
                 perPage: String(perPage),
                 page: String(page)
             });
-            const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`);
+            const response = await fetch(`https://api.libaryai.uz/api/books?${params.toString()}`);
             const data = await response.json();
             console.log('books111', data.data)
             if (!data || data.data.length === 0) {

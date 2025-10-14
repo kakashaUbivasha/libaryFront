@@ -39,7 +39,7 @@ const onRegistr = async () => {
 
   try {
     shouldSkipRedirect.value = true;
-    const response = await fetch('http://127.0.0.1:8000/api/register', {
+    const response = await fetch('https://api.libaryai.uz/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

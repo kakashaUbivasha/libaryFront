@@ -66,7 +66,7 @@ const fetchTags = async () => {
     throw new Error('Требуется авторизация для загрузки тегов');
   }
 
-  const response = await fetch('http://127.0.0.1:8000/api/tags', {
+  const response = await fetch('https://api.libaryai.uz/api/tags', {
     headers: {
       Authorization: `Bearer ${globalStore.token}`,
       accept: 'application/json'
@@ -330,7 +330,7 @@ const handleCreateGenre = async () => {
   newGenreError.value = '';
 
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/genres', {
+    const response = await fetch('https://api.libaryai.uz/api/genres', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -390,7 +390,7 @@ const handleCreateTag = async () => {
   newTagError.value = '';
 
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/tags', {
+    const response = await fetch('https://api.libaryai.uz/api/tags', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -453,7 +453,7 @@ const handleUpdateGenre = async () => {
   const genreId = editingGenre.value.id;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/genres/${genreId}`, {
+    const response = await fetch(`https://api.libaryai.uz/api/genres/${genreId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -496,7 +496,7 @@ const handleDeleteGenre = async () => {
   const genreId = editingGenre.value.id;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/genres/${genreId}`, {
+    const response = await fetch(`https://api.libaryai.uz/api/genres/${genreId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${globalStore.token}`,
@@ -548,7 +548,7 @@ const handleUpdateTag = async () => {
   const tagId = editingTag.value.id;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/tags/${tagId}`, {
+    const response = await fetch(`https://api.libaryai.uz/api/tags/${tagId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -591,7 +591,7 @@ const handleDeleteTag = async () => {
   const tagId = editingTag.value.id;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/tags/${tagId}`, {
+    const response = await fetch(`https://api.libaryai.uz/api/tags/${tagId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${globalStore.token}`,

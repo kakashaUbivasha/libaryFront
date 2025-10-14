@@ -10,7 +10,7 @@ export const useFavoriteStore = defineStore('favorite', {
         async getFavorites()
         {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/favorites`,{
+                const response = await fetch(`https://api.libaryai.uz/api/favorites`,{
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -29,7 +29,7 @@ export const useFavoriteStore = defineStore('favorite', {
         async addFavorite(book_id: number)
         {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/favorite`,{
+                const response = await fetch(`https://api.libaryai.uz/api/favorite`,{
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -49,7 +49,7 @@ export const useFavoriteStore = defineStore('favorite', {
         async removeFavorites(book_id: number)
         {
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/favorite/${book_id}`,{
+                const response = await fetch(`https://api.libaryai.uz/api/favorite/${book_id}`,{
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -67,7 +67,7 @@ export const useFavoriteStore = defineStore('favorite', {
         async isFavorite(book_id: number)
         {
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/favorite/${book_id}`,{
+                const response = await fetch(`https://api.libaryai.uz/api/favorite/${book_id}`,{
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }

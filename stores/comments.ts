@@ -21,7 +21,7 @@ export const useCommentsStore = defineStore('comments', {
             this.clearError();
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/book/comment', {
+                const response = await fetch('https://api.libaryai.uz/api/book/comment', {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${store.token}`,
@@ -56,7 +56,7 @@ export const useCommentsStore = defineStore('comments', {
             this.clearError();
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/book/comment/${commentId}`, {
+                const response = await fetch(`https://api.libaryai.uz/api/book/comment/${commentId}`, {
                     method: 'PUT',
                     headers: {
                         Authorization: `Bearer ${store.token}`,
@@ -94,7 +94,7 @@ export const useCommentsStore = defineStore('comments', {
             this.clearError();
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/book/comment/${commentId}`, {
+                const response = await fetch(`https://api.libaryai.uz/api/book/comment/${commentId}`, {
                     method: 'DELETE',
                     headers: {
                         Authorization: `Bearer ${store.token}`,

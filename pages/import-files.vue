@@ -161,7 +161,7 @@ async function uploadGenres() {
 
   try {
     const { $config } = useNuxtApp()
-    const response = await fetch(`http://127.0.0.1:8000/api/genres/import`, {
+    const response = await fetch(`https://api.libaryai.uz/api/genres/import`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${globalStore.token}`,
@@ -195,7 +195,7 @@ async function uploadBooks() {
 
   try {
     const { $config } = useNuxtApp()
-    const response = await fetch(`http://127.0.0.1:8000/api/books/import`, {
+    const response = await fetch(`https://api.libaryai.uz/api/books/import`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${globalStore.token}`,
@@ -229,7 +229,7 @@ async function uploadTags() {
 
   try {
     const { $config } = useNuxtApp()
-    const response = await fetch(`http://127.0.0.1:8000/api/tags/import`, {
+    const response = await fetch(`https://api.libaryai.uz/api/tags/import`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${globalStore.token}`,
@@ -263,7 +263,7 @@ async function uploadBookTags() {
 
   try {
     const { $config } = useNuxtApp()
-    const response = await fetch(`http://127.0.0.1:8000/api/book-tags/import`, {
+    const response = await fetch(`https://api.libaryai.uz/api/book-tags/import`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${globalStore.token}`,

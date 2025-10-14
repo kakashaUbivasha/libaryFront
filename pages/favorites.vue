@@ -59,7 +59,7 @@ const books = computed(() => store.books);
 // Удаление книги из избранного
 // const toggleFavorite = async (bookId) => {
 //   try {
-//     await useFetch(`http://127.0.0.1:8000/api/favorites/${bookId}`, {
+//     await useFetch(`https://api.libaryai.uz/api/favorites/${bookId}`, {
 //       method: 'DELETE',
 //       headers: {
 //         'Authorization': `Bearer ${localStorage.getItem('token')}`

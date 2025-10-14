@@ -106,7 +106,7 @@ export const useGlobalStore = defineStore('global', {
             const userRole = useCookie('user_role')
 
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/logout`,{
+                const response = await fetch(`https://api.libaryai.uz/api/logout`,{
                     headers:{
                         Authorization: `Bearer ${this.token}`,
                         accept: 'application/json'
@@ -136,7 +136,7 @@ export const useGlobalStore = defineStore('global', {
             cookie.maxAge = 60 * 60 * 24 * 7
             user_role.maxAge = 60 * 60 * 24 * 7
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/user', {
+                const response = await fetch('https://api.libaryai.uz/api/user', {
                     headers: {
                         Authorization: `Bearer ${this.token}`,
                         accept: 'application/json'
@@ -155,7 +155,7 @@ export const useGlobalStore = defineStore('global', {
         async guestProfile(id){
             try{
                 console.log('user')
-                const response = await fetch(`http://127.0.0.1:8000/api/guest/${id}`)
+                const response = await fetch(`https://api.libaryai.uz/api/guest/${id}`)
                 const user = await response.json()
                 console.log('user', user)
                 return user.data
@@ -164,7 +164,7 @@ export const useGlobalStore = defineStore('global', {
             }
         },
         async login(email :string, password :string) {
-            const response = await fetch('http://127.0.0.1:8000/api/login', {
+            const response = await fetch('https://api.libaryai.uz/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -192,7 +192,7 @@ export const useGlobalStore = defineStore('global', {
         },
         async getTopUsers(){
             try{
-                const response = await fetch('http://127.0.0.1:8000/api/top-users',{
+                const response = await fetch('https://api.libaryai.uz/api/top-users',{
                     headers:{Authorization: `Bearer ${this.token}`}
                 })
                 const data = await response.json()

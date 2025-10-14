@@ -23,7 +23,7 @@ export const useBookStore = defineStore('books', {
                 if (genre) {
                     params.append('genre', genre);
                 }
-                const response = await fetch(`http://127.0.0.1:8000/api/books?${params.toString()}`)
+                const response = await fetch(`https://api.libaryai.uz/api/books?${params.toString()}`)
                 const data = await response.json();
                 const books = Array.isArray(data.data) ? data.data : [];
                 let booksSlice = books;
@@ -39,7 +39,7 @@ export const useBookStore = defineStore('books', {
         },
         async get_categories(){
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/genres`)
+                const response = await fetch(`https://api.libaryai.uz/api/genres`)
                 const data = await response.json()
                 this.genres = Array.isArray(data.data) ? data.data : []
             }catch (error){
@@ -48,7 +48,7 @@ export const useBookStore = defineStore('books', {
         },
         async searchBooks(keyword: string) {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/book/search?query=${encodeURIComponent(keyword)}`)
+                const response = await fetch(`https://api.libaryai.uz/api/book/search?query=${encodeURIComponent(keyword)}`)
                 const data = await response.json();
                 console.log(`search:`,data.data)
                 this.searched_books = data.data
@@ -66,7 +66,7 @@ export const useBookStore = defineStore('books', {
 
             try {
                 const config = useRuntimeConfig();
-                const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000/api';
+                const baseURL = config.public?.apiBase ?? 'https://api.libaryai.uz/api';
                 const globalStore = useGlobalStore();
 
                 if (!globalStore.token) {
@@ -97,7 +97,7 @@ export const useBookStore = defineStore('books', {
         },
         async getBook(id: number){
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/books/${id}`)
+                const response = await fetch(`https://api.libaryai.uz/api/books/${id}`)
                 const data = await response.json()
                 this.book = data.data
                 console.log(`book`, this.book)
@@ -108,7 +108,7 @@ export const useBookStore = defineStore('books', {
         async viewBook(id: number) {
             try {
                 const config = useRuntimeConfig();
-                const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+                const baseURL = config.public?.apiBase ?? 'https://api.libaryai.uz';
                 const globalStore = useGlobalStore();
 
                 if (!globalStore.token) {
@@ -142,7 +142,7 @@ export const useBookStore = defineStore('books', {
             }
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/books/${id}`, {
+                const response = await fetch(`https://api.libaryai.uz/api/books/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ export const useBookStore = defineStore('books', {
             }
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/books/${numericId}`, {
+                const response = await fetch(`https://api.libaryai.uz/api/books/${numericId}`, {
                     method: 'DELETE',
                     headers: {
                         Authorization: `Bearer ${globalStore.token}`,
@@ -211,7 +211,7 @@ export const useBookStore = defineStore('books', {
             }
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/books', {
+                const response = await fetch('https://api.libaryai.uz/api/books', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -241,7 +241,7 @@ export const useBookStore = defineStore('books', {
         },
         async getRandomBooks(){
           try {
-              const response = await fetch(`http://127.0.0.1:8000/api/books/random`)
+              const response = await fetch(`https://api.libaryai.uz/api/books/random`)
               const data = await response.json()
               this.book = data.data
               console.log(`book`, this.book)
@@ -251,7 +251,7 @@ export const useBookStore = defineStore('books', {
         },
         async getComments(id: number){
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/books/${id}/comments`)
+                const response = await fetch(`https://api.libaryai.uz/api/books/${id}/comments`)
                 const data = await response.json()
                 this.comments = data.data
                 console.log('comments', this.comments)
@@ -261,7 +261,7 @@ export const useBookStore = defineStore('books', {
         },
         async fetchAIRecommendations() {
             const config = useRuntimeConfig();
-            const baseURL = config.public?.apiBase ?? 'http://127.0.0.1:8000';
+            const baseURL = config.public?.apiBase ?? 'https://api.libaryai.uz';
             const globalStore = useGlobalStore();
 
             if (!globalStore.token) {

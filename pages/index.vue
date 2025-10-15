@@ -112,11 +112,6 @@ onMounted(() => {
 
     <!-- Statistics Section -->
     <section class="mb-10 sm:mb-16 px-4">
-      <div class="mb-8 sm:mb-12 flex flex-col items-center gap-5">
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-100">Сейчас в библиотеке:</h2>
-        <span class="text-xl sm:text-2xl italic text-indigo-200">7231 книги</span>
-      </div>
-
       <ClientOnly>
         <swiper-container
             init="false"

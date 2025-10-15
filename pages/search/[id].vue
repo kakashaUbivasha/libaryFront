@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBookStore } from "~/stores/book";
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 const store = useBookStore();
 const route = useRoute();
@@ -14,22 +14,32 @@ const isAiSearch = computed(() => {
   return aiParam === "1" || aiParam === "true";
 });
 
+const isLoading = ref(false);
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const searchBooks = async () => {
   const currentKeyword = keyword.value.trim();
   if (!currentKeyword) {
     store.searched_books = [];
+    isLoading.value = false;
     return;
   }
 
   try {
+    store.searched_books = [];
+    isLoading.value = true;
     if (isAiSearch.value) {
       await store.searchBooksAi(currentKeyword);
     } else {
       await store.searchBooks(currentKeyword);
     }
+    await delay(200);
     console.log('searched books', store.searched_books.length);
   } catch (err) {
     console.error(err);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -50,7 +60,12 @@ watch(
     <h2 class="text-center text-2xl sm:text-3xl lg:text-4xl font-semibold mb-2 sm:mb-4 lg:mb-6">
       Результаты поиска:
     </h2>
-    <div v-if="!store.searched_books.length" class="flex justify-center">
+    <div v-if="isLoading" class="flex justify-center">
+      <h2 class="max-w-3xl text-center text-lg sm:text-xl md:text-2xl">
+        Выполняется поиск...
+      </h2>
+    </div>
+    <div v-else-if="!store.searched_books.length" class="flex justify-center">
       <h2 class="max-w-3xl text-center text-lg sm:text-xl md:text-2xl">
         По запросу <i><b>{{ keyword }}</b></i> ничего не найдено
       </h2>

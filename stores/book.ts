@@ -66,7 +66,7 @@ export const useBookStore = defineStore('books', {
 
             try {
                 const config = useRuntimeConfig();
-                const baseURL = config.public?.apiBase ?? 'https://api.libaryai.uz/api';
+                const baseURL = 'https://api.libaryai.uz/api';
                 const globalStore = useGlobalStore();
 
                 if (!globalStore.token) {
@@ -81,7 +81,7 @@ export const useBookStore = defineStore('books', {
                 };
 
 
-                const response = await fetch(`${baseURL}/npl/suggest-tags`, {
+                const response = await fetch(`https://api.libaryai.uz/api/npl/suggest-tags`, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({
